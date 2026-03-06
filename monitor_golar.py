@@ -2,6 +2,7 @@ import yfinance as yf
 import pandas as pd
 import matplotlib.pyplot as plt
 import requests
+import os # Import the os module for path operations
 
 """
 ===============================================================================
@@ -15,8 +16,8 @@ MANUAL OPERATIVO:
 """
 
 # --- CONFIGURACIÓN DE TELEGRAM (Opcional) ---
-TELEGRAM_TOKEN = "8754089216:AAFlgu0R-dfxWFSXG7NBPpcWXuEmW7Jim-4"   
-TELEGRAM_CHAT_ID = "8351044609"  
+TELEGRAM_TOKEN = ""   
+TELEGRAM_CHAT_ID = ""  
 
 # --- VARIABLES DE CARTERA (300.000€) ---
 cartera_total_eur = 300000
@@ -30,15 +31,25 @@ stop_loss_profit_usd = 55.50
 objetivo_final_usd = 68.00    
 umbral_jkm_extra = 8.00       
 
-def enviar_alerta_telegram(mensaje):
-    """Función de mensajería segura"""
+def enviar_alerta_telegram(mensaje, ruta_grafico=None):
+    """Envío de texto y adjunto de imagen del gráfico al móvil"""
     if TELEGRAM_TOKEN and TELEGRAM_CHAT_ID:
         try:
-            url = f"https://api.telegram.org/bot{TELEGRAM_TOKEN}/sendMessage"
+            # 1. Enviar el informe de texto
+            url_txt = f"https://api.telegram.org/bot{TELEGRAM_TOKEN}/sendMessage"
             payload = {"chat_id": TELEGRAM_CHAT_ID, "text": mensaje, "parse_mode": "Markdown"}
-            requests.post(url, data=payload, timeout=10)
-        except:
-            pass
+            requests.post(url_txt, data=payload, timeout=10)
+            
+            # 2. Enviar el gráfico si existe el archivo
+            if ruta_grafico and os.path.exists(ruta_grafico):
+                url_img = f"https://api.telegram.org/bot{TELEGRAM_TOKEN}/sendPhoto"
+                with open(ruta_grafico, 'rb') as foto:
+                    files = {'photo': foto}
+                    data = {'chat_id': TELEGRAM_CHAT_ID}
+                    requests.post(url_img, data=data, files=files, timeout=15)
+                print("✅ Gráfico enviado con éxito a Telegram.")
+        except Exception as e:
+            print(f"⚠️ Error enviando a Telegram: {e}")
 
 def monitor_tesis_pro():
     try:
@@ -125,7 +136,7 @@ def monitor_tesis_pro():
 
     # Impresión y envío
     print(salida_texto)
-    enviar_alerta_telegram(msg_telegram)
+    enviar_alerta_telegram(msg_telegram, ruta_grafico='grafico_golar.png')
 
     # 4. GRÁFICO DE FUERZA RELATIVA (Base 100)
     print("\nGenerando comparativa visual (Base 100)...")

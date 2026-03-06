@@ -34,7 +34,7 @@ def enviar_alerta_telegram(mensaje):
     """Función de mensajería segura"""
     if TELEGRAM_TOKEN and TELEGRAM_CHAT_ID:
         try:
-            url = f"https://api.telegram.org{TELEGRAM_TOKEN}/sendMessage"
+            url = f"https://api.telegram.org/bot{TELEGRAM_TOKEN}/sendMessage"
             payload = {"chat_id": TELEGRAM_CHAT_ID, "text": mensaje, "parse_mode": "Markdown"}
             requests.post(url, data=payload, timeout=10)
         except:

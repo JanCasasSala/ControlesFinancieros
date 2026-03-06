@@ -25,7 +25,7 @@ def enviar_telegram(texto, ruta_foto=None):
     if not TELEGRAM_TOKEN or not TELEGRAM_CHAT_ID:
         return
     
-    base_url = f"https://api.telegram.org{TELEGRAM_TOKEN}"
+    base_url = f"https://api.telegram.org/bot{TELEGRAM_TOKEN}"
     
     # 1. Intentar enviar TEXTO siempre
     try:

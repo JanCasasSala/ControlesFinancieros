@@ -23,7 +23,7 @@ umbral_jkm_extra = 8.00
 def enviar_alerta_telegram(mensaje, ruta_grafico=None):
     if TELEGRAM_TOKEN and TELEGRAM_CHAT_ID:
         try:
-            url_base = f"https://api.telegram.org{TELEGRAM_TOKEN}"
+            url_base = f"https://api.telegram.org/bot{TELEGRAM_TOKEN}"
             requests.post(f"{url_base}/sendMessage", 
                           data={"chat_id": TELEGRAM_CHAT_ID, "text": mensaje, "parse_mode": "Markdown"}, 
                           timeout=10)

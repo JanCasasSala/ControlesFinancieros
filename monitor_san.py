@@ -46,7 +46,7 @@ try:
     
     # 4. ENVÍO
     msg = f"🏦 *MONITOR SAN*\nPrecio: {san:.2f}€\nEstado: {res}\nInfo: {esc}"
-    url = f"https://api.telegram.org{TOKEN}/"
+    url = f"https://api.telegram.org/bot{TOKEN}/"
     requests.post(url + "sendMessage", data={"chat_id": CHAT_ID, "text": msg, "parse_mode": "Markdown"})
     with open(img, 'rb') as f:
         requests.post(url + "sendPhoto", data={"chat_id": CHAT_ID}, files={"photo": f})

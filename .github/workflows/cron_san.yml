@@ -1,0 +1,18 @@
+yaml
+name: Monitor Semanal Santander
+on:
+  schedule:
+    - cron: '0 21 * * 5' # Ejecuta todos los viernes a las 21:00 UTC (22:00 España)
+jobs:
+  run-script:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - name: Set up Python
+        uses: actions/setup-python@v2
+        with:
+          python-version: '3.9'
+      - name: Install dependencies
+        run: pip install yfinance pandas matplotlib requests
+      - name: Run Monitor
+        run: python monitor.py

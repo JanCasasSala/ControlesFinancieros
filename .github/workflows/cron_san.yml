@@ -1,20 +1,20 @@
-name: Ejecucion Semanal Monitor San
-
+name: Monitor Semanal Santander
 on:
   schedule:
-    - cron: '0 21 * * 5' # Ejecuta todos los viernes a las 21:00 UTC (22:00 España)
-  workflow_dispatch: # Permite que tú lo lances manualmente cuando qu
+    - cron: '0 21 * * 5'  # Ejecución automática: Viernes 22:00 (España)
+  workflow_dispatch:      # <--- ESTA LÍNEA PERMITE EL LANZAMIENTO MANUAL
 
 jobs:
-  run-script:
+  build:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v2
-      - name: Set up Python
-        uses: actions/setup-python@v2
+      - uses: actions/checkout@v3
+      - name: Configurar Python
+        uses: actions/setup-python@v4
         with:
           python-version: '3.9'
-      - name: Install dependencies
-        run: pip install yfinance pandas matplotlib requests
-      - name: Run Monitor
+      - name: Instalar Librerias
+        run: |
+          pip install yfinance pandas matplotlib requests
+      - name: Ejecutar Monitor
         run: python monitor_san.py

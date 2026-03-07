@@ -71,7 +71,7 @@ def ejecutar_monitor_san():
                    f"------------------------------------\n"
                    f"📌 Filtro: Confirmación 3 días + Diferencial -5%.")
         
-        url = f"https://api.telegram.org{TELEGRAM_TOKEN}/"
+        url = f"https://api.telegram.org/bot{TELEGRAM_TOKEN}/"
         requests.post(url + "sendMessage", data={"chat_id": TELEGRAM_CHAT_ID, "text": informe, "parse_mode": "Markdown"})
         if os.path.exists(ruta_img):
             with open(ruta_img, 'rb') as f:

@@ -1,4 +1,4 @@
-name: Cron Monitor Santander
+name: Cron Monitor San
 on:
   schedule:
     - cron: '0 21 * * 5'  # Ejecución automática: Viernes 22:00 (España)

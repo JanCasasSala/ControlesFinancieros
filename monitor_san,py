@@ -1,70 +1,81 @@
 import yfinance as yf
 import pandas as pd
+import matplotlib
+matplotlib.use('Agg') # Crucial para que funcione en GitHub
 import matplotlib.pyplot as plt
 import requests
+import os
 
-# --- CONFIGURACIÓN ESTRATÉGICA ---
+# --- CONFIGURACIÓN ---
 TELEGRAM_TOKEN = "8754089216:AAFlgu0R-dfxWFSXG7NBPpcWXuEmW7Jim-4"
 TELEGRAM_CHAT_ID = "8351044609"
 PRECIO_ENTRADA_SAN = 3.85
-UMBRAL_PANICO_DIARIO_SECTOR = -3.0 # Alerta inmediata si el sector cae >3%
 
-def monitor_santander_manual():
+def ejecutar_monitor():
     plt.style.use('dark_background')
     try:
-        # 1. DESCARGA (Usamos EXX7.DE como termómetro europeo)
+        # 1. DESCARGA
         tickers = ["SAN.MC", "EXX7.DE", "^IBEX"]
-        df = yf.download(tickers, period="250d", progress=False, auto_adjust=True)['Close'].ffill()
+        df_raw = yf.download(tickers, period="250d", progress=False, auto_adjust=True)
+        df = df_raw['Close'].ffill()
         
         # Precios y Medias
         san = df['SAN.MC'].iloc[-1]
+        sma_100_serie = df['SAN.MC'].rolling(window=100).mean()
         sma_30 = df['SAN.MC'].rolling(window=30).mean().iloc[-1]
-        sma_100 = df['SAN.MC'].rolling(window=100).mean().iloc[-1]
+        sma_100 = sma_100_serie.iloc[-1]
         
-        # 2. MÉTRICAS DE CICLO Y RUIDO
+        # 2. MÉTRICAS
         confirm_3d = (df['SAN.MC'].tail(3) < df['SAN.MC'].rolling(window=100).mean().tail(3)).all()
         perf_sector_hoy = ((df['EXX7.DE'].iloc[-1] - df['EXX7.DE'].iloc[-2]) / df['EXX7.DE'].iloc[-2]) * 100
         dif_10d = (df['SAN.MC'].pct_change(10).iloc[-1] - df['EXX7.DE'].pct_change(10).iloc[-1]) * 100
 
-        # 3. LÓGICA DE DECISIÓN (SISTEMA DE FILTRO)
+        # 3. LÓGICA
         if san > sma_30:
-            estado, esc = "🟢 MANTENER", "🚀 IMPULSO: Todo en orden."
+            estado, esc = "🟢 MANTENER", "🚀 IMPULSO: Tendencia sólida."
         elif sma_100 < san <= sma_30:
-            estado, esc = "🟡 VIGILAR", "🌬️ RESPIRACIÓN: El suelo de fondo aguanta."
+            estado, esc = "🟡 VIGILAR", "🌬️ RESPIRACIÓN: Soporte de fondo aguantando."
         else:
             if confirm_3d or dif_10d < -7:
                 estado, esc = "❌ REDUCIR PESO", "🚨 GIRO CONFIRMADO: Debilidad estructural."
-            elif perf_sector_hoy < UMBRAL_PANICO_DIARIO_SECTOR:
-                estado, esc = "⚠️ PRE-ALERTA DE CICLO", f"Caída brusca del sector bancario ({perf_sector_hoy:.2f}%)."
             else:
-                estado, esc = "🟡 VIGILAR / RUIDO", "RUIDO: Perdiendo SMA 100 pero alineado con Europa."
+                estado, esc = "🟡 VIGILAR / RUIDO", "RUIDO: Sector aguanta, SAN sufre solo."
 
-        # 4. GRÁFICO BLOOMBERG
-        fig, ax = plt.subplots(figsize=(12, 6))
+        # 4. GRÁFICO
         plot_data = df.tail(90)
+        base_san = plot_data['SAN.MC'].iloc[0]
         rel = (plot_data / plot_data.iloc[0]) * 100
+        
+        fig, ax = plt.subplots(figsize=(12, 6))
         ax.plot(rel['SAN.MC'], label='SAN', color='red', linewidth=3)
         ax.plot(rel['EXX7.DE'], label='Sector EU', color='yellow', alpha=0.6)
-        ax.plot((df['SAN.MC'].rolling(window=100).mean().tail(90) / plot_data['SAN.MC'].iloc[0]) * 100, label='SMA 100', color='orange', linestyle='--')
+        ax.plot((sma_100_serie.tail(90) / base_san) * 100, label='SMA 100', color='orange', linestyle='--')
         ax.axhline(100, color='white', alpha=0.2)
-        ax.set_title(f"SANTANDER: {estado}")
-        plt.savefig("monitor_san.png")
-        plt.show()
+        ax.set_title(f"MONITOR SANTANDER: {estado}")
+        ax.legend()
+        
+        ruta_img = "monitor_san.png"
+        plt.savefig(ruta_img)
+        plt.close()
 
-        # 5. INFORME
-        informe = (f"🏦 *MONITOR MANUAL SAN*\n"
+        # 5. INFORME TELEGRAM
+        informe = (f"🏦 *MONITOR ESTRATÉGICO SAN*\n"
+                   f"------------------------------------\n"
                    f"💎 PRECIO: {san:.2f}€\n"
                    f"🔥 DIF. SECTOR: {dif_10d:+.2f}%\n"
                    f"📢 ESCENARIO: {esc}\n"
-                   f"✅ ESTADO: {estado}")
+                   f"✅ ESTADO: {estado}\n"
+                   f"------------------------------------\n"
+                   f"📌 Informe automático de los viernes.")
         
-        # Enviar a Telegram
-        url = f"https://api.telegram.org/bot{TELEGRAM_TOKEN}/"
+        url = f"https://api.telegram.org{TELEGRAM_TOKEN}/"
         requests.post(url + "sendMessage", data={"chat_id": TELEGRAM_CHAT_ID, "text": informe, "parse_mode": "Markdown"})
-        with open("monitor_san.png", 'rb') as f:
-            requests.post(url + "sendPhoto", data={"chat_id": TELEGRAM_CHAT_ID}, files={"photo": f})
+        if os.path.exists(ruta_img):
+            with open(ruta_img, 'rb') as f:
+                requests.post(url + "sendPhoto", data={"chat_id": TELEGRAM_CHAT_ID}, files={"photo": f})
 
-    except Exception as e: print(f"🔴 Error: {e}")
+    except Exception as e:
+        print(f"🔴 Error: {e}")
 
-monitor_santander_manual()
-
+if __name__ == "__main__":
+    ejecutar_monitor()

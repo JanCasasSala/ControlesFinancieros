@@ -1,6 +1,3 @@
-# INSTALACIÓN (Ejecutar solo una vez en Colab)
-!pip install yfinance -q
-
 import yfinance as yf
 import pandas as pd
 import matplotlib.pyplot as plt

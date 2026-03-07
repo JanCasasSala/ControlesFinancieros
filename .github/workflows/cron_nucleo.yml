@@ -20,6 +20,9 @@ jobs:
 
       - name: Instalar librerias
         run: pip install yfinance pandas matplotlib requests tabulate
-
+        
+      - name: Listar archivos para verificar
+        run: ls -R  # Esto imprimirá todos los archivos en el log para que veas
+        
       - name: Ejecutar script monitor_nucleo
         run: python monitor_nucleo.py

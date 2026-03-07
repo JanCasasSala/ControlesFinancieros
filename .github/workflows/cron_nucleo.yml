@@ -1,4 +1,4 @@
-name: Cron de Monitor Nucleo
+name: Cron Monitor Nucleo
 
 on:
   schedule:

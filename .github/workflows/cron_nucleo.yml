@@ -1,0 +1,25 @@
+name: Monitor de Cartera Nucleo
+
+on:
+  schedule:
+    # Se ejecuta a las 17:05 UTC (18:05 en España) de lunes a viernes
+    - cron: '5 17 * * 1-5'
+  workflow_dispatch: # Permite ejecución manual desde la pestaña Actions
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repositorio
+        uses: actions/checkout@v3
+
+      - name: Instalar Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.9'
+
+      - name: Instalar librerias
+        run: pip install yfinance pandas matplotlib requests tabulate
+
+      - name: Ejecutar script monitor_nucleo
+        run: python monitor_nucleo.py

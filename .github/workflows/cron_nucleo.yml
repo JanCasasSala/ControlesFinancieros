@@ -1,4 +1,4 @@
-name: Monitor de Cartera Nucleo
+name: Cron de Monitor Nucleo
 
 on:
   schedule:

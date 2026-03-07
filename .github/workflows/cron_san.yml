@@ -15,4 +15,4 @@ jobs:
       - name: Install dependencies
         run: pip install yfinance pandas matplotlib requests
       - name: Run Monitor
-        run: python monitor.py
+        run: python monitor_san.py

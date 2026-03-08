@@ -13,7 +13,7 @@ TOKEN = "8754089216:AAFlgu0R-dfxWFSXG7NBPpcWXuEmW7Jim-4"
 CHAT_ID = "8351044609"
 
 def enviar_a_telegram(mensaje, imagen=None):
-    url_base = f"https://api.telegram.org{TOKEN}"
+    url_base = f"https://api.telegram.org/bot{TOKEN}"
     try:
         if imagen:
             requests.post(f"{url_base}/sendPhoto", data={"chat_id": CHAT_ID, "caption": mensaje, "parse_mode": "Markdown"}, files={"photo": imagen})

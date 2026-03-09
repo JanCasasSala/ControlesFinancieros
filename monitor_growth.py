@@ -105,15 +105,17 @@ def ejecutar_monitor_v1_growth():
     
     glosario_txt = (
         "\n" + "="*30 +
-        "\n📖 *GLOSARIO DE CONTROL:*"
-        "\n• *NRR*: >100% IA Ok. <100% Alerta."
+        "\n📖 *Glosario:*"
+        "\n• *NRR*:  Retencion Ingresos Netos  "
+        "\n•         Ing.Recurrentes Clientes  "  
+        "\n•         >100% IA Ok. <100% Alerta."
         "\n• *FCF/ACC*: Caja Real (Anti-dilución)."
         "\n• *SBC % FCF*: Pago en acciones. >20% Alerta."
         "\n• *T-GRACIA*: Plazo 4 trimestres antes de salir."
         "\n" + "="*30
     )
 
-    mensaje_final = f"🛡️ *MONITOR V1: CLUSTER 2*\n\n```\n{tabla_txt}\n```\n📝 *NOTAS DE OPERACIÓN:*\n{notas_txt}\n{glosario_txt}"
+    mensaje_final = f"🛡️ *Cluster 2 Growth*\n\n```\n{tabla_txt}\n```\n📝 *Diagnostico:*\n{notas_txt}\n{glosario_txt}"
 
     enviar_a_telegram(mensaje_final, buf)
     print("✅ Reporte enviado con Gartner, FactSet y Glosario.")

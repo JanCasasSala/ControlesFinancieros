@@ -58,14 +58,3 @@
     }
   ]
 }
-```
-5. Pulsa **"Commit changes"** → deja el mensaje por defecto → **"Commit changes"**
-
----
-
-### PASO 2 — Crear `hitos_historial.json`
-
-1. Pulsa **"Add file" → "Create new file"**
-2. En el nombre escribe:
-```
-golar/hitos_historial.json

@@ -1,0 +1,1129 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Tesis de Inversion — Golar LNG (GLNG)</title>
+  <link href="https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=DM+Serif+Display:ital@0;1&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg:        #0a0e17;
+      --surface:   #111827;
+      --surface2:  #1a2235;
+      --border:    #1e2d45;
+      --accent:    #00d4ff;
+      --accent2:   #0091b3;
+      --green:     #2ecc71;
+      --orange:    #f39c12;
+      --red:       #e74c3c;
+      --muted:     #4a5568;
+      --text:      #c8d6e5;
+      --text-dim:  #718096;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: 'DM Sans', sans-serif;
+      font-size: 15px;
+      line-height: 1.7;
+      padding: 0 0 80px 0;
+    }
+
+    /* ---- HERO ---- */
+    .hero {
+      background: linear-gradient(135deg, #060c18 0%, #0a1628 50%, #091420 100%);
+      border-bottom: 1px solid var(--border);
+      padding: 60px 40px 50px;
+      position: relative;
+      overflow: hidden;
+    }
+    .hero::before {
+      content: '';
+      position: absolute;
+      top: -120px; right: -120px;
+      width: 400px; height: 400px;
+      background: radial-gradient(circle, #00d4ff18 0%, transparent 70%);
+      pointer-events: none;
+    }
+    .hero-tag {
+      display: inline-block;
+      font-family: 'Space Mono', monospace;
+      font-size: 0.7rem;
+      color: var(--accent);
+      border: 1px solid var(--accent2);
+      padding: 4px 12px;
+      border-radius: 2px;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      margin-bottom: 20px;
+    }
+    .hero h1 {
+      font-family: 'DM Serif Display', serif;
+      font-size: clamp(2rem, 5vw, 3.4rem);
+      color: #e8f4f8;
+      line-height: 1.15;
+      margin-bottom: 10px;
+    }
+    .hero h1 span { color: var(--accent); font-style: italic; }
+    .hero-sub {
+      color: var(--text-dim);
+      font-size: 0.9rem;
+      font-family: 'Space Mono', monospace;
+      margin-top: 16px;
+    }
+    .hero-meta {
+      display: flex;
+      gap: 30px;
+      margin-top: 32px;
+      flex-wrap: wrap;
+    }
+    .hero-stat {
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
+    }
+    .hero-stat .label {
+      font-size: 0.68rem;
+      color: var(--muted);
+      text-transform: uppercase;
+      letter-spacing: 1.5px;
+      font-family: 'Space Mono', monospace;
+    }
+    .hero-stat .value {
+      font-family: 'Space Mono', monospace;
+      font-size: 1.1rem;
+      font-weight: 700;
+      color: var(--accent);
+    }
+    .hero-stat .value.green  { color: var(--green); }
+    .hero-stat .value.orange { color: var(--orange); }
+    .hero-stat .value.red    { color: var(--red); }
+
+    /* ---- LAYOUT ---- */
+    .container {
+      max-width: 900px;
+      margin: 0 auto;
+      padding: 0 24px;
+    }
+
+    /* ---- SECTION ---- */
+    .section {
+      margin-top: 48px;
+    }
+    .section-header {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      margin-bottom: 22px;
+      padding-bottom: 12px;
+      border-bottom: 1px solid var(--border);
+    }
+    .section-num {
+      font-family: 'Space Mono', monospace;
+      font-size: 0.65rem;
+      color: var(--accent2);
+      border: 1px solid var(--border);
+      padding: 2px 8px;
+      border-radius: 2px;
+    }
+    .section-title {
+      font-family: 'DM Serif Display', serif;
+      font-size: 1.4rem;
+      color: #dce8f0;
+    }
+
+    /* ---- CARDS ---- */
+    .card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      padding: 22px 26px;
+      margin-bottom: 14px;
+    }
+    .card-title {
+      font-family: 'Space Mono', monospace;
+      font-size: 0.7rem;
+      text-transform: uppercase;
+      letter-spacing: 1.5px;
+      color: var(--accent);
+      margin-bottom: 12px;
+    }
+
+    /* ---- GRID ---- */
+    .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+    .grid-3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 14px; }
+
+    @media (max-width: 640px) {
+      .grid-2, .grid-3 { grid-template-columns: 1fr; }
+      .hero { padding: 40px 20px 36px; }
+      .hero-meta { gap: 18px; }
+    }
+
+    /* ---- THESIS PILLARS ---- */
+    .pillar {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-left: 3px solid var(--accent);
+      border-radius: 0 6px 6px 0;
+      padding: 18px 22px;
+      margin-bottom: 12px;
+    }
+    .pillar h4 {
+      font-family: 'Space Mono', monospace;
+      font-size: 0.75rem;
+      color: var(--accent);
+      margin-bottom: 8px;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+    }
+    .pillar p {
+      color: var(--text-dim);
+      font-size: 0.88rem;
+      line-height: 1.65;
+    }
+    .pillar.risk {
+      border-left-color: var(--red);
+    }
+    .pillar.risk h4 { color: var(--red); }
+
+    /* ---- LEVELS TABLE ---- */
+    .levels-grid {
+      display: grid;
+      gap: 0;
+    }
+    .level-row {
+      display: grid;
+      grid-template-columns: 130px 90px 1fr 100px;
+      align-items: center;
+      padding: 12px 16px;
+      border-bottom: 1px solid var(--border);
+      gap: 12px;
+    }
+    .level-row:last-child { border-bottom: none; }
+    .level-row:hover { background: var(--surface2); }
+    .level-label {
+      font-family: 'Space Mono', monospace;
+      font-size: 0.72rem;
+      font-weight: 700;
+    }
+    .level-price {
+      font-family: 'Space Mono', monospace;
+      font-size: 0.95rem;
+      font-weight: 700;
+      color: #e8f4f8;
+    }
+    .level-action {
+      font-size: 0.82rem;
+      color: var(--text-dim);
+    }
+    .level-dist {
+      font-family: 'Space Mono', monospace;
+      font-size: 0.78rem;
+      text-align: right;
+    }
+
+    /* ---- HITOS ---- */
+    .hito-row {
+      display: grid;
+      grid-template-columns: 36px 1fr 100px 80px 90px;
+      align-items: start;
+      padding: 14px 16px;
+      border-bottom: 1px solid var(--border);
+      gap: 12px;
+    }
+    .hito-row:last-child { border-bottom: none; }
+    .hito-row:hover { background: var(--surface2); }
+    .hito-icon {
+      font-family: 'Space Mono', monospace;
+      font-size: 0.78rem;
+      font-weight: 700;
+      text-align: center;
+      padding-top: 2px;
+    }
+    .hito-name {
+      font-size: 0.88rem;
+      font-weight: 600;
+      color: #c8d6e5;
+      margin-bottom: 3px;
+    }
+    .hito-detail {
+      font-size: 0.78rem;
+      color: var(--text-dim);
+      line-height: 1.5;
+    }
+    .hito-cat {
+      font-family: 'Space Mono', monospace;
+      font-size: 0.62rem;
+      padding: 3px 8px;
+      border-radius: 2px;
+      text-align: center;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      white-space: nowrap;
+    }
+    .hito-status {
+      font-family: 'Space Mono', monospace;
+      font-size: 0.68rem;
+      font-weight: 700;
+      text-align: center;
+      padding-top: 2px;
+    }
+    .hito-fecha {
+      font-family: 'Space Mono', monospace;
+      font-size: 0.68rem;
+      color: var(--muted);
+      text-align: right;
+      padding-top: 2px;
+    }
+    .critico-badge {
+      display: inline-block;
+      font-family: 'Space Mono', monospace;
+      font-size: 0.58rem;
+      color: var(--red);
+      border: 1px solid var(--red);
+      padding: 1px 5px;
+      border-radius: 2px;
+      margin-left: 6px;
+      vertical-align: middle;
+      letter-spacing: 0.5px;
+    }
+
+    /* ---- DIAGNOSTICOS ---- */
+    .diag-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+    }
+    .diag-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      padding: 18px;
+    }
+    .diag-card h4 {
+      font-family: 'Space Mono', monospace;
+      font-size: 0.7rem;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      margin-bottom: 10px;
+    }
+    .diag-card p {
+      font-size: 0.83rem;
+      color: var(--text-dim);
+      line-height: 1.6;
+    }
+
+    /* ---- MANUAL ---- */
+    .manual-toggle {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      overflow: hidden;
+    }
+    .manual-toggle-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 18px 22px;
+      cursor: pointer;
+      user-select: none;
+    }
+    .manual-toggle-header:hover { background: var(--surface2); }
+    .manual-toggle-header h4 {
+      font-family: 'Space Mono', monospace;
+      font-size: 0.75rem;
+      text-transform: uppercase;
+      letter-spacing: 1.5px;
+      color: var(--accent);
+    }
+    .toggle-icon {
+      font-family: 'Space Mono', monospace;
+      font-size: 1.2rem;
+      color: var(--accent);
+      font-weight: 700;
+      transition: transform 0.2s;
+    }
+    .manual-body {
+      display: none;
+      padding: 0 22px 22px;
+      border-top: 1px solid var(--border);
+    }
+    .manual-body.open { display: block; }
+
+    .manual-section {
+      margin-top: 20px;
+    }
+    .manual-section h5 {
+      font-family: 'Space Mono', monospace;
+      font-size: 0.68rem;
+      color: var(--accent);
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      margin-bottom: 10px;
+    }
+    .manual-section p, .manual-section li {
+      font-size: 0.84rem;
+      color: var(--text-dim);
+      line-height: 1.65;
+    }
+    .manual-section ol, .manual-section ul {
+      padding-left: 18px;
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+    .manual-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 0.82rem;
+      margin-top: 8px;
+    }
+    .manual-table th {
+      color: var(--muted);
+      font-family: 'Space Mono', monospace;
+      font-size: 0.65rem;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      padding: 6px 10px;
+      text-align: left;
+      border-bottom: 1px solid var(--border);
+    }
+    .manual-table td {
+      padding: 8px 10px;
+      border-bottom: 1px solid #1a2235;
+      vertical-align: top;
+    }
+    .manual-table td:first-child {
+      font-family: 'Space Mono', monospace;
+      font-size: 0.72rem;
+      color: var(--accent);
+      white-space: nowrap;
+    }
+    .manual-table td:not(:first-child) {
+      color: var(--text-dim);
+    }
+    code {
+      background: #0d1b2a;
+      color: var(--accent);
+      padding: 1px 6px;
+      border-radius: 3px;
+      font-family: 'Space Mono', monospace;
+      font-size: 0.78rem;
+    }
+
+    /* ---- DISCLAIMER ---- */
+    .disclaimer {
+      background: #0d1520;
+      border: 1px solid #1a2b3d;
+      border-radius: 6px;
+      padding: 16px 20px;
+      margin-top: 14px;
+    }
+    .disclaimer p {
+      font-size: 0.78rem;
+      color: var(--muted);
+      line-height: 1.6;
+    }
+
+    /* ---- TAGS ---- */
+    .tag {
+      display: inline-block;
+      font-family: 'Space Mono', monospace;
+      font-size: 0.6rem;
+      padding: 2px 8px;
+      border-radius: 2px;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      font-weight: 700;
+    }
+    .tag-green  { background: #2ecc7122; color: var(--green); }
+    .tag-red    { background: #e74c3c22; color: var(--red); }
+    .tag-orange { background: #f39c1222; color: var(--orange); }
+    .tag-blue   { background: #3498db22; color: #3498db; }
+    .tag-purple { background: #9b59b622; color: #9b59b6; }
+    .tag-cyan   { background: #00d4ff18; color: var(--accent); border: 1px solid var(--accent2); }
+
+    /* ---- RR TABLE ---- */
+    .rr-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 0.85rem;
+    }
+    .rr-table th {
+      color: var(--muted);
+      font-family: 'Space Mono', monospace;
+      font-size: 0.65rem;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      padding: 8px 12px;
+      text-align: left;
+      border-bottom: 1px solid var(--border);
+    }
+    .rr-table td {
+      padding: 10px 12px;
+      border-bottom: 1px solid #131e2e;
+      vertical-align: middle;
+    }
+    .rr-table tr:last-child td { border-bottom: none; }
+
+    /* ---- SCROLLBAR ---- */
+    ::-webkit-scrollbar { width: 5px; }
+    ::-webkit-scrollbar-track { background: var(--bg); }
+    ::-webkit-scrollbar-thumb { background: var(--border); border-radius: 3px; }
+
+    /* ---- PRINT ---- */
+    @media print {
+      body { background: white; color: black; }
+      .hero { background: #f0f8ff; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- HERO -->
+<div class="hero">
+  <div class="container">
+    <div class="hero-tag">Documento de Tesis — Posicion Activa</div>
+    <h1>Golar LNG<br><span>Tesis de Inversion</span></h1>
+    <div class="hero-sub">GLNG · NYSE · Sector: Gas Natural Licuado · Version 1.0 · Marzo 2026</div>
+    <div class="hero-meta">
+      <div class="hero-stat">
+        <span class="label">Entrada</span>
+        <span class="value">$46.25</span>
+      </div>
+      <div class="hero-stat">
+        <span class="label">Stop Loss</span>
+        <span class="value red">$42.10</span>
+      </div>
+      <div class="hero-stat">
+        <span class="label">Cosecha</span>
+        <span class="value orange">$55.50</span>
+      </div>
+      <div class="hero-stat">
+        <span class="label">Venta</span>
+        <span class="value red">$62.00</span>
+      </div>
+      <div class="hero-stat">
+        <span class="label">Objetivo</span>
+        <span class="value green">$68.00</span>
+      </div>
+      <div class="hero-stat">
+        <span class="label">Riesgo/Recompensa</span>
+        <span class="value green">~1:11</span>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="container">
+
+  <!-- RESUMEN EJECUTIVO -->
+  <div class="section">
+    <div class="section-header">
+      <span class="section-num">01</span>
+      <h2 class="section-title">Resumen Ejecutivo</h2>
+    </div>
+    <div class="card">
+      <div class="card-title">Tesis en una frase</div>
+      <p style="font-size:1rem;color:#dce8f0;line-height:1.7;">
+        Golar LNG es el operador puro de FLNG (Floating Liquefied Natural Gas) con mayor
+        potencial de re-rating del sector, sostenido por contratos tipo toll que desacoplan
+        su FCF del precio spot del gas y catapultado por el posible anuncio de un tercer FLNG
+        de nueva generacion (Mark II).
+      </p>
+    </div>
+    <div class="grid-2">
+      <div class="card">
+        <div class="card-title">Por que ahora</div>
+        <p style="font-size:0.86rem;color:var(--text-dim);line-height:1.7;">
+          El FLNG Gimi comenzo operacion comercial bajo contrato BP/Golar en Senegal
+          (Greater Tortue), lo que genera una inflexion de FCF en 2024-2025.
+          La empresa completo el spinoff de CoolCo, quedando como pure-play FLNG
+          con el perfil de negocio mas enfocado de su historia. El mercado aun no
+          ha reconocido el cambio estructural de la generacion de caja.
+        </p>
+      </div>
+      <div class="card">
+        <div class="card-title">Asimetria de la posicion</div>
+        <p style="font-size:0.86rem;color:var(--text-dim);line-height:1.7;">
+          Riesgo definido: stop en $42.10 (-8.9% desde entrada).<br>
+          Potencial: objetivo en $68 (+47% desde entrada).<br>
+          Ratio R/R aproximado: 1:11 con stops ajustados.<br>
+          El mayor riesgo no es de precio sino de TIEMPO: lateralizacion
+          12-18 meses si el contrato Mark II se retrasa sin ruptura formal de la tesis.
+        </p>
+      </div>
+    </div>
+  </div>
+
+  <!-- FUNDAMENTOS DEL NEGOCIO -->
+  <div class="section">
+    <div class="section-header">
+      <span class="section-num">02</span>
+      <h2 class="section-title">Fundamentos del Negocio</h2>
+    </div>
+
+    <div class="pillar">
+      <h4>Modelo Toll-Based — FCF desacoplado del precio spot</h4>
+      <p>
+        Golar opera bajo contratos de tarifa fija tipo toll, similares a una autopista de peaje.
+        El cliente (BP en el caso de Tortue) paga una tarifa fija por la capacidad de licuefaccion
+        independientemente del precio del JKM o del Henry Hub. Esto significa que el FCF de Golar
+        no depende de si el gas esta a $8 o a $30 por MMBtu — la caja fluye igual.
+        Esta caracteristica es fundamentalmente diferente al modelo de un productor de gas convencional
+        y justifica un multiple de valoracion mas estable y predecible.
+      </p>
+    </div>
+
+    <div class="pillar">
+      <h4>Inflexion FCF con Gimi en operacion comercial</h4>
+      <p>
+        El FLNG Gimi (primer FLNG de Golar) entro en operacion en Senegal bajo el proyecto
+        Greater Tortue con BP como cliente anchor. La activacion del contrato transforma a Golar
+        de una empresa en construccion/pre-revenue a una empresa con FCF recurrente y predecible.
+        El guidance de management apunta a FCF anual superior a $400M una vez Gimi opere a plena
+        capacidad, lo que supone un cambio estructural en la generacion de caja frente a ejercicios anteriores.
+      </p>
+    </div>
+
+    <div class="pillar">
+      <h4>Pure-Play FLNG tras spinoff de CoolCo</h4>
+      <p>
+        Tras el spinoff de CoolCo (su division de transporte de GNL convencional), Golar quedo
+        como la unica empresa cotizada pura de FLNG a escala. Esto elimina el descuento de conglomerado
+        y simplifica radicalmente el analisis: toda la atencion inversora se centra en los dos FLNGs
+        (Hilli ya operativo, Gimi en rampa) y en el potencial del tercer FLNG Mark II.
+        La pureza del perfil es un activo infravalorado en el sector energetico donde los inversores
+        premian la claridad de negocio.
+      </p>
+    </div>
+
+    <div class="pillar">
+      <h4>Catalizador principal — Contrato FLNG Mark II</h4>
+      <p>
+        El re-rating de valoracion mas significativo llegara con el anuncio de un contrato para
+        un tercer FLNG de nueva generacion (Mark II), potencialmente con mayor capacidad y menores
+        costes de construccion por unidad. Este anuncio no esta en precio actualmente y podria
+        suponer una revision al alza del precio objetivo de analistas del 30-50% sobre los niveles actuales.
+        El tiempo de espera de este catalizador (estimado entre 12-24 meses desde la fecha de la tesis)
+        es el principal factor de riesgo temporal de la posicion.
+      </p>
+    </div>
+  </div>
+
+  <!-- ANALISIS DE RIESGO -->
+  <div class="section">
+    <div class="section-header">
+      <span class="section-num">03</span>
+      <h2 class="section-title">Analisis de Riesgos</h2>
+    </div>
+
+    <div class="grid-2">
+      <div>
+        <div class="pillar">
+          <h4>Concentracion en 2 activos</h4>
+          <p>
+            Toda la tesis descansa sobre 2 FLNGs (Hilli y Gimi). Un problema operativo en cualquiera
+            de ellos (tecnologico, contractual o de fuerza mayor) impacta directamente el 50% del FCF
+            sin diversificacion posible en el corto plazo.
+          </p>
+        </div>
+        <div class="pillar">
+          <h4>JKM como proxy debil</h4>
+          <p>
+            El precio spot del gas japones (JKM) se usa en el monitor como indicador de contexto sectorial,
+            pero NO es el motor real del FCF de Golar. Un JKM debil puede presionar la cotizacion sin
+            que el negocio fundamental se deteriore — creando oportunidades de entrada pero tambien
+            ruido en el seguimiento de la posicion.
+          </p>
+        </div>
+        <div class="pillar">
+          <h4>Riesgo de tiempo — Mark II retrasado</h4>
+          <p>
+            Si el contrato Mark II no se anuncia en 12-18 meses, la accion puede lateralizar sin
+            ruptura formal de la tesis. El mayor riesgo no es de perdida sino de coste de oportunidad.
+            Criterio de decision: si en 6 trimestres consecutivos no hay LOI ni contrato Mark II
+            y el FCF de Gimi no supera el guidance, revisar la tesis aunque no se haya tocado el stop.
+          </p>
+        </div>
+      </div>
+      <div>
+        <div class="pillar risk">
+          <h4>Geopolitico — Estabilidad Senegal</h4>
+          <p>
+            El proyecto Greater Tortue opera en aguas compartidas entre Senegal y Mauritania.
+            Cualquier cambio de gobierno que cuestione las condiciones del contrato BP, o inestabilidad
+            politica regional significativa, representa el riesgo de tail mas grave de la tesis.
+            A diferencia de otros riesgos, este no se puede mitigar con niveles de precio.
+          </p>
+        </div>
+        <div class="pillar risk">
+          <h4>Refinanciacion deuda Gimi</h4>
+          <p>
+            Gimi fue financiada con project finance que genera obligaciones de deuda sobre el FCF
+            del contrato. Si las condiciones de refinanciacion se endurecen significativamente,
+            el FCF libre para el accionista podria ser inferior al guidance. Seguimiento: publicacion
+            de terminos de refinanciacion en earnings.
+          </p>
+        </div>
+        <div class="pillar risk">
+          <h4>Competencia en FLNG de nueva generacion</h4>
+          <p>
+            TotalEnergies, Shell y otras majors estan desarrollando capacidades propias de FLNG.
+            Si un competidor anuncia un proyecto Mark II equivalent antes que Golar, el ventaja
+            de ser pure-play se erosiona y el premium de valoracion se comprime.
+          </p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- NIVELES DE PRECIO -->
+  <div class="section">
+    <div class="section-header">
+      <span class="section-num">04</span>
+      <h2 class="section-title">Mapa de Niveles y Decision</h2>
+    </div>
+    <div class="card" style="padding:0;">
+      <div class="level-row" style="background:var(--surface2);font-family:'Space Mono',monospace;font-size:0.62rem;color:var(--muted);">
+        <div>NIVEL</div><div>PRECIO</div><div>ACCION</div><div style="text-align:right;">DESDE ENTRADA</div>
+      </div>
+      <div class="level-row">
+        <div class="level-label" style="color:var(--green);">Objetivo</div>
+        <div class="level-price">$68.00</div>
+        <div class="level-action">Revision completa de la tesis. Evaluar salida total o reduccion segun catalogo de hitos cumplidos.</div>
+        <div class="level-dist" style="color:var(--green);">+47.0%</div>
+      </div>
+      <div class="level-row">
+        <div class="level-label" style="color:var(--red);">Zona Venta</div>
+        <div class="level-price">$62.00</div>
+        <div class="level-action">Iniciar cosecha activa de beneficios. Reduccion por tramos del 25-50% de la posicion.</div>
+        <div class="level-dist" style="color:var(--green);">+34.1%</div>
+      </div>
+      <div class="level-row">
+        <div class="level-label" style="color:var(--orange);">Zona Cosecha</div>
+        <div class="level-price">$55.50</div>
+        <div class="level-action">Seguimiento activo. Si precio cae bajo SMA30 con volumen alto: reducir 20-25%. Si mantiene: conservar.</div>
+        <div class="level-dist" style="color:var(--green);">+20.0%</div>
+      </div>
+      <div class="level-row">
+        <div class="level-label" style="color:#3498db;">Entrada</div>
+        <div class="level-price">$46.25</div>
+        <div class="level-action">Precio medio de compra de la posicion. Referencia de PnL.</div>
+        <div class="level-dist" style="color:var(--muted);">—</div>
+      </div>
+      <div class="level-row">
+        <div class="level-label" style="color:var(--red);">Stop Loss</div>
+        <div class="level-price">$42.10</div>
+        <div class="level-action">Salida automatica. No negociable. Perdida maxima aceptada por diseno de la posicion.</div>
+        <div class="level-dist" style="color:var(--red);">-8.9%</div>
+      </div>
+    </div>
+    <div class="disclaimer">
+      <p>
+        <strong style="color:var(--text);">Nota sobre el stop loss:</strong> El stop en $42.10 no es arbitrario.
+        Esta diseñado para que la perdida maxima en esta posicion sea significativamente inferior al beneficio
+        potencial en el objetivo, manteniendo el ratio R/R positivo incluso si la tesis tarda en desarrollarse.
+        Una vez alcanzada la zona de cosecha, el stop puede trasladarse hacia arriba para proteger beneficios.
+      </p>
+    </div>
+  </div>
+
+  <!-- HITOS DE TESIS T-G -->
+  <div class="section">
+    <div class="section-header">
+      <span class="section-num">05</span>
+      <h2 class="section-title">Hitos de Tesis (T-G)</h2>
+    </div>
+    <p style="font-size:0.85rem;color:var(--text-dim);margin-bottom:16px;line-height:1.65;">
+      Los hitos marcados como <span style="color:var(--red);font-weight:700;font-family:'Space Mono',monospace;font-size:0.72rem;">CRITICO</span>
+      son condicion necesaria para mantener la conviccion en la posicion.
+      Si 3 o mas hitos criticos permanecen en PENDIENTE durante mas de dos trimestres consecutivos,
+      el score de conviccion se limita al 35% de forma automatica — senal de revision inmediata de la tesis.
+      Los estados se gestionan desde <code>hitos_estado.json</code> en el repositorio.
+    </p>
+    <div class="card" style="padding:0;">
+      <!-- Header -->
+      <div class="hito-row" style="background:var(--surface2);">
+        <div style="font-family:'Space Mono',monospace;font-size:0.62rem;color:var(--muted);">EST.</div>
+        <div style="font-family:'Space Mono',monospace;font-size:0.62rem;color:var(--muted);">HITO</div>
+        <div style="font-family:'Space Mono',monospace;font-size:0.62rem;color:var(--muted);text-align:center;">CATEGORIA</div>
+        <div style="font-family:'Space Mono',monospace;font-size:0.62rem;color:var(--muted);text-align:center;">ESTADO</div>
+        <div style="font-family:'Space Mono',monospace;font-size:0.62rem;color:var(--muted);text-align:right;">FECHA</div>
+      </div>
+      <!-- Hito 1 -->
+      <div class="hito-row">
+        <div class="hito-icon" style="color:#3498db;">...</div>
+        <div>
+          <div class="hito-name">Gimi — Operacion comercial plena <span class="critico-badge">CRITICO</span></div>
+          <div class="hito-detail">Primera licuefaccion bajo contrato BP/Golar en Senegal (Greater Tortue). Activacion del FCF recurrente.</div>
+        </div>
+        <div style="text-align:center;"><span class="hito-cat tag-cyan">Operativo</span></div>
+        <div class="hito-status" style="color:#3498db;">SEGUIMIENTO</div>
+        <div class="hito-fecha">—</div>
+      </div>
+      <!-- Hito 2 -->
+      <div class="hito-row">
+        <div class="hito-icon" style="color:var(--red);">X</div>
+        <div>
+          <div class="hito-name">FCF guidance 2025 confirmado <span class="critico-badge">CRITICO</span></div>
+          <div class="hito-detail">Management confirma FCF anual &gt; $400M con Gimi en plena operacion en earnings.</div>
+        </div>
+        <div style="text-align:center;"><span class="hito-cat tag-green">Financiero</span></div>
+        <div class="hito-status" style="color:var(--red);">PENDIENTE</div>
+        <div class="hito-fecha">—</div>
+      </div>
+      <!-- Hito 3 -->
+      <div class="hito-row">
+        <div class="hito-icon" style="color:var(--red);">X</div>
+        <div>
+          <div class="hito-name">Contrato FLNG Mark II anunciado <span class="critico-badge">CRITICO</span></div>
+          <div class="hito-detail">Firma de LOI o contrato definitivo para tercer FLNG de nueva generacion. Catalizador principal de re-rating de valoracion.</div>
+        </div>
+        <div style="text-align:center;"><span class="hito-cat tag-purple">Estrategico</span></div>
+        <div class="hito-status" style="color:var(--red);">PENDIENTE</div>
+        <div class="hito-fecha">—</div>
+      </div>
+      <!-- Hito 4 -->
+      <div class="hito-row">
+        <div class="hito-icon" style="color:var(--red);">X</div>
+        <div>
+          <div class="hito-name">Dividendo o programa de buybacks iniciado</div>
+          <div class="hito-detail">Board aprueba politica de retribucion al accionista sostenida tras estabilizacion del FCF de Gimi.</div>
+        </div>
+        <div style="text-align:center;"><span class="hito-cat tag-orange">Capital</span></div>
+        <div class="hito-status" style="color:var(--red);">PENDIENTE</div>
+        <div class="hito-fecha">—</div>
+      </div>
+      <!-- Hito 5 -->
+      <div class="hito-row">
+        <div class="hito-icon" style="color:var(--red);">X</div>
+        <div>
+          <div class="hito-name">Refinanciacion deuda Gimi en mejores condiciones</div>
+          <div class="hito-detail">Golar refinancia el project finance de Gimi reduciendo coste financiero y liberando FCF adicional para el accionista.</div>
+        </div>
+        <div style="text-align:center;"><span class="hito-cat tag-green">Financiero</span></div>
+        <div class="hito-status" style="color:var(--red);">PENDIENTE</div>
+        <div class="hito-fecha">—</div>
+      </div>
+      <!-- Hito 6 -->
+      <div class="hito-row">
+        <div class="hito-icon" style="color:#3498db;">...</div>
+        <div>
+          <div class="hito-name">Estabilidad politica Senegal confirmada <span class="critico-badge">CRITICO</span></div>
+          <div class="hito-detail">Nuevo gobierno de Senegal ratifica condiciones del contrato BP sin modificaciones regulatorias adversas sobre el proyecto.</div>
+        </div>
+        <div style="text-align:center;"><span class="hito-cat tag-red">Riesgo</span></div>
+        <div class="hito-status" style="color:#3498db;">SEGUIMIENTO</div>
+        <div class="hito-fecha">—</div>
+      </div>
+    </div>
+
+    <!-- Score de conviccion -->
+    <div class="card" style="margin-top:14px;">
+      <div class="card-title">Score de Conviccion — Como se calcula</div>
+      <p style="font-size:0.85rem;color:var(--text-dim);margin-bottom:12px;">
+        El score pondera cada hito segun su criticidad. Los hitos CRITICO tienen peso doble.
+        Los hitos en SEGUIMIENTO (null) contribuyen el 50% de su peso.
+      </p>
+      <div class="grid-3">
+        <div style="background:var(--surface2);border-radius:4px;padding:14px;">
+          <div style="font-family:'Space Mono',monospace;font-size:0.65rem;color:var(--muted);margin-bottom:6px;">CUMPLIDO</div>
+          <div style="font-family:'Space Mono',monospace;font-size:1.1rem;color:var(--green);">100% peso</div>
+        </div>
+        <div style="background:var(--surface2);border-radius:4px;padding:14px;">
+          <div style="font-family:'Space Mono',monospace;font-size:0.65rem;color:var(--muted);margin-bottom:6px;">SEGUIMIENTO</div>
+          <div style="font-family:'Space Mono',monospace;font-size:1.1rem;color:#3498db;">50% peso</div>
+        </div>
+        <div style="background:var(--surface2);border-radius:4px;padding:14px;">
+          <div style="font-family:'Space Mono',monospace;font-size:0.65rem;color:var(--muted);margin-bottom:6px;">PENDIENTE</div>
+          <div style="font-family:'Space Mono',monospace;font-size:1.1rem;color:var(--red);">0% peso</div>
+        </div>
+      </div>
+      <p style="font-size:0.82rem;color:var(--muted);margin-top:12px;">
+        Penalizacion automatica: si 3 o mas hitos CRITICO estan en PENDIENTE, el score maximo se limita al 35%
+        independientemente del resto de hitos cumplidos.
+        Escala: &ge;70% = Alta Conviccion &nbsp;|&nbsp; 40-70% = Conviccion Media &nbsp;|&nbsp; &lt;40% = Conviccion Baja.
+      </p>
+    </div>
+  </div>
+
+  <!-- DIAGNOSTICOS DE MERCADO -->
+  <div class="section">
+    <div class="section-header">
+      <span class="section-num">06</span>
+      <h2 class="section-title">Diagnosticos de Mercado</h2>
+    </div>
+    <p style="font-size:0.85rem;color:var(--text-dim);margin-bottom:16px;">
+      El monitor clasifica el contexto de mercado en 4 escenarios segun la combinacion de precio JKM y precio GLNG.
+      Esta clasificacion es orientativa — el FCF de Golar no depende del JKM, pero el mercado lo usa como proxy sectorial.
+    </p>
+    <div class="diag-grid">
+      <div class="diag-card" style="border-left:3px solid var(--green);">
+        <h4 style="color:var(--green);">Viento de Cola</h4>
+        <p>JKM &gt; $8 Y precio &gt; entrada. Motor sectorial fuerte y precio acompañando la tesis. Mantener posicion completa. Vigilar zona cosecha si se aproxima.</p>
+      </div>
+      <div class="diag-card" style="border-left:3px solid var(--orange);">
+        <h4 style="color:var(--orange);">La Trampa</h4>
+        <p>JKM &le; $8 pero precio &gt; entrada. Subida por inercia de mercado sin fundamento sectorial. Riesgo de correccion. Vigilar activamente — no añadir posicion.</p>
+      </div>
+      <div class="diag-card" style="border-left:3px solid #3498db;">
+        <h4 style="color:#3498db;">El Refugio</h4>
+        <p>JKM &gt; $8 pero precio &le; entrada. Sector fuerte pero la accion no acompaña. Puede ser oportunidad de promedio si los hitos estan en orden. Revisar catalogo de hitos antes de actuar.</p>
+      </div>
+      <div class="diag-card" style="border-left:3px solid var(--muted);">
+        <h4 style="color:var(--muted);">Zona Neutra</h4>
+        <p>JKM debil y precio bajo entrada. Sin catalizadores claros. Mantener si el stop no se ha tocado y la tesis no tiene rupturas formales. No añadir.</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- MANUAL DE OPERACION -->
+  <div class="section">
+    <div class="section-header">
+      <span class="section-num">07</span>
+      <h2 class="section-title">Manual de Operacion del Monitor</h2>
+    </div>
+
+    <div class="manual-toggle" id="manual-archivos">
+      <div class="manual-toggle-header" onclick="toggle('archivos')">
+        <h4>Estructura de archivos del repositorio</h4>
+        <span class="toggle-icon" id="icon-archivos">+</span>
+      </div>
+      <div class="manual-body" id="body-archivos">
+        <div class="manual-section">
+          <table class="manual-table">
+            <thead><tr><th>Archivo</th><th>Funcion</th><th>Editable</th></tr></thead>
+            <tbody>
+              <tr>
+                <td>golar/hitos_estado.json</td>
+                <td>Estado actual de cada hito de la tesis. Es el unico archivo que el inversor edita manualmente cuando ocurre un evento.</td>
+                <td style="color:var(--green);">SI — editar desde GitHub</td>
+              </tr>
+              <tr>
+                <td>golar/hitos_historial.json</td>
+                <td>Registro automatico de todos los cambios detectados entre ejecuciones. Permite ver la evolucion historica de la tesis.</td>
+                <td style="color:var(--red);">NO — generado automaticamente</td>
+              </tr>
+              <tr>
+                <td>golar/monitor_golar_v5.py</td>
+                <td>Script principal del monitor. Descarga datos de mercado, genera el HTML y lo envia por Telegram.</td>
+                <td style="color:var(--orange);">SOLO seccion 1 (precios)</td>
+              </tr>
+              <tr>
+                <td>golar/Monitor_Golar.html</td>
+                <td>Informe HTML generado en cada ejecucion del script. Disponible como artefacto en GitHub Actions.</td>
+                <td style="color:var(--red);">NO — generado automaticamente</td>
+              </tr>
+              <tr>
+                <td>.github/workflows/monitor_golar.yml</td>
+                <td>Workflow de GitHub Actions que ejecuta el monitor de forma programada (lunes a viernes, dos veces al dia).</td>
+                <td style="color:var(--orange);">Solo para cambiar horarios</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <div class="manual-toggle" id="manual-hitos" style="margin-top:10px;">
+      <div class="manual-toggle-header" onclick="toggle('hitos')">
+        <h4>Como actualizar un hito</h4>
+        <span class="toggle-icon" id="icon-hitos">+</span>
+      </div>
+      <div class="manual-body" id="body-hitos">
+        <div class="manual-section">
+          <h5>Estados disponibles en hitos_estado.json</h5>
+          <table class="manual-table">
+            <thead><tr><th>Situacion</th><th>Valor "estado"</th><th>Valor "fecha"</th></tr></thead>
+            <tbody>
+              <tr>
+                <td>Hito no ocurrido todavia</td>
+                <td><code>false</code></td>
+                <td><code>null</code></td>
+              </tr>
+              <tr>
+                <td>Hay indicios pero no confirmado oficialmente</td>
+                <td><code>null</code></td>
+                <td><code>null</code></td>
+              </tr>
+              <tr>
+                <td>Hito confirmado oficialmente (press release, earnings, SEC filing)</td>
+                <td><code>true</code></td>
+                <td><code>"DD/MM/AAAA"</code></td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+        <div class="manual-section">
+          <h5>Flujo de trabajo para actualizar un hito</h5>
+          <ol>
+            <li>Recibes una noticia relevante sobre Golar (ejemplo: Golar anuncia LOI para Mark II).</li>
+            <li>Ve al repositorio en GitHub y abre <code>golar/hitos_estado.json</code>.</li>
+            <li>Pulsa el icono del lapiz (Edit this file) arriba a la derecha del archivo.</li>
+            <li>Localiza el hito correspondiente y cambia <code>"estado": false</code> por <code>"estado": true</code>.</li>
+            <li>Añade la fecha: <code>"fecha": "10/03/2026"</code>.</li>
+            <li>Pulsa "Commit changes" — el cambio se guarda en menos de 10 segundos.</li>
+            <li>Ejecuta el monitor manualmente desde GitHub Actions (pestaña Actions → Monitor Golar → Run workflow) o espera la proxima ejecucion programada.</li>
+            <li>El informe detectara el cambio automaticamente, actualizara el score de conviccion y lo notificara por Telegram con el log de cambios.</li>
+          </ol>
+        </div>
+      </div>
+    </div>
+
+    <div class="manual-toggle" id="manual-ejecucion" style="margin-top:10px;">
+      <div class="manual-toggle-header" onclick="toggle('ejecucion')">
+        <h4>Como ejecutar el monitor</h4>
+        <span class="toggle-icon" id="icon-ejecucion">+</span>
+      </div>
+      <div class="manual-body" id="body-ejecucion">
+        <div class="manual-section">
+          <h5>Ejecucion automatica — GitHub Actions</h5>
+          <p>El monitor se ejecuta automaticamente lunes a viernes dos veces al dia (configurado en <code>monitor_golar.yml</code>). No requiere ninguna accion del inversor. El informe llega por Telegram con el HTML adjunto.</p>
+        </div>
+        <div class="manual-section">
+          <h5>Ejecucion manual — GitHub Actions</h5>
+          <ol>
+            <li>Ve a la pestana <strong>Actions</strong> en el repositorio de GitHub.</li>
+            <li>En el panel izquierdo selecciona <strong>Monitor Golar</strong>.</li>
+            <li>Pulsa el boton <strong>Run workflow</strong> (boton verde a la derecha).</li>
+            <li>Confirma con <strong>Run workflow</strong> en el desplegable.</li>
+            <li>Espera 1-2 minutos — el circulo verde indica ejecucion correcta.</li>
+          </ol>
+        </div>
+        <div class="manual-section">
+          <h5>Ejecucion manual — Google Colab</h5>
+          <ol>
+            <li>Abre Google Colab (colab.research.google.com).</li>
+            <li>Crea un nuevo notebook o abre el existente.</li>
+            <li>Pega el contenido de <code>golar/monitor_golar_v5.py</code> en una celda de codigo.</li>
+            <li>Asegurate de que <code>GITHUB_JSON_URL</code> apunta a tu repositorio correcto.</li>
+            <li>Ejecuta la celda — el script leer los hitos desde GitHub y generara el informe.</li>
+          </ol>
+          <p style="margin-top:10px;color:var(--orange);">Nota: En Colab, el historial no se guarda automaticamente en GitHub. Si quieres persistir el historial, descarga <code>hitos_historial.json</code> y subelo manualmente al repo tras la ejecucion.</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="manual-toggle" id="manual-precios" style="margin-top:10px;">
+      <div class="manual-toggle-header" onclick="toggle('precios')">
+        <h4>Como actualizar los niveles de precio</h4>
+        <span class="toggle-icon" id="icon-precios">+</span>
+      </div>
+      <div class="manual-body" id="body-precios">
+        <div class="manual-section">
+          <p>Todos los niveles de precio estan centralizados en la <strong>seccion 1 — CONFIGURACION</strong> al inicio de <code>golar/monitor_golar_v5.py</code>. Es la unica parte del script que el inversor debe editar:</p>
+          <table class="manual-table">
+            <thead><tr><th>Variable</th><th>Descripcion</th><th>Cuando actualizar</th></tr></thead>
+            <tbody>
+              <tr>
+                <td>PRECIO_ENTRADA</td>
+                <td>Precio medio de compra de la posicion.</td>
+                <td>Si promedias la posicion hacia arriba o abajo.</td>
+              </tr>
+              <tr>
+                <td>STOP_LOSS</td>
+                <td>Nivel de salida obligatoria. No negociable.</td>
+                <td>Si subes el stop para proteger beneficios (trailing stop).</td>
+              </tr>
+              <tr>
+                <td>ZONA_COSECHA</td>
+                <td>Inicio de zona de beneficios. Vigilancia activa.</td>
+                <td>Si decides ajustar la estrategia de salida por tramos.</td>
+              </tr>
+              <tr>
+                <td>ZONA_VENTA</td>
+                <td>Inicio de venta activa de la posicion.</td>
+                <td>Si decides ajustar el objetivo de salida.</td>
+              </tr>
+              <tr>
+                <td>OBJETIVO</td>
+                <td>Precio objetivo de la tesis. Revision completa al alcanzarlo.</td>
+                <td>Si la tesis evoluciona y justifica un objetivo mas alto.</td>
+              </tr>
+              <tr>
+                <td>JKM_UMBRAL</td>
+                <td>Umbral de precio del gas para clasificar diagnosticos.</td>
+                <td>Si el contexto de mercado cambia estructuralmente.</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+        <div class="manual-section">
+          <h5>Como editar el script en GitHub</h5>
+          <ol>
+            <li>Abre <code>golar/monitor_golar_v5.py</code> en el repositorio.</li>
+            <li>Pulsa el lapiz (Edit this file).</li>
+            <li>Modifica los valores numericos en la seccion 1.</li>
+            <li>Pulsa "Commit changes" — el cambio se aplicara en la proxima ejecucion.</li>
+          </ol>
+        </div>
+      </div>
+    </div>
+
+    <div class="manual-toggle" id="manual-ruptura" style="margin-top:10px;">
+      <div class="manual-toggle-header" onclick="toggle('ruptura')">
+        <h4>Cuando considerar ruptura formal de la tesis</h4>
+        <span class="toggle-icon" id="icon-ruptura">+</span>
+      </div>
+      <div class="manual-body" id="body-ruptura">
+        <div class="manual-section">
+          <p>La tesis se considera <strong>formalmente rota</strong> si se da alguna de estas condiciones, independientemente del precio de la accion:</p>
+          <ul>
+            <li><strong>Gimi fuera de servicio prolongado</strong> (&gt;3 meses) por causa tecnica o fuerza mayor sin cobertura de seguro.</li>
+            <li><strong>Renegociacion adversa del contrato BP</strong> que reduzca la tarifa toll de forma permanente.</li>
+            <li><strong>Inestabilidad politica grave en Senegal</strong> que paralice el proyecto Greater Tortue.</li>
+            <li><strong>FCF guidance revision a la baja</strong> por debajo de $250M anuales en dos trimestres consecutivos.</li>
+            <li><strong>Tres hitos criticos pendientes por mas de 6 trimestres</strong> consecutivos sin avance visible.</li>
+          </ul>
+          <p style="margin-top:12px;color:var(--orange);">
+            Si se rompe la tesis, la accion recomendada es salir de la posicion al precio de mercado,
+            independientemente de si el stop loss tecnico se ha tocado o no. La tesis es el contrato
+            con uno mismo, no el precio.
+          </p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- DISCLAIMER -->
+  <div class="section">
+    <div class="section-header">
+      <span class="section-num">08</span>
+      <h2 class="section-title">Aviso Legal</h2>
+    </div>
+    <div class="disclaimer">
+      <p>
+        Este documento es un registro personal de tesis de inversion y no constituye asesoramiento financiero,
+        recomendacion de compra o venta, ni oferta de ningun instrumento financiero.
+        La inversion en acciones conlleva riesgo de perdida total del capital invertido.
+        Los niveles de precio, hitos y diagnosticos descritos en este documento reflejan el analisis
+        particular del inversor en la fecha indicada y pueden quedar obsoletos sin previo aviso.
+        Cualquier decision de inversion debe basarse en el propio analisis y criterio del inversor,
+        eventualmente con el asesoramiento de un profesional regulado.
+        Las rentabilidades pasadas no garantizan rentabilidades futuras.
+      </p>
+    </div>
+  </div>
+
+</div><!-- /container -->
+
+<script>
+  function toggle(id) {
+    var body = document.getElementById('body-' + id);
+    var icon = document.getElementById('icon-' + id);
+    if (body.classList.contains('open')) {
+      body.classList.remove('open');
+      icon.textContent = '+';
+    } else {
+      body.classList.add('open');
+      icon.textContent = '-';
+    }
+  }
+</script>
+
+</body>
+</html>

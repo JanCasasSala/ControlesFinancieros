@@ -1,39 +1,31 @@
 name: Monitor Golar
-
 on:
   schedule:
     - cron: '0 8 * * 1-5'
     - cron: '0 14 * * 1-5'
   workflow_dispatch:
-
 jobs:
   monitor:
     runs-on: ubuntu-latest
     permissions:
       contents: write
-
     steps:
       - name: Descargar repositorio
         uses: actions/checkout@v4
-
       - name: Configurar Python
         uses: actions/setup-python@v5
         with:
           python-version: '3.11'
-
       - name: Instalar dependencias
         run: pip install yfinance requests matplotlib pandas
-
       - name: Ejecutar monitor
         run: python golar/monitor_golar_v5.py
-
       - name: Guardar informe HTML como artefacto
         uses: actions/upload-artifact@v4
         with:
           name: informe-golar
           path: golar/Monitor_Golar.html
-
-       - name: Commit y push archivos generados
+      - name: Commit y push archivos generados
         run: |
           git config user.name "github-actions"
           git config user.email "github-actions@github.com"

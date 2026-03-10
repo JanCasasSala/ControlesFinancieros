@@ -1,3 +1,46 @@
 {
-  "cambios": []
+  "cambios": [
+    {
+      "fecha": "10/03/2026 11:05",
+      "cambios_count": 0,
+      "detalle": [
+        {
+          "id": 1,
+          "hito": "Gimi — Operacion comercial plena",
+          "estado_nuevo": "seguimiento",
+          "estado_anterior": "-"
+        },
+        {
+          "id": 2,
+          "hito": "FCF guidance 2025 confirmado",
+          "estado_nuevo": "pendiente",
+          "estado_anterior": "-"
+        },
+        {
+          "id": 3,
+          "hito": "Contrato FLNG Mark II anunciado",
+          "estado_nuevo": "pendiente",
+          "estado_anterior": "-"
+        },
+        {
+          "id": 4,
+          "hito": "Dividendo o buybacks iniciado",
+          "estado_nuevo": "pendiente",
+          "estado_anterior": "-"
+        },
+        {
+          "id": 5,
+          "hito": "Refinanciacion deuda Gimi",
+          "estado_nuevo": "pendiente",
+          "estado_anterior": "-"
+        },
+        {
+          "id": 6,
+          "hito": "Estabilidad politica Senegal confirmada",
+          "estado_nuevo": "seguimiento",
+          "estado_anterior": "-"
+        }
+      ]
+    }
+  ]
 }

@@ -1,0 +1,14 @@
+{
+  "cambios": []
+}
+```
+4. Pulsa **"Commit changes"**
+
+---
+
+### PASO 3 — Subir el script principal
+
+1. Pulsa **"Add file" → "Create new file"**
+2. En el nombre escribe:
+```
+golar/monitor_golar_v5.py

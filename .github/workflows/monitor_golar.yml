@@ -2,22 +2,22 @@ name: Monitor Golar
 
 on:
   schedule:
-    - cron: '0 8 * * 1-5'     # Lunes-viernes 9:00 Madrid (invierno) / 10:00 (verano)
-    - cron: '0 14 * * 1-5'    # Lunes-viernes 15:00 Madrid (invierno) / 16:00 (verano)
-  workflow_dispatch:            # Ejecucion manual desde la pestana Actions
+    - cron: '0 8 * * 1-5'
+    - cron: '0 14 * * 1-5'
+  workflow_dispatch:
 
 jobs:
   monitor:
     runs-on: ubuntu-latest
     permissions:
-      contents: write            # Necesario para hacer commit del historial
+      contents: write
 
     steps:
       - name: Descargar repositorio
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
 
       - name: Configurar Python
-        uses: actions/setup-python@v4
+        uses: actions/setup-python@v5
         with:
           python-version: '3.11'
 
@@ -28,7 +28,7 @@ jobs:
         run: python golar/monitor_golar_v5.py
 
       - name: Guardar informe HTML como artefacto
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: informe-golar
           path: golar/Monitor_Golar.html

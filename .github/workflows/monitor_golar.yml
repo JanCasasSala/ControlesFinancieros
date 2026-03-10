@@ -33,10 +33,10 @@ jobs:
           name: informe-golar
           path: golar/Monitor_Golar.html
 
-      - name: Commit historial si hay cambios
+       - name: Commit y push archivos generados
         run: |
           git config user.name "github-actions"
           git config user.email "github-actions@github.com"
-          git add golar/hitos_historial.json
-          git diff --staged --quiet || git commit -m "Auto: historial golar actualizado"
+          git add golar/Monitor_Golar.html golar/hitos_historial.json
+          git diff --staged --quiet || git commit -m "Auto: monitor actualizado"
           git push

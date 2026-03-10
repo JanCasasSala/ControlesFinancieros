@@ -1,0 +1,71 @@
+{
+  "version": "1.0",
+  "ultima_actualizacion": "10/03/2026",
+  "hitos": [
+    {
+      "id": 1,
+      "hito": "Gimi — Operacion comercial plena",
+      "detalle": "Primera licuefaccion bajo contrato BP en Senegal (Greater Tortue).",
+      "estado": null,
+      "fecha": null,
+      "critico": true,
+      "categoria": "Operativo"
+    },
+    {
+      "id": 2,
+      "hito": "FCF guidance 2025 confirmado",
+      "detalle": "Management confirma FCF anual mayor de 400M con Gimi en plena operacion.",
+      "estado": false,
+      "fecha": null,
+      "critico": true,
+      "categoria": "Financiero"
+    },
+    {
+      "id": 3,
+      "hito": "Contrato FLNG Mark II anunciado",
+      "detalle": "LOI o contrato definitivo para tercer FLNG. Catalizador principal de re-rating.",
+      "estado": false,
+      "fecha": null,
+      "critico": true,
+      "categoria": "Estrategico"
+    },
+    {
+      "id": 4,
+      "hito": "Dividendo o buybacks iniciado",
+      "detalle": "Board aprueba politica de retribucion al accionista sostenida.",
+      "estado": false,
+      "fecha": null,
+      "critico": false,
+      "categoria": "Capital"
+    },
+    {
+      "id": 5,
+      "hito": "Refinanciacion deuda Gimi",
+      "detalle": "Refinanciacion reduciendo coste financiero y liberando FCF adicional.",
+      "estado": false,
+      "fecha": null,
+      "critico": false,
+      "categoria": "Financiero"
+    },
+    {
+      "id": 6,
+      "hito": "Estabilidad politica Senegal confirmada",
+      "detalle": "Nuevo gobierno ratifica contrato BP sin cambios regulatorios adversos.",
+      "estado": null,
+      "fecha": null,
+      "critico": true,
+      "categoria": "Riesgo"
+    }
+  ]
+}
+```
+5. Pulsa **"Commit changes"** → deja el mensaje por defecto → **"Commit changes"**
+
+---
+
+### PASO 2 — Crear `hitos_historial.json`
+
+1. Pulsa **"Add file" → "Create new file"**
+2. En el nombre escribe:
+```
+golar/hitos_historial.json

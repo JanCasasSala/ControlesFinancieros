@@ -147,12 +147,12 @@ def estado_semaforo(gap, pa, sma100):
     else:
         return "AIRE", "#f39c12", "GAP positivo pero precio bajo SMA100"
 
-def fila_estrategia(tk, precio, y_tot, y_cst, gap, estado, color_est, tooltip):
+def fila_estrategia(tk, precio, y_tot, y_cst, gap, estado, color_est, tooltip, bono_ref=0):
     return (
         "<tr>"
         f"<td style='font-family:monospace;font-weight:700;color:#e0e0e0;'>{tk}</td>"
         f"<td style='font-family:monospace;'>{precio}</td>"
-        f"<td style='color:{color_gap(y_tot - BONO_REF)};font-weight:bold;'>{y_tot:.1f}%</td>"
+        f"<td style='color:{color_gap(y_tot - bono_ref)};font-weight:bold;'>{y_tot:.1f}%</td>"
         f"<td style='color:#aaa;'>{y_cst:.1f}%</td>"
         f"<td style='color:{color_gap(gap)};font-weight:bold;'>{gap:+.1f}%</td>"
         f"<td title='{tooltip}'>{badge(estado, color_est)}</td>"
@@ -604,7 +604,7 @@ def monitor_largo_v1():
         # ── Filas HTML ──
         filas_estr = "".join(
             fila_estrategia(r["tk"], r["precio"], r["y_tot"], r["y_cst"],
-                            r["gap"], r["estado"], r["color_est"], r["tooltip"])
+                            r["gap"], r["estado"], r["color_est"], r["tooltip"], BONO_REF)
             for r in rows_estr
         )
         filas_patr = "".join(

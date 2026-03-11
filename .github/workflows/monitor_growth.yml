@@ -2,8 +2,7 @@ name: Monitor Growth
 
 on:
   schedule:
-    - cron: '0 8 * * 1-5'    # 08:00 UTC lunes a viernes
-    - cron: '0 14 * * 1-5'   # 14:00 UTC lunes a viernes
+    - cron: '0 22 * * 1-5'   # 14:00 UTC lunes a viernes
   workflow_dispatch:
 
 jobs:

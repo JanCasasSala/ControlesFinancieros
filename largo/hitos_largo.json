@@ -1,0 +1,114 @@
+{
+  "hitos": [
+    {
+      "id": 1,
+      "tk": "SAN",
+      "hito": "Ratio CET1 >= 12%",
+      "detalle": "Capital regulatorio tier 1 en earnings. Fuente: informe trimestral.",
+      "estado": false,
+      "fecha": null,
+      "critico": true,
+      "categoria": "Financiero",
+      "auto": false
+    },
+    {
+      "id": 2,
+      "tk": "LOG",
+      "hito": "Ocupacion naves >= 95%",
+      "detalle": "Tasa de ocupacion del portfolio logistico. Fuente: suplemento operativo.",
+      "estado": false,
+      "fecha": null,
+      "critico": true,
+      "categoria": "Operativo",
+      "auto": false
+    },
+    {
+      "id": 3,
+      "tk": "ITX",
+      "hito": "Expansion internacional sin deterioro de margenes",
+      "detalle": "Nuevas aperturas netas positivas con margen EBIT estable o creciente.",
+      "estado": false,
+      "fecha": null,
+      "critico": false,
+      "categoria": "Estrategico",
+      "auto": false
+    },
+    {
+      "id": 4,
+      "tk": "SAN",
+      "hito": "Dividendo sostenible (payout <= 80% y FCF cubre div total)",
+      "detalle": "Calculado automaticamente: payout ratio y cobertura FCF vs dividendo total posicion.",
+      "estado": false,
+      "fecha": null,
+      "critico": true,
+      "categoria": "Capital",
+      "auto": true
+    },
+    {
+      "id": 5,
+      "tk": "ITX",
+      "hito": "Dividendo sostenible (payout <= 80% y FCF cubre div total)",
+      "detalle": "Calculado automaticamente: payout ratio y cobertura FCF vs dividendo total posicion.",
+      "estado": false,
+      "fecha": null,
+      "critico": false,
+      "categoria": "Capital",
+      "auto": true
+    },
+    {
+      "id": 6,
+      "tk": "LOG",
+      "hito": "Dividendo sostenible (payout <= 80% y FCF cubre div total)",
+      "detalle": "Calculado automaticamente: payout ratio y cobertura FCF vs dividendo total posicion.",
+      "estado": false,
+      "fecha": null,
+      "critico": true,
+      "categoria": "Capital",
+      "auto": true
+    },
+    {
+      "id": 7,
+      "tk": "SAN",
+      "hito": "FCF por accion creciente YoY",
+      "detalle": "Calculado automaticamente: FCF/accion año actual vs año anterior.",
+      "estado": false,
+      "fecha": null,
+      "critico": true,
+      "categoria": "Financiero",
+      "auto": true
+    },
+    {
+      "id": 8,
+      "tk": "ITX",
+      "hito": "FCF por accion creciente YoY",
+      "detalle": "Calculado automaticamente: FCF/accion año actual vs año anterior.",
+      "estado": false,
+      "fecha": null,
+      "critico": true,
+      "categoria": "Financiero",
+      "auto": true
+    },
+    {
+      "id": 9,
+      "tk": "LOG",
+      "hito": "FCF por accion creciente YoY",
+      "detalle": "Calculado automaticamente: FCF/accion año actual vs año anterior.",
+      "estado": false,
+      "fecha": null,
+      "critico": true,
+      "categoria": "Financiero",
+      "auto": true
+    },
+    {
+      "id": 10,
+      "tk": "ITX",
+      "hito": "Margenes estables o crecientes (bruto y operativo)",
+      "detalle": "Calculado automaticamente: margen bruto y operativo vs año anterior.",
+      "estado": false,
+      "fecha": null,
+      "critico": true,
+      "categoria": "Financiero",
+      "auto": true
+    }
+  ]
+}

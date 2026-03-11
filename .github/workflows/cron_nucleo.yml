@@ -1,28 +1,35 @@
-name: Cron Monitor Nucleo
+name: Monitor Nucleo
 
 on:
   schedule:
-    # Se ejecuta a las 17:05 UTC (18:05 en España) de lunes a viernes
-    - cron: '5 17 * * 1-5'
-  workflow_dispatch: # Permite ejecución manual desde la pestaña Actions
+    - cron: '5 17 * * 1-5'   # 17:05 UTC — 18:05 España invierno / 19:05 verano
+  workflow_dispatch:
 
 jobs:
-  build:
+  monitor:
     runs-on: ubuntu-latest
+    permissions:
+      contents: write
+
     steps:
-      - name: Checkout repositorio
-        uses: actions/checkout@v3
+      - name: Descargar repositorio
+        uses: actions/checkout@v4
 
-      - name: Instalar Python
-        uses: actions/setup-python@v4
+      - name: Configurar Python
+        uses: actions/setup-python@v5
         with:
-          python-version: '3.9'
+          python-version: '3.11'
 
-      - name: Instalar librerias
-        run: pip install yfinance pandas matplotlib requests tabulate
-        
-      - name: Listar archivos para verificar
-        run: ls -R  # Esto imprimirá todos los archivos en el log para que veas
-        
-      - name: Ejecutar script monitor_nucleo
-        run: python monitor_nucleo.py
+      - name: Instalar dependencias
+        run: pip install yfinance requests matplotlib pandas
+
+      - name: Ejecutar monitor
+        run: python nucleo/monitor_nucleo_v1.py
+
+      - name: Commit y push archivos generados
+        run: |
+          git config user.name "github-actions"
+          git config user.email "github-actions@github.com"
+          git add nucleo/Monitor_Nucleo.html nucleo/hitos_nucleo.json
+          git diff --staged --quiet || git commit -m "Auto: monitor nucleo actualizado"
+          git push

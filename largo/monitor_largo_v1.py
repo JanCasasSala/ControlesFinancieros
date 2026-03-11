@@ -741,7 +741,7 @@ def monitor_largo_v1():
       Rentabilidad total (dividendo + buybacks) comparada con el bono de referencia ({BONO_REF}%).
       GAP positivo = la posición supera al activo libre de riesgo.
       &nbsp;·&nbsp; <span style='color:{"#2ecc71" if bono_live else "#e67e22"};font-size:0.75rem;'>
-      {"● " + bono_fuente : bono_fuente}</span>
+      {"● " + bono_fuente if bono_live else bono_fuente}</span>
     </p>
     {"" if bono_live else "<div style='background:#e67e2218;border-left:3px solid #e67e22;border-radius:0 8px 8px 0;padding:10px 16px;margin-bottom:12px;font-size:0.8rem;color:#e67e22;'><strong>⚠ Bono con dato de fallback</strong> — no se pudo descargar el tipo real. GAP calculado con " + str(BONO_REF_FALLBACK) + "% hardcodeado.</div>"}
     <table class='table table-dark mb-0'>

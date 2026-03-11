@@ -17,6 +17,7 @@
 #          Tercer grafico: cada ticker vs NDX en escala normalizada (base 100)
 #          Tabla de rendimiento relativo con alfa vs benchmark
 #          Glosario actualizado con Rendimiento Relativo y Alfa
+# Fix #24: Ruta HTML corregida para GitHub Actions (growth/Monitor_Growth.html)
 # =============================================================================
 
 import sys
@@ -85,17 +86,16 @@ TOKEN   = os.environ.get('TELEGRAM_TOKEN',   '8754089216:AAFlgu0R-dfxWFSXG7NBPpc
 CHAT_ID = os.environ.get('TELEGRAM_CHAT_ID', '8351044609')
 
 # -----------------------------------------------------------------------------
-# Ruta de salida HTML adaptada por entorno
+# Ruta de salida HTML adaptada por entorno (Fix #24)
 # Repo : ControlesFinancieros
 # Rama : growth
-# HTML : Monitor_Growth.html  (raiz de la rama — sirve directo en GitHub Pages)
+# HTML : growth/Monitor_Growth.html  — consistente con git add del workflow
 # -----------------------------------------------------------------------------
 def ruta_html_salida():
     if ENTORNO == 'colab':
         return '/content/Monitor_Growth.html'
     if ENTORNO == 'github':
-        # En GitHub Actions la rama ya es 'growth', escribimos en la raiz
-        return 'Monitor_Growth.html'
+        return 'growth/Monitor_Growth.html'   # Fix #24: subcarpeta correcta
     return 'Monitor_Growth.html'
 
 RUTA_HTML = ruta_html_salida()
@@ -462,13 +462,9 @@ def ejecutar_v1_9():
 
     # =========================================================================
     # GRAFICOS
-    # Diseno: 3 graficos en layout 2+1
-    #   Fila superior: [G1: NRR vs Dilucion] [G2: P/FCF vs Descuento]
-    #   Fila inferior: [G3: Rendimiento relativo 12m vs NDX — ancho completo]
     # =========================================================================
     fig = plt.figure(figsize=(16, 12), dpi=160, facecolor='#0d1117')
 
-    # Layout: 2 filas — fila superior 2 graficos, fila inferior 1 ancho completo
     gs_outer = gridspec.GridSpec(2, 1, figure=fig, hspace=0.45,
                                   height_ratios=[1, 1.1])
     gs_top   = gridspec.GridSpecFromSubplotSpec(1, 2, subplot_spec=gs_outer[0], wspace=0.35)
@@ -515,7 +511,6 @@ def ejecutar_v1_9():
                    color='#8b949e', fontsize=8)
     estilizar_ax(ax1, "BLOQUE 1  —  Calidad del Negocio")
 
-    # Anotaciones zonas
     ax1.text(ax1.get_xlim()[0] + 0.5 if ax1.get_xlim() else 97,
              y_plot_max * 0.88, "DILUCION NETA",
              fontsize=7, color='#ff4d4d', alpha=0.6, va='top')
@@ -535,7 +530,6 @@ def ejecutar_v1_9():
     y_min2 = max(0, min(pfcf_vals_ok) - 8)  if pfcf_vals_ok else 0
     y_max2 = max(pfcf_vals_ok) + 12         if pfcf_vals_ok else 60
 
-    # Zonas cuadrante
     ax2.axvspan(x_min, -20,   alpha=0.06, color='#2ecc71', zorder=0)
     ax2.axvspan(-20,  x_max,  alpha=0.06, color='#ff4d4d', zorder=0)
     ax2.axhline(20,  color='#2ecc71', linestyle='--', alpha=0.35, linewidth=1)
@@ -558,7 +552,6 @@ def ejecutar_v1_9():
     ax2.set_ylabel("P/FCF (x)", color='#8b949e', fontsize=9)
     estilizar_ax(ax2, "BLOQUE 2  —  Valoracion de Mercado", color_titulo='#a371f7')
 
-    # Etiquetas cuadrantes
     pad_x = (x_max - x_min) * 0.03
     pad_y = (y_max2 - y_min2) * 0.04
     ax2.text(x_min + pad_x, y_max2 - pad_y, "CARO\n+ DESCUENTO",
@@ -579,7 +572,6 @@ def ejecutar_v1_9():
                  color_titulo='#f0883e')
 
     if serie_norm and BENCHMARK_TICKER in serie_norm:
-        # Benchmark en primer lugar — linea blanca destacada
         ndx_serie = serie_norm[BENCHMARK_TICKER]
         ax3.plot(ndx_serie.index, ndx_serie.values,
                  color='#e6edf3', linewidth=2.2, alpha=0.9,
@@ -587,21 +579,18 @@ def ejecutar_v1_9():
         ax3.fill_between(ndx_serie.index, 100, ndx_serie.values,
                          alpha=0.04, color='#e6edf3')
 
-        # Cada ticker
         for p in data_points:
             tk = p["TKR"]
             if tk not in serie_norm:
                 continue
             serie = serie_norm[tk]
             alfa  = alfa_12m.get(tk)
-            # Grosor mayor si bate al NDX
             lw    = 2.0 if (alfa is not None and alfa > 0) else 1.4
             alpha = 0.95 if (alfa is not None and alfa > 0) else 0.75
             ax3.plot(serie.index, serie.values,
                      color=p["color"], linewidth=lw, alpha=alpha,
                      zorder=5, label=f"{tk} ({p['RET_12M_STR']})")
 
-            # Etiqueta al final de la linea
             ultimo_val = float(serie.iloc[-1])
             ax3.annotate(
                 f"  {tk}",
@@ -611,15 +600,11 @@ def ejecutar_v1_9():
                 xytext=(4, 0), textcoords='offset points'
             )
 
-        # Linea base 100
         ax3.axhline(100, color='#30363d', linewidth=1, linestyle='-', zorder=2)
         ax3.set_ylabel("Retorno indexado (base 100)", color='#8b949e', fontsize=9)
         ax3.set_xlabel("", color='#8b949e')
-
-        # Formato eje Y con sufijo
         ax3.yaxis.set_major_formatter(mticker.FuncFormatter(lambda x, _: f"{x:.0f}"))
 
-        # Leyenda elegante
         legend = ax3.legend(
             loc='upper left', fontsize=8,
             framealpha=0.15, edgecolor='#30363d',
@@ -627,7 +612,6 @@ def ejecutar_v1_9():
             handlelength=1.8, borderpad=0.8
         )
 
-        # Banda de fechas formateada
         fecha_ini = serie_norm[BENCHMARK_TICKER].index[0].strftime('%b %Y')
         fecha_fin = serie_norm[BENCHMARK_TICKER].index[-1].strftime('%b %Y')
         ax3.set_title(
@@ -641,13 +625,11 @@ def ejecutar_v1_9():
                  ha='center', va='center', transform=ax3.transAxes,
                  color='#8b949e', fontsize=10)
 
-    # Titulo global
     fig.suptitle(
         f"Monitor Growth  V1.9   |   {datetime.now().strftime('%d %b %Y  %H:%M')}",
         color='#e6edf3', fontsize=13, fontweight='bold', y=0.98
     )
 
-    # Exportar grafico
     buf = io.BytesIO()
     plt.savefig(buf, format='png', facecolor=BG_PLOT,
                 bbox_inches='tight', dpi=160)
@@ -938,7 +920,6 @@ def ejecutar_v1_9():
   <title>Monitor Growth V1.9</title>
   <link href='https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css' rel='stylesheet'>
   <style>
-    /* ---- Base ---- */
     *, *::before, *::after {{ box-sizing: border-box; }}
     body {{
       background: #0d1117;
@@ -948,7 +929,6 @@ def ejecutar_v1_9():
       padding: 28px 20px;
       line-height: 1.5;
     }}
-    /* ---- Header ---- */
     .header-wrap {{
       display: flex;
       align-items: baseline;
@@ -974,7 +954,6 @@ def ejecutar_v1_9():
       font-size: 0.78rem;
       margin-bottom: 28px;
     }}
-    /* ---- Cards ---- */
     .card-m {{
       background: #161b22;
       border-radius: 12px;
@@ -987,7 +966,6 @@ def ejecutar_v1_9():
     .card-m.relativo {{ border-left: 3px solid #f0883e; }}
     .card-m.log     {{ border-left: 3px solid #30363d; }}
     .card-m.glosario {{ border-left: 3px solid #58a6ff; }}
-    /* ---- Separadores de bloque ---- */
     .bloque-sep {{
       display: flex;
       align-items: center;
@@ -1005,7 +983,6 @@ def ejecutar_v1_9():
       height: 1px;
       background: #21262d;
     }}
-    /* ---- Titulos de card ---- */
     .card-titulo {{
       font-size: 0.78rem;
       font-weight: 700;
@@ -1022,7 +999,6 @@ def ejecutar_v1_9():
       font-size: 0.75rem;
       margin-bottom: 14px;
     }}
-    /* ---- Tablas ---- */
     table {{ width: 100%; border-collapse: collapse; }}
     thead th {{
       color: #6e7681;
@@ -1041,7 +1017,6 @@ def ejecutar_v1_9():
     }}
     tbody tr:last-child td {{ border-bottom: none; }}
     tbody tr:hover {{ background: #1c2128; transition: background 0.15s; }}
-    /* ---- Glosario ---- */
     .g-title {{ color: #58a6ff; font-weight: 700; font-size: 0.88rem; }}
     .g-sub   {{ color: #6e7681; font-size: 0.72rem; }}
     .g-alt   {{ background: #1c2128 !important; }}
@@ -1061,7 +1036,6 @@ def ejecutar_v1_9():
 <body>
 <div style='max-width:980px; margin:0 auto;'>
 
-  <!-- HEADER -->
   <div class='header-wrap'>
     <h1>Monitor Growth &nbsp;<span>V1.9</span></h1>
     {badges.get(ENTORNO, '')}
@@ -1072,13 +1046,11 @@ def ejecutar_v1_9():
     &nbsp;&bull;&nbsp; <sup>(*)</sup> dato incompleto
   </p>
 
-  <!-- GRAFICOS -->
   <div class='card-m' style='padding:16px;'>
     <img src='data:image/png;base64,{img_b64}'
          style='width:100%;border-radius:8px;display:block;'>
   </div>
 
-  <!-- BLOQUE 1 -->
   <div class='bloque-sep'>Bloque 1 &mdash; Calidad del Negocio</div>
   <div class='card-m calidad'>
     <div class='card-titulo c1'>Metricas de Calidad</div>
@@ -1095,7 +1067,6 @@ def ejecutar_v1_9():
     </table>
   </div>
 
-  <!-- BLOQUE 2 -->
   <div class='bloque-sep'>Bloque 2 &mdash; Valoracion de Mercado</div>
   <div class='card-m valor'>
     <div class='card-titulo c2'>Metricas de Valoracion</div>
@@ -1112,7 +1083,6 @@ def ejecutar_v1_9():
     </table>
   </div>
 
-  <!-- BLOQUE 3 -->
   <div class='bloque-sep'>Bloque 3 &mdash; Rendimiento Relativo vs {BENCHMARK_NOMBRE}</div>
   <div class='card-m relativo'>
     <div class='card-titulo c3'>Rendimiento 12 meses vs Nasdaq 100</div>
@@ -1132,7 +1102,6 @@ def ejecutar_v1_9():
     </table>
   </div>
 
-  <!-- LOG -->
   <div class='card-m log'>
     <div class='card-titulo' style='color:#6e7681;'>Log de Calidad de Datos</div>
     <table>
@@ -1141,7 +1110,6 @@ def ejecutar_v1_9():
     </table>
   </div>
 
-  <!-- GLOSARIO -->
   <div class='card-m glosario'>
     <div class='card-titulo cg'>Glosario V1.9</div>
     <table style='font-size:0.82rem;'>
@@ -1159,17 +1127,18 @@ def ejecutar_v1_9():
 </html>"""
 
     # =========================================================================
-    # SALIDA ADAPTADA POR ENTORNO (Fix #22)
+    # SALIDA ADAPTADA POR ENTORNO (Fix #22 + Fix #24)
     # =========================================================================
+    # Crear carpeta si no existe (necesario en GitHub Actions)
+    os.makedirs(os.path.dirname(RUTA_HTML), exist_ok=True) if os.path.dirname(RUTA_HTML) else None
+
     with open(RUTA_HTML, 'w', encoding='utf-8') as f:
         f.write(html)
     print(f"[html] Guardado en {RUTA_HTML}")
 
-    # Telegram — todos los entornos
     if TOKEN and CHAT_ID:
         enviar_telegram(html, TOKEN, CHAT_ID)
 
-    # Colab — mostrar enlace descarga
     if ENTORNO == 'colab':
         mostrar_en_colab(RUTA_HTML)
 

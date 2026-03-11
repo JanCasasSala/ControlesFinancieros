@@ -4,7 +4,7 @@ on:
   schedule:
     - cron: '0 8 * * 1-5'    # 08:00 UTC lunes a viernes
     - cron: '0 14 * * 1-5'   # 14:00 UTC lunes a viernes
-  workflow_dispatch:           # ejecucion manual desde GitHub
+  workflow_dispatch:
 
 jobs:
   monitor:
@@ -13,10 +13,8 @@ jobs:
       contents: write
 
     steps:
-      - name: Descargar repositorio (rama growth)
+      - name: Descargar repositorio
         uses: actions/checkout@v4
-        with:
-          ref: growth
 
       - name: Configurar Python
         uses: actions/setup-python@v5
@@ -27,15 +25,12 @@ jobs:
         run: pip install yfinance requests matplotlib pandas
 
       - name: Ejecutar monitor
-        env:
-          TELEGRAM_TOKEN:   ${{ secrets.TELEGRAM_TOKEN }}
-          TELEGRAM_CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
-        run: python monitor_crecimiento_v1_9.py
+        run: python growth/monitor_crecimiento_v1_9.py
 
       - name: Commit y push HTML generado
         run: |
           git config user.name "github-actions"
           git config user.email "github-actions@github.com"
-          git add Monitor_Growth.html
+          git add growth/Monitor_Growth.html
           git diff --staged --quiet || git commit -m "Auto: monitor growth actualizado"
-          git push origin growth
+          git push

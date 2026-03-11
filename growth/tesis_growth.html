@@ -1,0 +1,1405 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Tesis Growth — Cartera de Calidad</title>
+  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;600&family=IBM+Plex+Sans:ital,wght@0,300;0,400;0,600;0,700;1,300&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg:        #0a0e14;
+      --bg2:       #0f1520;
+      --bg3:       #131a26;
+      --border:    #1e2d42;
+      --accent:    #00d4ff;
+      --accent2:   #a371f7;
+      --green:     #2ecc71;
+      --yellow:    #f39c12;
+      --red:       #e74c3c;
+      --orange:    #e67e22;
+      --text:      #d4dde8;
+      --text2:     #7a90a8;
+      --text3:     #3d5268;
+      --mono:      'IBM Plex Mono', monospace;
+      --sans:      'IBM Plex Sans', sans-serif;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: var(--sans);
+      font-size: 15px;
+      line-height: 1.7;
+    }
+
+    /* ── SIDEBAR ── */
+    .sidebar {
+      position: fixed;
+      left: 0; top: 0;
+      width: 220px;
+      height: 100vh;
+      background: var(--bg2);
+      border-right: 1px solid var(--border);
+      padding: 32px 0;
+      overflow-y: auto;
+      z-index: 100;
+    }
+
+    .sidebar-logo {
+      padding: 0 24px 28px;
+      border-bottom: 1px solid var(--border);
+      margin-bottom: 20px;
+    }
+
+    .sidebar-logo .ticker {
+      font-family: var(--mono);
+      font-size: 0.7rem;
+      color: var(--accent);
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      margin-bottom: 4px;
+    }
+
+    .sidebar-logo .title {
+      font-size: 1rem;
+      font-weight: 700;
+      color: var(--text);
+      line-height: 1.3;
+    }
+
+    .nav-item {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 9px 24px;
+      text-decoration: none;
+      color: var(--text2);
+      font-size: 0.78rem;
+      font-weight: 600;
+      letter-spacing: 0.3px;
+      transition: all 0.15s;
+      border-left: 2px solid transparent;
+    }
+
+    .nav-item:hover {
+      color: var(--accent);
+      border-left-color: var(--accent);
+      background: #00d4ff08;
+    }
+
+    .nav-item .num {
+      font-family: var(--mono);
+      font-size: 0.65rem;
+      color: var(--text3);
+      min-width: 18px;
+    }
+
+    /* ── MAIN ── */
+    .main {
+      margin-left: 220px;
+      padding: 0 48px 80px;
+      max-width: 900px;
+    }
+
+    /* ── HERO ── */
+    .hero {
+      padding: 56px 0 48px;
+      border-bottom: 1px solid var(--border);
+      margin-bottom: 56px;
+    }
+
+    .hero-eyebrow {
+      font-family: var(--mono);
+      font-size: 0.68rem;
+      color: var(--accent);
+      letter-spacing: 3px;
+      text-transform: uppercase;
+      margin-bottom: 14px;
+    }
+
+    .hero h1 {
+      font-size: 2.4rem;
+      font-weight: 700;
+      color: #e8f0f8;
+      line-height: 1.2;
+      margin-bottom: 10px;
+    }
+
+    .hero h1 span { color: var(--accent); }
+
+    .hero-sub {
+      color: var(--text2);
+      font-size: 0.82rem;
+      font-weight: 300;
+      letter-spacing: 0.5px;
+      margin-bottom: 36px;
+    }
+
+    .price-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(110px, 1fr));
+      gap: 1px;
+      background: var(--border);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      overflow: hidden;
+    }
+
+    .price-cell {
+      background: var(--bg2);
+      padding: 14px 16px;
+      text-align: center;
+    }
+
+    .price-cell .label {
+      font-family: var(--mono);
+      font-size: 0.62rem;
+      color: var(--text3);
+      letter-spacing: 1.5px;
+      text-transform: uppercase;
+      margin-bottom: 5px;
+    }
+
+    .price-cell .value {
+      font-family: var(--mono);
+      font-size: 1rem;
+      font-weight: 600;
+    }
+
+    .price-cell.green .value  { color: var(--green); }
+    .price-cell.red .value    { color: var(--red); }
+    .price-cell.yellow .value { color: var(--yellow); }
+    .price-cell.blue .value   { color: var(--accent); }
+    .price-cell.purple .value { color: var(--accent2); }
+
+    /* ── SECTIONS ── */
+    .section {
+      margin-bottom: 64px;
+      scroll-margin-top: 32px;
+    }
+
+    .section-header {
+      display: flex;
+      align-items: baseline;
+      gap: 14px;
+      margin-bottom: 28px;
+    }
+
+    .section-num {
+      font-family: var(--mono);
+      font-size: 0.65rem;
+      color: var(--text3);
+      letter-spacing: 2px;
+      padding-top: 4px;
+      min-width: 24px;
+    }
+
+    .section h2 {
+      font-size: 1.25rem;
+      font-weight: 700;
+      color: #e8f0f8;
+      border-bottom: 1px solid var(--border);
+      padding-bottom: 12px;
+      flex: 1;
+    }
+
+    /* ── CARDS ── */
+    .card {
+      background: var(--bg2);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 22px 24px;
+      margin-bottom: 16px;
+    }
+
+    .card h4 {
+      font-size: 0.8rem;
+      font-weight: 700;
+      color: var(--accent);
+      letter-spacing: 1px;
+      text-transform: uppercase;
+      margin-bottom: 12px;
+    }
+
+    .card p, .card li {
+      color: var(--text2);
+      font-size: 0.88rem;
+      font-weight: 300;
+      line-height: 1.75;
+    }
+
+    .card ul { padding-left: 18px; }
+    .card li { margin-bottom: 6px; }
+
+    /* ── TICKER CARDS ── */
+    .ticker-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 14px;
+      margin-bottom: 16px;
+    }
+
+    .ticker-card {
+      background: var(--bg2);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 18px 20px;
+      border-left: 3px solid;
+    }
+
+    .ticker-card .tk-sym {
+      font-family: var(--mono);
+      font-size: 1rem;
+      font-weight: 600;
+      margin-bottom: 4px;
+    }
+
+    .ticker-card .tk-name {
+      font-size: 0.75rem;
+      color: var(--text2);
+      font-weight: 300;
+      margin-bottom: 10px;
+    }
+
+    .tk-meta {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+    }
+
+    .tk-tag {
+      font-family: var(--mono);
+      font-size: 0.62rem;
+      padding: 2px 8px;
+      border-radius: 4px;
+      letter-spacing: 0.5px;
+    }
+
+    .tk-desc {
+      font-size: 0.78rem;
+      color: var(--text2);
+      font-weight: 300;
+      line-height: 1.6;
+      margin-top: 10px;
+      padding-top: 10px;
+      border-top: 1px solid var(--border);
+    }
+
+    /* ── TABLES ── */
+    .tbl-wrap {
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      overflow: hidden;
+      margin-bottom: 16px;
+    }
+
+    table { width: 100%; border-collapse: collapse; }
+
+    thead th {
+      background: var(--bg3);
+      color: var(--text3);
+      font-family: var(--mono);
+      font-size: 0.62rem;
+      letter-spacing: 1.5px;
+      text-transform: uppercase;
+      padding: 10px 16px;
+      text-align: left;
+      border-bottom: 1px solid var(--border);
+    }
+
+    tbody td {
+      padding: 11px 16px;
+      font-size: 0.84rem;
+      border-bottom: 1px solid var(--border);
+      vertical-align: middle;
+    }
+
+    tbody tr:last-child td { border-bottom: none; }
+    tbody tr:hover { background: #00d4ff05; }
+
+    code {
+      font-family: var(--mono);
+      font-size: 0.78rem;
+      background: #1a2535;
+      color: var(--accent);
+      padding: 2px 7px;
+      border-radius: 4px;
+    }
+
+    /* ── BADGES ── */
+    .badge {
+      display: inline-block;
+      font-family: var(--mono);
+      font-size: 0.62rem;
+      padding: 2px 8px;
+      border-radius: 5px;
+      font-weight: 600;
+      letter-spacing: 0.5px;
+    }
+
+    .badge-green  { background: #2ecc7122; color: var(--green); }
+    .badge-red    { background: #e74c3c22; color: var(--red); }
+    .badge-yellow { background: #f39c1222; color: var(--yellow); }
+    .badge-blue   { background: #00d4ff22; color: var(--accent); }
+    .badge-purple { background: #a371f722; color: var(--accent2); }
+    .badge-orange { background: #e67e2222; color: var(--orange); }
+    .badge-grey   { background: #3d526822; color: var(--text2); }
+
+    /* ── CALLOUT ── */
+    .callout {
+      border-left: 3px solid var(--accent);
+      background: #00d4ff08;
+      border-radius: 0 8px 8px 0;
+      padding: 14px 18px;
+      margin: 16px 0;
+    }
+
+    .callout.warn  { border-color: var(--yellow); background: #f39c1208; }
+    .callout.danger { border-color: var(--red);   background: #e74c3c08; }
+    .callout.ok    { border-color: var(--green);  background: #2ecc7108; }
+
+    .callout p {
+      font-size: 0.84rem;
+      color: var(--text2);
+      font-weight: 300;
+    }
+
+    .callout strong { color: var(--text); font-weight: 600; }
+
+    /* ── ACCORDION ── */
+    .accordion {
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      overflow: hidden;
+      margin-bottom: 12px;
+    }
+
+    .accordion-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 14px 20px;
+      cursor: pointer;
+      background: var(--bg2);
+      user-select: none;
+      transition: background 0.15s;
+    }
+
+    .accordion-header:hover { background: var(--bg3); }
+
+    .accordion-header .acc-title {
+      font-size: 0.85rem;
+      font-weight: 600;
+      color: var(--text);
+    }
+
+    .accordion-header .acc-icon {
+      font-family: var(--mono);
+      color: var(--accent);
+      font-size: 1.2rem;
+      font-weight: 300;
+      transition: transform 0.2s;
+    }
+
+    .accordion-body {
+      display: none;
+      padding: 20px;
+      background: var(--bg);
+      border-top: 1px solid var(--border);
+    }
+
+    .accordion-body.open { display: block; }
+    .accordion-header.open .acc-icon { transform: rotate(45deg); }
+
+    /* ── HITOS TABLE ── */
+    .estado-ok   { color: var(--green); font-weight: 700; }
+    .estado-pend { color: var(--red);   font-weight: 700; }
+    .estado-seg  { color: var(--accent); font-weight: 700; }
+
+    .critico-tag {
+      font-family: var(--mono);
+      font-size: 0.58rem;
+      background: #e74c3c22;
+      color: var(--red);
+      padding: 1px 6px;
+      border-radius: 3px;
+      margin-left: 6px;
+      vertical-align: middle;
+    }
+
+    /* ── CONVICCION BOX ── */
+    .conv-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr 1fr;
+      gap: 1px;
+      background: var(--border);
+      border-radius: 8px;
+      overflow: hidden;
+      margin-top: 14px;
+    }
+
+    .conv-cell {
+      background: var(--bg2);
+      padding: 14px;
+      text-align: center;
+    }
+
+    .conv-cell .cv-label {
+      font-family: var(--mono);
+      font-size: 0.62rem;
+      letter-spacing: 1px;
+      text-transform: uppercase;
+      margin-bottom: 4px;
+    }
+
+    .conv-cell .cv-val {
+      font-family: var(--mono);
+      font-size: 0.78rem;
+      color: var(--text2);
+    }
+
+    /* ── DIAGNOSTICOS ── */
+    .diag-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 14px;
+    }
+
+    .diag-card {
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 18px 20px;
+    }
+
+    .diag-card .dg-name {
+      font-family: var(--mono);
+      font-size: 0.72rem;
+      font-weight: 600;
+      letter-spacing: 1px;
+      text-transform: uppercase;
+      margin-bottom: 8px;
+    }
+
+    .diag-card p {
+      font-size: 0.8rem;
+      color: var(--text2);
+      font-weight: 300;
+      line-height: 1.65;
+    }
+
+    /* ── FOOTER ── */
+    .aviso {
+      background: var(--bg2);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 22px 24px;
+      font-size: 0.78rem;
+      color: var(--text3);
+      font-weight: 300;
+      line-height: 1.7;
+    }
+
+    /* ── RESPONSIVE ── */
+    @media (max-width: 768px) {
+      .sidebar { display: none; }
+      .main { margin-left: 0; padding: 0 20px 60px; }
+      .ticker-grid { grid-template-columns: 1fr; }
+      .diag-grid { grid-template-columns: 1fr; }
+      .price-grid { grid-template-columns: repeat(3, 1fr); }
+      .conv-grid { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- SIDEBAR -->
+<nav class="sidebar">
+  <div class="sidebar-logo">
+    <div class="ticker">CARTERA GROWTH</div>
+    <div class="title">Tesis de<br>Inversion</div>
+  </div>
+  <a href="#resumen"      class="nav-item"><span class="num">01</span> Resumen Ejecutivo</a>
+  <a href="#cartera"      class="nav-item"><span class="num">02</span> La Cartera</a>
+  <a href="#fundamentos"  class="nav-item"><span class="num">03</span> Fundamentos</a>
+  <a href="#riesgos"      class="nav-item"><span class="num">04</span> Riesgos</a>
+  <a href="#niveles"      class="nav-item"><span class="num">05</span> Niveles y Señales</a>
+  <a href="#hitos"        class="nav-item"><span class="num">06</span> Hitos T-G</a>
+  <a href="#diagnosticos" class="nav-item"><span class="num">07</span> Diagnosticos</a>
+  <a href="#valoracion"   class="nav-item"><span class="num">08</span> Valoracion</a>
+  <a href="#manual"       class="nav-item"><span class="num">09</span> Manual del Monitor</a>
+  <a href="#aviso"        class="nav-item"><span class="num">10</span> Aviso Legal</a>
+</nav>
+
+<!-- MAIN -->
+<main class="main">
+
+  <!-- HERO -->
+  <div class="hero">
+    <div class="hero-eyebrow">Documento de Tesis · Posiciones Activas</div>
+    <h1>Cartera Growth<br><span>Software de Calidad</span></h1>
+    <p class="hero-sub">ADBE · IT · FDS · CRM · PYPL &nbsp;·&nbsp; NYSE / NASDAQ &nbsp;·&nbsp; Sector: Software Enterprise &nbsp;·&nbsp; Version 1.9 &nbsp;·&nbsp; Marzo 2026</p>
+
+    <div class="price-grid">
+      <div class="price-cell blue">
+        <div class="label">Universo</div>
+        <div class="value">5 tickers</div>
+      </div>
+      <div class="price-cell green">
+        <div class="label">NRR min</div>
+        <div class="value">98%</div>
+      </div>
+      <div class="price-cell green">
+        <div class="label">NRR objetivo</div>
+        <div class="value">&gt;100%</div>
+      </div>
+      <div class="price-cell yellow">
+        <div class="label">P/FCF max</div>
+        <div class="value">35x</div>
+      </div>
+      <div class="price-cell purple">
+        <div class="label">Benchmark</div>
+        <div class="value">NDX</div>
+      </div>
+      <div class="price-cell blue">
+        <div class="label">Monitor</div>
+        <div class="value">V1.9</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 01 RESUMEN -->
+  <section class="section" id="resumen">
+    <div class="section-header">
+      <span class="section-num">01</span>
+      <h2>Resumen Ejecutivo</h2>
+    </div>
+
+    <div class="card">
+      <h4>Tesis en una frase</h4>
+      <p>
+        Esta cartera concentra posiciones en empresas de software B2B con NRR superior al 100%,
+        FCF positivo y creciente, y baja dilución neta para el accionista — negocios que crecen
+        solos desde dentro sin necesidad de caja externa ni destrucción de valor vía SBC descontrolado.
+      </p>
+    </div>
+
+    <div class="card">
+      <h4>Por qué este enfoque</h4>
+      <p>
+        El NRR (Net Revenue Retention) superior al 100% es el indicador más fiable de la salud estructural
+        de un negocio de suscripción: significa que la base de clientes existente crece sola cada año,
+        incluso sin adquirir un solo cliente nuevo. Combinado con FCF real y una dilución neta controlada
+        o negativa (cuando los buybacks superan al SBC), el resultado es un negocio que compone valor
+        para el accionista con independencia del ciclo macroeconómico.
+      </p>
+    </div>
+
+    <div class="card">
+      <h4>Asimetría y gestión de la posición</h4>
+      <p>
+        A diferencia de una tesis de valor clásica con stop fijo, esta cartera se gestiona por señales
+        cruzadas de calidad y precio. La señal <strong style="color:var(--green);">Calidad + Precio</strong>
+        es la única condición de entrada o mantenimiento con alta convicción. La señal
+        <strong style="color:var(--yellow);">Calidad sin Precio</strong> requiere paciencia.
+        <strong style="color:var(--orange);">Precio sin Calidad</strong> es la trampa de valor clásica.
+        El mayor riesgo no es de pérdida sino de coste de oportunidad por mantener posiciones
+        que han dejado de cumplir los criterios de calidad.
+      </p>
+    </div>
+
+    <div class="callout ok">
+      <p>
+        <strong>El benchmark es el Nasdaq 100 (^NDX).</strong> Cada ticker de la cartera se mide
+        contra el NDX en los últimos 12 meses. Un alfa negativo persistente en un negocio con NRR
+        sólido puede indicar una oportunidad — el mercado puede tardar en reconocer la calidad.
+        Un alfa positivo sin NRR sólido es momentum especulativo, no calidad.
+      </p>
+    </div>
+  </section>
+
+  <!-- 02 LA CARTERA -->
+  <section class="section" id="cartera">
+    <div class="section-header">
+      <span class="section-num">02</span>
+      <h2>La Cartera</h2>
+    </div>
+
+    <div class="ticker-grid">
+      <div class="ticker-card" style="border-color:#2ecc71;">
+        <div class="tk-sym" style="color:#2ecc71;">ADBE</div>
+        <div class="tk-name">Adobe Inc. · Software Creativo / Marketing</div>
+        <div class="tk-meta">
+          <span class="tk-tag badge-green">NRR 111%</span>
+          <span class="tk-tag badge-blue">FCF sólido</span>
+          <span class="tk-tag badge-grey">Madurez</span>
+        </div>
+        <div class="tk-desc">
+          Líder indiscutible en software creativo (Creative Cloud) y plataformas de experiencia digital (Experience Cloud).
+          NRR de 111% refleja expansión orgánica de la base existente vía upsell. Programa activo de buybacks
+          que compensa y supera el SBC — acreción neta para el accionista. Principal riesgo: presión competitiva
+          de herramientas AI generativa (Figma, Canva, Midjourney) sobre el segmento creativo.
+        </div>
+      </div>
+
+      <div class="ticker-card" style="border-color:#9b59b6;">
+        <div class="tk-sym" style="color:#9b59b6;">IT</div>
+        <div class="tk-name">Gartner Inc. · Research & Advisory</div>
+        <div class="tk-meta">
+          <span class="tk-tag badge-purple">NRR 105%</span>
+          <span class="tk-tag badge-blue">Contratos plurianuales</span>
+          <span class="tk-tag badge-grey">Defensivo</span>
+        </div>
+        <div class="tk-desc">
+          Modelo de negocio de suscripción a investigación y asesoramiento tecnológico para C-suite.
+          Contratos plurianuales con renovación automática generan visibilidad de ingresos excepcional.
+          NRR del 105% sostenido en múltiples ciclos económicos. Alta resistencia a la recesión:
+          en entornos de incertidumbre, las empresas necesitan más asesoramiento externo, no menos.
+        </div>
+      </div>
+
+      <div class="ticker-card" style="border-color:#34495e;">
+        <div class="tk-sym" style="color:#8899aa;">FDS</div>
+        <div class="tk-name">FactSet Research Systems · Datos Financieros</div>
+        <div class="tk-meta">
+          <span class="tk-tag badge-grey">NRR 101%</span>
+          <span class="tk-tag badge-blue">Moat regulatorio</span>
+          <span class="tk-tag badge-grey">Nicho defensivo</span>
+        </div>
+        <div class="tk-desc">
+          Proveedor de datos financieros integrados para buy-side y sell-side institucional.
+          NRR del 101% en un nicho muy específico con barreras de entrada altas: migrar desde FactSet
+          tiene un coste operativo y de formación muy elevado. El riesgo principal es la consolidación
+          del sector (Bloomberg, S&P, Refinitiv) que puede presionar márgenes a largo plazo.
+        </div>
+      </div>
+
+      <div class="ticker-card" style="border-color:#3498db;">
+        <div class="tk-sym" style="color:#3498db;">CRM</div>
+        <div class="tk-name">Salesforce · CRM / Enterprise Cloud</div>
+        <div class="tk-meta">
+          <span class="tk-tag badge-blue">NRR 108.5%</span>
+          <span class="tk-tag badge-green">FCF acelerado</span>
+          <span class="tk-tag badge-yellow">AI pivot</span>
+        </div>
+        <div class="tk-desc">
+          Líder global en CRM con una plataforma de nube empresarial que cubre ventas, servicio,
+          marketing y datos. NRR del 108.5% impulsado por expansión en módulos adicionales y Einstein AI.
+          La transición hacia Agentforce (AI agentic) es el catalizador de re-rating más relevante de la tesis.
+          FCF ha acelerado tras disciplina de costes post-2022.
+        </div>
+      </div>
+
+      <div class="ticker-card" style="border-color:#e67e22; grid-column: span 2;">
+        <div class="tk-sym" style="color:#e67e22;">PYPL</div>
+        <div class="tk-name">PayPal Holdings · Pagos Digitales</div>
+        <div class="tk-meta">
+          <span class="tk-tag badge-orange">NRR 98.2%</span>
+          <span class="tk-tag badge-yellow">Turnaround</span>
+          <span class="tk-tag badge-green">Buybacks agresivos</span>
+          <span class="tk-tag badge-red">NRR &lt; 100%</span>
+        </div>
+        <div class="tk-desc">
+          La única posición de la cartera con NRR bajo 100% — incluida explícitamente como caso de
+          turnaround con gestión activa requerida. La tesis descansa en la combinación de buybacks muy
+          agresivos (acreción neta para el accionista), FCF real sólido y un nuevo equipo directivo
+          (Alex Chriss) centrado en rentabilidad sobre crecimiento. La señal de salida es clara:
+          si NRR no recupera 100% en 4 trimestres o los buybacks se reducen materialmente, cerrar posición.
+          T-G configurado en 1/4 reflejando convicción parcial.
+        </div>
+      </div>
+    </div>
+
+    <div class="callout warn">
+      <p>
+        <strong>Nota sobre PYPL:</strong> Es la excepción de la cartera. La posición está abierta
+        con convicción reducida (T-G 1/4) y requiere seguimiento trimestral activo. Si en dos
+        trimestres consecutivos el NRR no muestra recuperación, se considera ruptura formal de la
+        tesis con independencia del precio.
+      </p>
+    </div>
+  </section>
+
+  <!-- 03 FUNDAMENTOS -->
+  <section class="section" id="fundamentos">
+    <div class="section-header">
+      <span class="section-num">03</span>
+      <h2>Fundamentos del Modelo</h2>
+    </div>
+
+    <div class="card">
+      <h4>NRR — La métrica central</h4>
+      <p>
+        El Net Revenue Retention mide qué porcentaje de los ingresos de los clientes existentes
+        se retiene y hace crecer año a año, incluyendo expansiones y upsells pero descontando
+        cancelaciones y downgrades. Un NRR superior al 100% significa que aunque la empresa no
+        adquiriera un solo cliente nuevo, sus ingresos seguirían creciendo. Es el indicador más
+        resistente a la ingeniería contable y el más predictivo de la durabilidad del negocio.
+      </p>
+    </div>
+
+    <div class="card">
+      <h4>SBC Neto / FCF — Dilución real del accionista</h4>
+      <p>
+        La métrica SBC Neto / FCF = (SBC - Buybacks) / FCF mide la dilución real después de
+        descontar el efecto compensador de las recompras. Un valor negativo significa acreción neta:
+        la empresa recompra más acciones de las que emite por compensación. Un P/FCF bajo con SBC alto
+        puede ser una trampa contable — el FCF del monitor no ajusta el SBC, por eso ambas métricas
+        deben leerse juntas.
+      </p>
+    </div>
+
+    <div class="card">
+      <h4>P/FCF y Descuento vs Máximos — El precio importa</h4>
+      <p>
+        Una empresa puede ser excelente en calidad (NRR sólido, dilución controlada) y estar cara
+        en precio (P/FCF &gt; 35x, cotizando cerca de máximos). La señal cruzada del monitor combina
+        ambas dimensiones: la señal <strong style="color:var(--green);">Calidad + Precio</strong>
+        requiere NRR ≥ 100% Y (P/FCF &lt; 30x O descuento &gt; 20% vs máximos 52s).
+        Ningún criterio aislado es suficiente.
+      </p>
+    </div>
+
+    <div class="card">
+      <h4>Rendimiento relativo vs Nasdaq 100</h4>
+      <p>
+        El tercer bloque del monitor normaliza el retorno de cada ticker a base 100 desde el inicio
+        del periodo de 12 meses para visualizar la divergencia acumulada frente al NDX.
+        El alfa (diferencia en puntos porcentuales) mide si la posición está generando valor
+        por encima del índice de referencia natural de estas empresas. Un alfa positivo sostenido
+        en un negocio con NRR sólido y dilución controlada es la combinación más potente
+        que puede mostrar el monitor.
+      </p>
+    </div>
+  </section>
+
+  <!-- 04 RIESGOS -->
+  <section class="section" id="riesgos">
+    <div class="section-header">
+      <span class="section-num">04</span>
+      <h2>Análisis de Riesgos</h2>
+    </div>
+
+    <div class="card">
+      <h4>Compresión de múltiplos en entorno de tipos altos</h4>
+      <p>
+        Las empresas de software de alto crecimiento son especialmente sensibles al entorno de tipos
+        de interés. Un P/FCF de 35x implica una expectativa de crecimiento sostenido durante muchos años.
+        Si los tipos permanecen altos o suben, el valor presente de esos flujos futuros se comprime
+        aunque el negocio subyacente no se deteriore. El riesgo no es de negocio sino de valoración.
+      </p>
+    </div>
+
+    <div class="card">
+      <h4>Disrupción AI sobre el modelo de suscripción</h4>
+      <p>
+        La inteligencia artificial generativa puede erosionar el NRR en segmentos específicos:
+        herramientas de contenido para ADBE, análisis automatizado para FDS, código para CRM.
+        El riesgo es asimétrico — las empresas que lideran la integración AI (CRM con Agentforce)
+        pueden acelerar el NRR, mientras que las que reaccionan tarde pueden ver churn acelerado.
+        Seguimiento: mención a AI en earnings y evolución del NRR trimestre a trimestre.
+      </p>
+    </div>
+
+    <div class="card">
+      <h4>Concentración en software B2B USA</h4>
+      <p>
+        Toda la cartera está expuesta al mismo ciclo de presupuestos tecnológicos corporativos.
+        En un entorno de recesión o freeze de presupuestos IT, las cinco empresas pueden caer
+        simultáneamente sin que el negocio se deteriore estructuralmente. La correlación intracartera
+        es alta. No hay diversificación real frente a un shock sistémico de gasto empresarial.
+      </p>
+    </div>
+
+    <div class="card">
+      <h4>NRR como métrica no auditada</h4>
+      <p>
+        Las empresas no están obligadas a reportar NRR bajo GAAP. Los valores del monitor son
+        estimaciones basadas en datos públicos, guidance de management y análisis de terceros.
+        La definición de NRR puede variar entre compañías (inclusión de expansión por precio,
+        exclusión de ciertos segmentos). Los valores usados en el monitor deben considerarse
+        aproximaciones, no cifras exactas. Actualizar cada earnings con los datos reportados.
+      </p>
+    </div>
+
+    <div class="card">
+      <h4>PYPL — Riesgo de deterioro acelerado</h4>
+      <p>
+        PayPal es la posición de mayor riesgo de la cartera. La presión competitiva de Apple Pay,
+        Google Pay, Stripe y Block sobre el checkout web es estructural. Si el NRR continúa
+        bajo 100% y los buybacks se reducen materialmente (señal de deterioro de caja), la tesis
+        se rompe formalmente y la acción recomendada es cerrar posición con independencia del precio.
+      </p>
+    </div>
+  </section>
+
+  <!-- 05 NIVELES Y SEÑALES -->
+  <section class="section" id="niveles">
+    <div class="section-header">
+      <span class="section-num">05</span>
+      <h2>Niveles y Señales de Decisión</h2>
+    </div>
+
+    <div class="tbl-wrap">
+      <table>
+        <thead>
+          <tr>
+            <th>Señal</th>
+            <th>Condición NRR</th>
+            <th>Condición Precio</th>
+            <th>Acción</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><span class="badge badge-green">Calidad + Precio</span></td>
+            <td style="color:var(--text2);font-size:0.82rem;">NRR ≥ 100%</td>
+            <td style="color:var(--text2);font-size:0.82rem;">P/FCF &lt; 30x <em>o</em> Desc. &gt; 20%</td>
+            <td style="color:var(--green);font-size:0.82rem;">Mantener / Añadir con convicción</td>
+          </tr>
+          <tr>
+            <td><span class="badge badge-yellow">Calidad sin Precio</span></td>
+            <td style="color:var(--text2);font-size:0.82rem;">NRR ≥ 100%</td>
+            <td style="color:var(--text2);font-size:0.82rem;">P/FCF ≥ 30x <em>y</em> Desc. &lt; 20%</td>
+            <td style="color:var(--yellow);font-size:0.82rem;">Mantener — no añadir. Esperar descuento</td>
+          </tr>
+          <tr>
+            <td><span class="badge badge-orange">Precio sin Calidad</span></td>
+            <td style="color:var(--text2);font-size:0.82rem;">NRR &lt; 100%</td>
+            <td style="color:var(--text2);font-size:0.82rem;">P/FCF &lt; 30x <em>o</em> Desc. &gt; 20%</td>
+            <td style="color:var(--orange);font-size:0.82rem;">Vigilar — posible trampa de valor</td>
+          </tr>
+          <tr>
+            <td><span class="badge badge-red">Ni Calidad ni Precio</span></td>
+            <td style="color:var(--text2);font-size:0.82rem;">NRR &lt; 100%</td>
+            <td style="color:var(--text2);font-size:0.82rem;">P/FCF ≥ 30x <em>y</em> Desc. &lt; 20%</td>
+            <td style="color:var(--red);font-size:0.82rem;">Revisar tesis — considerar cierre</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="tbl-wrap">
+      <table>
+        <thead>
+          <tr>
+            <th>Métrica</th>
+            <th>Zona verde</th>
+            <th>Zona amarilla</th>
+            <th>Zona roja</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><code>NRR</code></td>
+            <td style="color:var(--green);font-size:0.82rem;">&gt; 110%</td>
+            <td style="color:var(--yellow);font-size:0.82rem;">100–110%</td>
+            <td style="color:var(--red);font-size:0.82rem;">&lt; 100%</td>
+          </tr>
+          <tr>
+            <td><code>SBC Neto / FCF</code></td>
+            <td style="color:var(--green);font-size:0.82rem;">&lt; 0% (acreción)</td>
+            <td style="color:var(--yellow);font-size:0.82rem;">0–20%</td>
+            <td style="color:var(--red);font-size:0.82rem;">&gt; 20%</td>
+          </tr>
+          <tr>
+            <td><code>P/FCF</code></td>
+            <td style="color:var(--green);font-size:0.82rem;">&lt; 20x</td>
+            <td style="color:var(--yellow);font-size:0.82rem;">20–35x</td>
+            <td style="color:var(--red);font-size:0.82rem;">&gt; 35x</td>
+          </tr>
+          <tr>
+            <td><code>Desc. 52s</code></td>
+            <td style="color:var(--green);font-size:0.82rem;">&lt; -30%</td>
+            <td style="color:var(--yellow);font-size:0.82rem;">-10% a -30%</td>
+            <td style="color:var(--red);font-size:0.82rem;">&gt; -10%</td>
+          </tr>
+          <tr>
+            <td><code>Alfa vs NDX</code></td>
+            <td style="color:var(--green);font-size:0.82rem;">&gt; +5pp</td>
+            <td style="color:var(--yellow);font-size:0.82rem;">-5pp a +5pp</td>
+            <td style="color:var(--red);font-size:0.82rem;">&lt; -5pp</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="callout warn">
+      <p>
+        <strong>Nota sobre las señales:</strong> La señal cruzada del monitor es orientativa,
+        no una orden de compraventa automática. El inversor debe combinarla con el estado de los
+        hitos T-G y su propio análisis de contexto antes de actuar.
+      </p>
+    </div>
+  </section>
+
+  <!-- 06 HITOS -->
+  <section class="section" id="hitos">
+    <div class="section-header">
+      <span class="section-num">06</span>
+      <h2>Hitos de Tesis (T-G)</h2>
+    </div>
+
+    <p style="color:var(--text2);font-size:0.85rem;font-weight:300;margin-bottom:20px;">
+      Los hitos T-G son condiciones cualitativas que el inversor monitoriza para mantener la convicción
+      en cada posición. Se gestionan desde <code>hitos_estado.json</code> en el repositorio.
+      El score de convicción del monitor pondera los hitos críticos con peso doble.
+    </p>
+
+    <div class="tbl-wrap" style="margin-bottom:24px;">
+      <table>
+        <thead>
+          <tr>
+            <th style="width:40px;">Est.</th>
+            <th>Hito</th>
+            <th style="width:120px;">Ticker</th>
+            <th style="width:110px;">Categoría</th>
+            <th style="width:100px;">Estado</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td class="estado-seg" style="text-align:center;">···</td>
+            <td>
+              <span style="font-weight:600;color:var(--text);">NRR mantenido o creciendo en todos los tickers del universo</span>
+              <span class="critico-tag">CRÍTICO</span><br>
+              <small style="color:var(--text3);">Verificar en earnings trimestrales. Umbral mínimo: sin ticker con NRR &lt; 95%.</small>
+            </td>
+            <td><span class="badge badge-blue">Cartera</span></td>
+            <td><span class="badge badge-blue">Fundamental</span></td>
+            <td class="estado-seg">SEGUIMIENTO</td>
+          </tr>
+          <tr>
+            <td class="estado-pend" style="text-align:center;">✕</td>
+            <td>
+              <span style="font-weight:600;color:var(--text);">CRM Agentforce — primeros contratos enterprise significativos</span>
+              <span class="critico-tag">CRÍTICO</span><br>
+              <small style="color:var(--text3);">LOI o contratos &gt; $50M anuales con clientes Fortune 500 anunciados en earnings.</small>
+            </td>
+            <td><span class="badge badge-blue">CRM</span></td>
+            <td><span class="badge badge-yellow">Estratégico</span></td>
+            <td class="estado-pend">PENDIENTE</td>
+          </tr>
+          <tr>
+            <td class="estado-pend" style="text-align:center;">✕</td>
+            <td>
+              <span style="font-weight:600;color:var(--text);">ADBE — integración AI nativa en Creative Cloud sin impacto en churn</span>
+              <span class="critico-tag">CRÍTICO</span><br>
+              <small style="color:var(--text3);">NRR estable o creciente en dos trimestres consecutivos tras lanzamiento de funciones Firefly.</small>
+            </td>
+            <td><span class="badge badge-green">ADBE</span></td>
+            <td><span class="badge badge-green">Defensivo</span></td>
+            <td class="estado-pend">PENDIENTE</td>
+          </tr>
+          <tr>
+            <td class="estado-pend" style="text-align:center;">✕</td>
+            <td>
+              <span style="font-weight:600;color:var(--text);">PYPL — recuperación NRR por encima de 100%</span>
+              <span class="critico-tag">CRÍTICO</span><br>
+              <small style="color:var(--text3);">Dos trimestres consecutivos con NRR ≥ 100%. Sin este hito la tesis PYPL se rompe formalmente.</small>
+            </td>
+            <td><span class="badge badge-orange">PYPL</span></td>
+            <td><span class="badge badge-orange">Turnaround</span></td>
+            <td class="estado-pend">PENDIENTE</td>
+          </tr>
+          <tr>
+            <td class="estado-pend" style="text-align:center;">✕</td>
+            <td>
+              <span style="font-weight:600;color:var(--text);">Acreción neta confirmada en al menos 3 de 5 tickers</span><br>
+              <small style="color:var(--text3);">SBC Neto / FCF &lt; 0% en ADBE, IT, CRM o FDS de forma sostenida (2 trimestres).</small>
+            </td>
+            <td><span class="badge badge-blue">Cartera</span></td>
+            <td><span class="badge badge-purple">Capital</span></td>
+            <td class="estado-pend">PENDIENTE</td>
+          </tr>
+          <tr>
+            <td class="estado-pend" style="text-align:center;">✕</td>
+            <td>
+              <span style="font-weight:600;color:var(--text);">IT — guidance FCF 2025 mantenido o revisado al alza</span><br>
+              <small style="color:var(--text3);">Gartner confirma FCF creciente en earnings Q2 2025 sin revisión a la baja del guidance anual.</small>
+            </td>
+            <td><span class="badge badge-purple">IT</span></td>
+            <td><span class="badge badge-green">Financiero</span></td>
+            <td class="estado-pend">PENDIENTE</td>
+          </tr>
+          <tr>
+            <td class="estado-pend" style="text-align:center;">✕</td>
+            <td>
+              <span style="font-weight:600;color:var(--text);">Al menos 2 tickers batiendo al NDX con alfa &gt; +5pp en 12 meses</span><br>
+              <small style="color:var(--text3);">Validación de que la selección activa genera alfa sobre el índice de referencia.</small>
+            </td>
+            <td><span class="badge badge-blue">Cartera</span></td>
+            <td><span class="badge badge-grey">Rendimiento</span></td>
+            <td class="estado-pend">PENDIENTE</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="card">
+      <h4>Score de Convicción — Cómo se calcula</h4>
+      <p style="margin-bottom:14px;">
+        El score pondera cada hito según su criticidad. Los hitos CRÍTICO tienen peso doble.
+        Los hitos en SEGUIMIENTO (null) contribuyen el 50% de su peso.
+      </p>
+      <div class="conv-grid">
+        <div class="conv-cell">
+          <div class="cv-label" style="color:var(--green);">CUMPLIDO</div>
+          <div class="cv-val">100% peso</div>
+        </div>
+        <div class="conv-cell">
+          <div class="cv-label" style="color:var(--accent);">SEGUIMIENTO</div>
+          <div class="cv-val">50% peso</div>
+        </div>
+        <div class="conv-cell">
+          <div class="cv-label" style="color:var(--red);">PENDIENTE</div>
+          <div class="cv-val">0% peso</div>
+        </div>
+      </div>
+      <div class="callout danger" style="margin-top:14px;margin-bottom:0;">
+        <p>
+          <strong>Penalización automática:</strong> si 3 o más hitos CRÍTICO están en PENDIENTE,
+          el score máximo se limita al 35% independientemente del resto de hitos cumplidos.
+          Escala: ≥70% = Alta Convicción · 40–70% = Convicción Media · &lt;40% = Convicción Baja.
+        </p>
+      </div>
+    </div>
+  </section>
+
+  <!-- 07 DIAGNOSTICOS -->
+  <section class="section" id="diagnosticos">
+    <div class="section-header">
+      <span class="section-num">07</span>
+      <h2>Diagnósticos de Mercado</h2>
+    </div>
+
+    <p style="color:var(--text2);font-size:0.85rem;font-weight:300;margin-bottom:20px;">
+      El monitor clasifica cada ticker con una señal cruzada que combina NRR (calidad del negocio)
+      con P/FCF y descuento vs máximos (precio de mercado). Esta clasificación determina
+      la acción recomendada para cada posición en cada ejecución.
+    </p>
+
+    <div class="diag-grid">
+      <div class="diag-card" style="border-color:var(--green);">
+        <div class="dg-name" style="color:var(--green);">Calidad + Precio</div>
+        <p>
+          NRR ≥ 100% y precio atractivo (P/FCF &lt; 30x o descuento &gt; 20% vs máximos 52s).
+          Condición óptima: el negocio crece solo y el mercado no ha reconocido aún toda la calidad.
+          Mantener posición completa. Evaluar si añadir tiene sentido según el sizing de la cartera.
+        </p>
+      </div>
+      <div class="diag-card" style="border-color:var(--yellow);">
+        <div class="dg-name" style="color:var(--yellow);">Calidad sin Precio</div>
+        <p>
+          NRR sólido pero P/FCF elevado y cotizando cerca de máximos. El negocio es excelente
+          pero el precio ya descuenta mucho del futuro. Mantener si se tiene posición pero
+          no añadir. Esperar corrección para incrementar. Es la situación habitual de las
+          mejores empresas de la cartera en mercados alcistas.
+        </p>
+      </div>
+      <div class="diag-card" style="border-color:var(--orange);">
+        <div class="dg-name" style="color:var(--orange);">Precio sin Calidad</div>
+        <p>
+          NRR &lt; 100% pero cotizando con descuento o P/FCF bajo. La trampa de valor clásica:
+          el descuento puede parecer atractivo pero el negocio subyacente se contrae.
+          Vigilar activamente. No añadir. Si el NRR no se recupera en dos trimestres,
+          revisar tesis y considerar cierre de posición.
+        </p>
+      </div>
+      <div class="diag-card" style="border-color:var(--red);">
+        <div class="dg-name" style="color:var(--red);">Ni Calidad ni Precio</div>
+        <p>
+          NRR &lt; 100% y cotizando con prima. La peor combinación posible: el negocio
+          se deteriora y el mercado aún no ha ajustado el precio. Revisar tesis inmediatamente.
+          Si la posición no tiene justificación clara de turnaround con hitos concretos,
+          la acción recomendada es cerrar.
+        </p>
+      </div>
+    </div>
+  </section>
+
+  <!-- 08 VALORACION -->
+  <section class="section" id="valoracion">
+    <div class="section-header">
+      <span class="section-num">08</span>
+      <h2>Marco de Valoración</h2>
+    </div>
+
+    <div class="card">
+      <h4>P/FCF como múltiplo central</h4>
+      <p>
+        El monitor usa P/FCF (Market Cap / FCF anual) como múltiplo principal por su resistencia
+        a la manipulación contable frente al PER. El FCF que usa el monitor <strong style="color:var(--text);">
+        no ajusta el SBC</strong> — el SBC es un coste real para el accionista aunque sea no monetario.
+        Por eso el P/FCF debe leerse siempre junto con SBC Neto / FCF: un P/FCF bajo con SBC alto
+        puede ser una ilusión contable, no una oportunidad real.
+      </p>
+    </div>
+
+    <div class="card">
+      <h4>Descuento vs Máximos — Contexto, no señal absoluta</h4>
+      <p>
+        Un descuento del 30% vs máximos de 52 semanas no garantiza que la empresa esté barata
+        en términos absolutos. Solo indica que el mercado ya ha revisado las expectativas a la baja.
+        Combinado con NRR sólido y P/FCF razonable, es la señal más robusta de oportunidad de entrada.
+        Sin NRR sólido, el descuento puede ser una trampa de valor que se profundiza.
+      </p>
+    </div>
+
+    <div class="card">
+      <h4>Benchmark Nasdaq 100 (^NDX)</h4>
+      <p>
+        El Nasdaq 100 es el benchmark natural para esta cartera: agrupa las 100 mayores empresas
+        no financieras del Nasdaq, con fuerte peso en software y tecnología. Batir al NDX de forma
+        consistente con NRR sólido y dilución controlada valida la selección activa frente a un
+        indexado pasivo. Si la cartera no genera alfa sostenido sobre el NDX, la alternativa
+        de simplemente comprar QQQ tiene sentido.
+      </p>
+    </div>
+
+    <div class="tbl-wrap">
+      <table>
+        <thead>
+          <tr>
+            <th>Ticker</th>
+            <th>NRR (tesis)</th>
+            <th>T-G</th>
+            <th>Color monitor</th>
+            <th>Convicción inicial</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><code style="color:#2ecc71;">ADBE</code></td>
+            <td style="color:var(--green);">111.0%</td>
+            <td style="color:var(--text2);">0 / 4</td>
+            <td><span style="display:inline-block;width:14px;height:14px;background:#2ecc71;border-radius:3px;vertical-align:middle;"></span></td>
+            <td><span class="badge badge-yellow">Media — en construcción</span></td>
+          </tr>
+          <tr>
+            <td><code style="color:#9b59b6;">IT</code></td>
+            <td style="color:var(--green);">105.0%</td>
+            <td style="color:var(--text2);">0 / 4</td>
+            <td><span style="display:inline-block;width:14px;height:14px;background:#9b59b6;border-radius:3px;vertical-align:middle;"></span></td>
+            <td><span class="badge badge-yellow">Media — en construcción</span></td>
+          </tr>
+          <tr>
+            <td><code style="color:#8899aa;">FDS</code></td>
+            <td style="color:var(--green);">101.0%</td>
+            <td style="color:var(--text2);">0 / 4</td>
+            <td><span style="display:inline-block;width:14px;height:14px;background:#34495e;border-radius:3px;vertical-align:middle;"></span></td>
+            <td><span class="badge badge-yellow">Media — en construcción</span></td>
+          </tr>
+          <tr>
+            <td><code style="color:#3498db;">CRM</code></td>
+            <td style="color:var(--green);">108.5%</td>
+            <td style="color:var(--text2);">0 / 4</td>
+            <td><span style="display:inline-block;width:14px;height:14px;background:#3498db;border-radius:3px;vertical-align:middle;"></span></td>
+            <td><span class="badge badge-yellow">Media — en construcción</span></td>
+          </tr>
+          <tr>
+            <td><code style="color:#e67e22;">PYPL</code></td>
+            <td style="color:var(--red);">98.2%</td>
+            <td style="color:var(--text2);">1 / 4</td>
+            <td><span style="display:inline-block;width:14px;height:14px;background:#e67e22;border-radius:3px;vertical-align:middle;"></span></td>
+            <td><span class="badge badge-red">Baja — turnaround activo</span></td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <!-- 09 MANUAL -->
+  <section class="section" id="manual">
+    <div class="section-header">
+      <span class="section-num">09</span>
+      <h2>Manual del Monitor</h2>
+    </div>
+
+    <div class="accordion">
+      <div class="accordion-header" onclick="toggleAcc(this)">
+        <span class="acc-title">Estructura de archivos del repositorio</span>
+        <span class="acc-icon">+</span>
+      </div>
+      <div class="accordion-body">
+        <div class="tbl-wrap">
+          <table>
+            <thead><tr><th>Archivo</th><th>Función</th><th>Editable</th></tr></thead>
+            <tbody>
+              <tr>
+                <td><code>growth/monitor_crecimiento_v1_9.py</code></td>
+                <td style="color:var(--text2);font-size:0.82rem;">Script principal. Descarga datos, genera HTML y lo envía por Telegram.</td>
+                <td><span class="badge badge-yellow">Solo sección TESIS_QUARTERLY</span></td>
+              </tr>
+              <tr>
+                <td><code>growth/Monitor_Growth.html</code></td>
+                <td style="color:var(--text2);font-size:0.82rem;">Informe HTML generado en cada ejecución del script.</td>
+                <td><span class="badge badge-red">NO — auto-generado</span></td>
+              </tr>
+              <tr>
+                <td><code>.github/workflows/monitor_growth.yml</code></td>
+                <td style="color:var(--text2);font-size:0.82rem;">Workflow de GitHub Actions que ejecuta el monitor lunes a viernes, dos veces al día.</td>
+                <td><span class="badge badge-yellow">Solo para cambiar horarios</span></td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <div class="accordion">
+      <div class="accordion-header" onclick="toggleAcc(this)">
+        <span class="acc-title">Cómo actualizar los NRR y parámetros de tesis</span>
+        <span class="acc-icon">+</span>
+      </div>
+      <div class="accordion-body">
+        <p style="color:var(--text2);font-size:0.84rem;font-weight:300;margin-bottom:16px;">
+          Todos los parámetros de la tesis están centralizados en el diccionario
+          <code>TESIS_QUARTERLY</code> al inicio de la función <code>ejecutar_v1_9()</code>:
+        </p>
+        <div style="background:#0a0e14;border:1px solid var(--border);border-radius:8px;padding:16px;font-family:var(--mono);font-size:0.78rem;color:var(--text2);line-height:1.8;margin-bottom:16px;">
+          TESIS_QUARTERLY = {<br>
+          &nbsp;&nbsp;"ADBE": {"nrr": <span style="color:var(--green);">111.0</span>, "t_g": <span style="color:var(--accent);">0</span>, "color": "#2ecc71"},<br>
+          &nbsp;&nbsp;"IT":&nbsp;&nbsp; {"nrr": <span style="color:var(--green);">105.0</span>, "t_g": <span style="color:var(--accent);">0</span>, "color": "#9b59b6"},<br>
+          &nbsp;&nbsp;"CRM": {"nrr": <span style="color:var(--green);">108.5</span>, "t_g": <span style="color:var(--accent);">0</span>, "color": "#3498db"},<br>
+          &nbsp;&nbsp;"PYPL":{"nrr": <span style="color:var(--red);">98.2</span>, &nbsp;"t_g": <span style="color:var(--yellow);">1</span>, "color": "#e67e22"},<br>
+          }
+        </div>
+        <div class="tbl-wrap">
+          <table>
+            <thead><tr><th>Campo</th><th>Descripción</th><th>Cuándo actualizar</th></tr></thead>
+            <tbody>
+              <tr>
+                <td><code>nrr</code></td>
+                <td style="color:var(--text2);font-size:0.82rem;">NRR estimado del ticker en %.</td>
+                <td style="color:var(--text2);font-size:0.82rem;">Después de cada earnings con datos reportados.</td>
+              </tr>
+              <tr>
+                <td><code>t_g</code></td>
+                <td style="color:var(--text2);font-size:0.82rem;">Número de hitos T-G cumplidos (0–4).</td>
+                <td style="color:var(--text2);font-size:0.82rem;">Cuando se confirma un hito de la lista.</td>
+              </tr>
+              <tr>
+                <td><code>color</code></td>
+                <td style="color:var(--text2);font-size:0.82rem;">Color hex del ticker en gráficos y tablas.</td>
+                <td style="color:var(--text2);font-size:0.82rem;">Solo si añades o cambias tickers.</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <div class="accordion">
+      <div class="accordion-header" onclick="toggleAcc(this)">
+        <span class="acc-title">Cómo ejecutar el monitor</span>
+        <span class="acc-icon">+</span>
+      </div>
+      <div class="accordion-body">
+        <p style="color:var(--accent);font-size:0.8rem;font-weight:600;letter-spacing:0.5px;margin-bottom:10px;">EJECUCIÓN AUTOMÁTICA — GitHub Actions</p>
+        <p style="color:var(--text2);font-size:0.84rem;font-weight:300;margin-bottom:16px;">
+          El monitor se ejecuta automáticamente lunes a viernes a las <strong style="color:var(--text);">09:00 y 15:00 (hora España invierno)</strong>
+          — 08:00 y 14:00 UTC. No requiere ninguna acción. El informe llega por Telegram con el HTML adjunto.
+        </p>
+
+        <p style="color:var(--accent);font-size:0.8rem;font-weight:600;letter-spacing:0.5px;margin-bottom:10px;">EJECUCIÓN MANUAL — GitHub Actions</p>
+        <ol style="color:var(--text2);font-size:0.84rem;font-weight:300;padding-left:18px;margin-bottom:16px;">
+          <li style="margin-bottom:6px;">Ve a la pestaña <strong style="color:var(--text);">Actions</strong> en el repositorio.</li>
+          <li style="margin-bottom:6px;">Selecciona <strong style="color:var(--text);">Monitor Growth</strong> en el panel izquierdo.</li>
+          <li style="margin-bottom:6px;">Pulsa <strong style="color:var(--text);">Run workflow</strong> → confirma.</li>
+          <li>Espera 2–3 minutos. El círculo verde indica ejecución correcta.</li>
+        </ol>
+
+        <p style="color:var(--accent);font-size:0.8rem;font-weight:600;letter-spacing:0.5px;margin-bottom:10px;">EJECUCIÓN MANUAL — Google Colab</p>
+        <ol style="color:var(--text2);font-size:0.84rem;font-weight:300;padding-left:18px;">
+          <li style="margin-bottom:6px;">Abre Google Colab y crea un nuevo notebook.</li>
+          <li style="margin-bottom:6px;">Pega el contenido de <code>growth/monitor_crecimiento_v1_9.py</code>.</li>
+          <li>Ejecuta la celda. El script detecta el entorno Colab y muestra el HTML inline.</li>
+        </ol>
+      </div>
+    </div>
+
+    <div class="accordion">
+      <div class="accordion-header" onclick="toggleAcc(this)">
+        <span class="acc-title">Añadir o eliminar tickers de la cartera</span>
+        <span class="acc-icon">+</span>
+      </div>
+      <div class="accordion-body">
+        <p style="color:var(--text2);font-size:0.84rem;font-weight:300;margin-bottom:14px;">
+          Para añadir un ticker, agrega una entrada al diccionario <code>TESIS_QUARTERLY</code>
+          con su NRR estimado, T-G inicial y color hex. Para eliminarlo, simplemente borra la línea correspondiente.
+          El monitor se adapta automáticamente al número de tickers sin necesidad de otros cambios.
+        </p>
+        <div class="callout warn">
+          <p>
+            <strong>Límite práctico:</strong> el gráfico de rendimiento relativo (Bloque 3) se vuelve
+            difícil de leer con más de 7–8 tickers simultáneos. Si amplías la cartera, considera
+            agrupar tickers por tesis o segmento.
+          </p>
+        </div>
+      </div>
+    </div>
+
+    <div class="accordion">
+      <div class="accordion-header" onclick="toggleAcc(this)">
+        <span class="acc-title">Cuándo considerar ruptura formal de la tesis</span>
+        <span class="acc-icon">+</span>
+      </div>
+      <div class="accordion-body">
+        <p style="color:var(--text2);font-size:0.84rem;font-weight:300;margin-bottom:14px;">
+          La tesis para un ticker individual se considera <strong style="color:var(--red);">formalmente rota</strong>
+          si se da alguna de estas condiciones, independientemente del precio:
+        </p>
+        <ul style="color:var(--text2);font-size:0.84rem;font-weight:300;padding-left:18px;">
+          <li style="margin-bottom:8px;"><strong style="color:var(--text);">NRR por debajo de 95%</strong> durante dos trimestres consecutivos sin justificación de turnaround explícita.</li>
+          <li style="margin-bottom:8px;"><strong style="color:var(--text);">FCF negativo</strong> en dos trimestres consecutivos sin inversión extraordinaria justificada.</li>
+          <li style="margin-bottom:8px;"><strong style="color:var(--text);">SBC / FCF superior al 50%</strong> sin buybacks compensadores — dilución severa.</li>
+          <li style="margin-bottom:8px;"><strong style="color:var(--text);">Tres hitos críticos en PENDIENTE</strong> durante más de 6 trimestres consecutivos.</li>
+          <li><strong style="color:var(--text);">Cambio estructural del modelo de negocio</strong> que invalide el análisis original (ejemplo: abandono de suscripción, pivot forzado por regulación).</li>
+        </ul>
+        <div class="callout danger" style="margin-top:14px;margin-bottom:0;">
+          <p>
+            Si se rompe la tesis, la acción recomendada es salir al precio de mercado
+            independientemente del P&amp;L de la posición. La tesis es el contrato con uno mismo, no el precio.
+          </p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 10 AVISO LEGAL -->
+  <section class="section" id="aviso">
+    <div class="section-header">
+      <span class="section-num">10</span>
+      <h2>Aviso Legal</h2>
+    </div>
+    <div class="aviso">
+      Este documento es un registro personal de tesis de inversión y no constituye asesoramiento financiero,
+      recomendación de compra o venta, ni oferta de ningún instrumento financiero.
+      La inversión en acciones conlleva riesgo de pérdida total del capital invertido.
+      Los niveles de precio, hitos, NRR estimados y diagnósticos descritos en este documento
+      reflejan el análisis particular del inversor en la fecha indicada y pueden quedar obsoletos
+      sin previo aviso. Los valores de NRR utilizados son estimaciones basadas en datos públicos
+      y guidance de management — no son cifras auditadas bajo GAAP.
+      Cualquier decisión de inversión debe basarse en el propio análisis y criterio del inversor,
+      eventualmente con el asesoramiento de un profesional regulado.
+      Las rentabilidades pasadas no garantizan rentabilidades futuras.
+    </div>
+  </section>
+
+</main>
+
+<script>
+  function toggleAcc(header) {
+    const body = header.nextElementSibling;
+    const isOpen = body.classList.contains('open');
+    body.classList.toggle('open', !isOpen);
+    header.classList.toggle('open', !isOpen);
+  }
+</script>
+
+</body>
+</html>

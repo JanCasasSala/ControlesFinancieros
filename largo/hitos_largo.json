@@ -38,11 +38,12 @@
       "tk": "SAN",
       "hito": "Dividendo sostenible (payout <= 80% y FCF cubre div total)",
       "detalle": "Calculado automaticamente: payout ratio y cobertura FCF vs dividendo total posicion.",
-      "estado": false,
-      "fecha": null,
+      "estado": true,
+      "fecha": "11/03/2026 12:54",
       "critico": true,
       "categoria": "Capital",
-      "auto": true
+      "auto": true,
+      "detalle_auto": "FCF/acc YoY: -1.55 vs -2.40 (+35.3%)"
     },
     {
       "id": 5,
@@ -50,32 +51,35 @@
       "hito": "Dividendo sostenible (payout <= 80% y FCF cubre div total)",
       "detalle": "Calculado automaticamente: payout ratio y cobertura FCF vs dividendo total posicion.",
       "estado": false,
-      "fecha": null,
+      "fecha": "11/03/2026 12:54",
       "critico": false,
       "categoria": "Capital",
-      "auto": true
+      "auto": true,
+      "detalle_auto": "FCF/acc YoY: 2.12 vs 2.18 (-2.6%)"
     },
     {
       "id": 6,
       "tk": "LOG",
       "hito": "Dividendo sostenible (payout <= 80% y FCF cubre div total)",
       "detalle": "Calculado automaticamente: payout ratio y cobertura FCF vs dividendo total posicion.",
-      "estado": false,
-      "fecha": null,
+      "estado": true,
+      "fecha": "11/03/2026 12:54",
       "critico": true,
       "categoria": "Capital",
-      "auto": true
+      "auto": true,
+      "detalle_auto": "FCF/acc YoY: 2.65 vs 1.99 (+32.9%)"
     },
     {
       "id": 7,
       "tk": "SAN",
       "hito": "FCF por accion creciente YoY",
       "detalle": "Calculado automaticamente: FCF/accion año actual vs año anterior.",
-      "estado": false,
-      "fecha": null,
+      "estado": true,
+      "fecha": "11/03/2026 12:54",
       "critico": true,
       "categoria": "Financiero",
-      "auto": true
+      "auto": true,
+      "detalle_auto": "FCF/acc YoY: -1.55 vs -2.40 (+35.3%)"
     },
     {
       "id": 8,
@@ -83,32 +87,35 @@
       "hito": "FCF por accion creciente YoY",
       "detalle": "Calculado automaticamente: FCF/accion año actual vs año anterior.",
       "estado": false,
-      "fecha": null,
+      "fecha": "11/03/2026 12:54",
       "critico": true,
       "categoria": "Financiero",
-      "auto": true
+      "auto": true,
+      "detalle_auto": "FCF/acc YoY: 2.12 vs 2.18 (-2.6%)"
     },
     {
       "id": 9,
       "tk": "LOG",
       "hito": "FCF por accion creciente YoY",
       "detalle": "Calculado automaticamente: FCF/accion año actual vs año anterior.",
-      "estado": false,
-      "fecha": null,
+      "estado": true,
+      "fecha": "11/03/2026 12:54",
       "critico": true,
       "categoria": "Financiero",
-      "auto": true
+      "auto": true,
+      "detalle_auto": "FCF/acc YoY: 2.65 vs 1.99 (+32.9%)"
     },
     {
       "id": 10,
       "tk": "ITX",
       "hito": "Margenes estables o crecientes (bruto y operativo)",
       "detalle": "Calculado automaticamente: margen bruto y operativo vs año anterior.",
-      "estado": false,
-      "fecha": null,
+      "estado": true,
+      "fecha": "11/03/2026 12:54",
       "critico": true,
       "categoria": "Financiero",
-      "auto": true
+      "auto": true,
+      "detalle_auto": "Bruto 57.8% vs 57.8% | Operativo 19.9% vs 19.2%"
     }
   ]
 }

@@ -1,0 +1,529 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Manual de Operativa · Sistema de Noticias · Portfolio Monitor</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;900&family=IBM+Plex+Mono:wght@400;500&family=Libre+Franklin:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#07080A;--s1:#0D0F12;--s2:#131518;--s3:#191C20;--s4:#1F2226;
+  --t1:#E2E4EA;--t2:#7C8090;--t3:#42454E;
+  --b1:rgba(220,225,240,0.05);--b2:rgba(220,225,240,0.10);--b3:rgba(220,225,240,0.16);
+  --gold:#C8A84A;--goldb:rgba(200,168,74,0.08);--goldd:rgba(200,168,74,0.22);
+  --green:#48D878;--greenb:rgba(72,216,120,0.07);--greend:rgba(72,216,120,0.20);
+  --red:#D86050;--redb:rgba(216,96,80,0.07);--redd:rgba(216,96,80,0.22);
+  --amber:#D8A040;--amberb:rgba(216,160,64,0.07);--amberd:rgba(216,160,64,0.22);
+  --blue:#60A8D8;--blueb:rgba(96,168,216,0.07);--blued:rgba(96,168,216,0.22);
+  --gray:#888;--grayb:rgba(136,136,136,0.07);--grayd:rgba(136,136,136,0.20);
+}
+*{box-sizing:border-box;margin:0;padding:0;}
+html{scroll-behavior:smooth;}
+body{background:var(--bg);color:var(--t1);font-family:'Libre Franklin',sans-serif;font-weight:300;font-size:13.5px;line-height:1.72;}
+
+header{background:var(--s1);border-bottom:1px solid var(--b2);padding:48px 56px 40px;}
+.h-eyebrow{font-family:'IBM Plex Mono',monospace;font-size:9px;letter-spacing:3.5px;color:var(--gold);text-transform:uppercase;margin-bottom:10px;}
+.h-title{font-family:'Playfair Display',serif;font-size:38px;font-weight:900;line-height:1.05;margin-bottom:8px;}
+.h-title em{color:var(--gold);font-style:normal;}
+.h-sub{font-size:13.5px;color:var(--t2);max-width:680px;line-height:1.65;margin-bottom:20px;}
+.h-meta{display:flex;gap:10px;flex-wrap:wrap;}
+.meta-chip{font-family:'IBM Plex Mono',monospace;font-size:9px;letter-spacing:1.5px;padding:4px 10px;border-radius:2px;border:1px solid var(--b2);color:var(--t3);}
+
+main{max-width:1200px;margin:0 auto;padding:52px 56px 80px;}
+
+.sec{font-family:'IBM Plex Mono',monospace;font-size:9px;letter-spacing:3px;text-transform:uppercase;color:var(--gold);border-bottom:1px solid var(--b2);padding-bottom:9px;margin:44px 0 20px;}
+.sec:first-child{margin-top:0;}
+
+.badge{font-family:'IBM Plex Mono',monospace;font-size:7.5px;letter-spacing:.5px;padding:2px 8px;border-radius:2px;border:1px solid;white-space:nowrap;display:inline-block;}
+.b-red{background:var(--redb);border-color:var(--redd);color:var(--red);}
+.b-green{background:var(--greenb);border-color:var(--greend);color:var(--green);}
+.b-amber{background:var(--amberb);border-color:var(--amberd);color:var(--amber);}
+.b-gold{background:var(--goldb);border-color:var(--goldd);color:var(--gold);}
+.b-blue{background:var(--blueb);border-color:var(--blued);color:var(--blue);}
+.b-gray{background:var(--grayb);border-color:var(--grayd);color:var(--gray);}
+
+/* PRINCIPIO */
+.principio{background:var(--goldb);border:1px solid var(--goldd);border-left:3px solid var(--gold);border-radius:0 4px 4px 0;padding:20px 26px;margin-bottom:28px;}
+.p-label{font-family:'IBM Plex Mono',monospace;font-size:9px;letter-spacing:2px;text-transform:uppercase;color:var(--gold);margin-bottom:8px;}
+.p-text{font-family:'Playfair Display',serif;font-size:17px;font-weight:700;color:var(--t1);line-height:1.4;}
+
+/* CATEGORIAS */
+.cat-grid{display:grid;grid-template-columns:1fr 1fr 1fr 1fr;gap:10px;margin-bottom:28px;}
+.cat-card{border-radius:4px;padding:18px 18px 16px;border:1px solid;}
+.cat-emoji{font-size:24px;margin-bottom:10px;display:block;}
+.cat-name{font-family:'IBM Plex Mono',monospace;font-size:10px;letter-spacing:2px;text-transform:uppercase;font-weight:500;margin-bottom:6px;}
+.cat-def{font-size:12px;color:var(--t2);line-height:1.55;margin-bottom:10px;}
+.cat-def strong{color:var(--t1);font-weight:500;}
+.cat-accion{font-family:'IBM Plex Mono',monospace;font-size:9px;color:var(--t3);padding-top:8px;border-top:1px solid rgba(220,225,240,0.08);}
+
+/* FLUJO */
+.flujo{display:grid;grid-template-columns:repeat(5,1fr);gap:0;margin:20px 0 28px;position:relative;}
+.flujo::before{content:'';position:absolute;top:28px;left:10%;right:10%;height:1px;background:linear-gradient(to right,var(--t3),var(--gold),var(--t3));z-index:0;}
+.fl-node{text-align:center;position:relative;z-index:1;}
+.fl-dot{width:14px;height:14px;border-radius:50%;border:2px solid var(--gold);background:var(--bg);margin:21px auto 10px;}
+.fl-n{font-family:'IBM Plex Mono',monospace;font-size:8px;letter-spacing:1px;text-transform:uppercase;color:var(--t3);margin-bottom:4px;}
+.fl-title{font-size:12px;font-weight:500;color:var(--t1);line-height:1.3;margin-bottom:3px;}
+.fl-sub{font-size:10.5px;color:var(--t2);line-height:1.3;}
+
+/* FUENTES */
+.fuente-table{width:100%;border-collapse:collapse;margin:14px 0 24px;}
+.fuente-table th{font-family:'IBM Plex Mono',monospace;font-size:8px;letter-spacing:1.5px;text-transform:uppercase;color:var(--t3);padding:9px 14px;border-bottom:1px solid var(--b2);background:var(--s2);text-align:left;}
+.fuente-table td{padding:12px 14px;border-bottom:1px solid var(--b1);background:var(--s1);font-size:12.5px;vertical-align:top;}
+.fuente-table tr:hover td{background:var(--s2);}
+.f-name{font-weight:500;color:var(--t1);}
+.f-url{font-family:'IBM Plex Mono',monospace;font-size:10px;color:var(--t2);margin-top:2px;}
+.f-desc{font-size:12px;color:var(--t2);line-height:1.5;}
+
+/* TELEGRAM */
+.tg-example{background:var(--s2);border:1px solid var(--b2);border-radius:6px;padding:20px 22px;margin-bottom:14px;font-family:'IBM Plex Mono',monospace;font-size:12px;line-height:1.8;color:var(--t2);}
+.tg-example .r{color:var(--red);font-weight:500;}
+.tg-example .a{color:var(--amber);font-weight:500;}
+.tg-example .g{color:var(--green);font-weight:500;}
+.tg-example .gr{color:var(--gray);}
+.tg-example .t{color:var(--t1);}
+.tg-example .s{color:var(--t3);}
+
+/* TICKER CONFIG */
+.ticker-block{background:var(--s1);border:1px solid var(--b1);border-radius:4px;padding:18px 22px;margin-bottom:12px;}
+.tb-header{display:flex;align-items:center;gap:14px;margin-bottom:14px;padding-bottom:12px;border-bottom:1px solid var(--b2);}
+.tb-ticker{font-family:'IBM Plex Mono',monospace;font-size:14px;font-weight:500;letter-spacing:2px;}
+.tb-name{font-size:13px;color:var(--t2);}
+.tb-status{margin-left:auto;}
+.tb-cols{display:grid;grid-template-columns:1fr 1fr 1fr;gap:14px;}
+.tb-col-title{font-family:'IBM Plex Mono',monospace;font-size:8px;letter-spacing:2px;text-transform:uppercase;margin-bottom:8px;}
+.kw-item{font-size:12px;color:var(--t2);padding:4px 0;border-bottom:1px solid var(--b1);display:flex;gap:8px;}
+.kw-item:last-child{border-bottom:none;}
+.kw-dot{flex-shrink:0;margin-top:5px;width:6px;height:6px;border-radius:50%;}
+
+/* ESCALADO */
+.escala-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:24px;}
+.escala-card{background:var(--s1);border:1px solid var(--b1);border-radius:4px;padding:16px 18px;}
+.ec-title{font-size:13px;font-weight:500;color:var(--t1);margin-bottom:8px;display:flex;align-items:center;gap:8px;}
+.ec-text{font-size:12.5px;color:var(--t2);line-height:1.6;}
+.ec-text strong{color:var(--t1);font-weight:500;}
+
+/* PROTOCOLO */
+.proto-item{background:var(--s1);border:1px solid var(--b1);border-radius:3px;padding:14px 18px;margin-bottom:8px;display:grid;grid-template-columns:32px 1fr;gap:12px;align-items:start;}
+.pi-n{font-family:'IBM Plex Mono',monospace;font-size:18px;font-weight:500;color:var(--t3);line-height:1;margin-top:2px;}
+.pi-text{font-size:13px;color:var(--t2);line-height:1.6;}
+.pi-text strong{color:var(--t1);font-weight:500;}
+
+/* FOOTER */
+.footer-bar{background:var(--s2);border:1px solid var(--b2);border-radius:4px;padding:16px 22px;margin-top:8px;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:10px;}
+.fb-text{font-size:12px;color:var(--t2);}
+.fb-text strong{color:var(--t1);font-weight:500;}
+
+code{font-family:'IBM Plex Mono',monospace;font-size:11px;background:var(--s3);color:var(--gold);padding:2px 6px;border-radius:3px;}
+
+@media(max-width:900px){
+  header,main{padding-left:20px;padding-right:20px;}
+  .cat-grid{grid-template-columns:1fr 1fr;}
+  .flujo{grid-template-columns:1fr;}
+  .tb-cols,.escala-grid{grid-template-columns:1fr;}
+}
+</style>
+</head>
+<body>
+
+<header>
+  <div class="h-eyebrow">Sistema de Monitorización · Manual de Operativa v1.0</div>
+  <h1 class="h-title">Monitor de <em>Noticias</em><br>Portfolio Inversor</h1>
+  <p class="h-sub">Sistema de alerta selectiva basado en tesis de inversión. El objetivo no es leer todas las noticias — es no perderse ninguna que cambie una decisión de inversión. Este manual define las categorías, el protocolo de respuesta y cómo añadir nuevos tickers al sistema.</p>
+  <div class="h-meta">
+    <span class="meta-chip">VERSIÓN 1.0 · 14-MAR-2026</span>
+    <span class="meta-chip">TICKER ACTIVO: GLNG</span>
+    <span class="meta-chip">PENDIENTE: STZ · RI.PA</span>
+    <span class="meta-chip">EJECUCIÓN: 07:00 CET DIARIO</span>
+  </div>
+</header>
+
+<main>
+
+<!-- PRINCIPIO -->
+<div class="sec" style="margin-top:0;">Principio de diseño · Por qué este sistema existe</div>
+<div class="principio">
+  <div class="p-label">El principio fundamental</div>
+  <div class="p-text">No filtras noticias por ticker — filtras por tipo de evento. La pregunta no es "¿hay noticias sobre GLNG hoy?" sino "¿ha ocurrido algo que cambie mi decisión de mantener, ampliar o salir de la posición?" Esa distinción reduce el universo de alertas de 50 noticias al día a 2–3 por semana.</div>
+</div>
+
+<div style="background:var(--s1);border:1px solid var(--b1);border-radius:4px;padding:16px 20px;margin-bottom:28px;font-size:13px;color:var(--t2);line-height:1.7;">
+  <strong style="color:var(--t1);">Por qué la tesis de inversión es el input del clasificador:</strong> si la tesis está bien escrita, las tres categorías de noticias se derivan directamente de ella. Invalidación = condiciones de salida definidas en la tesis. Catalizador = condiciones de entrada/ampliación definidas en la tesis. Confirmación = hitos de seguimiento del monitor. Cuando se añade un nuevo ticker, el trabajo es leer su tesis y extraer las keywords — no reescribir el sistema.
+</div>
+
+<!-- CATEGORIAS -->
+<div class="sec">Las 4 categorías · Definición y protocolo de respuesta</div>
+<div class="cat-grid">
+
+  <div class="cat-card" style="background:var(--redb);border-color:var(--redd);">
+    <span class="cat-emoji">🔴</span>
+    <div class="cat-name" style="color:var(--red);">Categoría 1<br>Invalidación</div>
+    <div class="cat-def">
+      Eventos que <strong>cambian la decisión de mantener la posición</strong>. Son los eventos que la tesis de inversión identifica explícitamente como condiciones de salida. Si ocurren, la tesis ya no es válida independientemente del precio.
+      <br><br>
+      Ejemplos: cancelación de un contrato material, dilución masiva de capital, cambio regulatorio que destruye el modelo de negocio, pérdida del activo central de la tesis.
+    </div>
+    <div class="cat-accion">
+      ACCION: Revisar posición en 48h.<br>
+      ALERTA: Inmediata · cualquier hora.<br>
+      FUENTE: SEC 8-K prioritaria.
+    </div>
+  </div>
+
+  <div class="cat-card" style="background:var(--amberb);border-color:var(--amberd);">
+    <span class="cat-emoji">🟡</span>
+    <div class="cat-name" style="color:var(--amber);">Categoría 2<br>Catalizador</div>
+    <div class="cat-def">
+      Eventos que <strong>activan o aceleran la tesis</strong>. Son los catalizadores identificados en la tesis como condiciones de ampliación de posición o de escalado de tramos. Si ocurren, la ecuación riesgo-retorno mejora.
+      <br><br>
+      Ejemplos: datos macro que confirman la tesis, acuerdos comerciales, contratos nuevos, guidance positivo, precio del activo llega a zona de entrada del tramo 2.
+    </div>
+    <div class="cat-accion">
+      ACCION: Evaluar ampliación de posición.<br>
+      ALERTA: Mañana · mensaje diario.<br>
+      FUENTE: Google News + datos macro.
+    </div>
+  </div>
+
+  <div class="cat-card" style="background:var(--greenb);border-color:var(--greend);">
+    <span class="cat-emoji">🟢</span>
+    <div class="cat-name" style="color:var(--green);">Categoría 3<br>Confirmación</div>
+    <div class="cat-def">
+      Eventos que <strong>confirman que la tesis avanza según lo previsto</strong>. No cambian ninguna decisión pero actualizan el estado del monitor y aumentan la convicción. Son los hitos de seguimiento del JSON.
+      <br><br>
+      Ejemplos: earnings en línea con guidance, contratos renovados sin cambios, dividendo mantenido, milestone operativo cumplido on-schedule.
+    </div>
+    <div class="cat-accion">
+      ACCION: Actualizar hito en JSON.<br>
+      ALERTA: Mañana · mensaje diario.<br>
+      FUENTE: IR company + earnings.
+    </div>
+  </div>
+
+  <div class="cat-card" style="background:var(--grayb);border-color:var(--grayd);">
+    <span class="cat-emoji">⚪</span>
+    <div class="cat-name" style="color:var(--gray);">Categoría 4<br>Ruido</div>
+    <div class="cat-def">
+      Todo lo demás. <strong>No requiere lectura ni acción.</strong> El sistema lo filtra y solo te informa del recuento total al final del mensaje diario.
+      <br><br>
+      Ejemplos: análisis de analistas, cambios de price target, artículos de opinión, movimientos de precio sin noticia detrás, noticias sectoriales genéricas, contagio macro sin relación causal con la tesis.
+    </div>
+    <div class="cat-accion">
+      ACCION: Ninguna.<br>
+      ALERTA: Solo recuento · no titulares.<br>
+      FUENTE: Filtrada y descartada.
+    </div>
+  </div>
+
+</div>
+
+<!-- FLUJO DE TRABAJO -->
+<div class="sec">Flujo de trabajo · De la noticia a la acción</div>
+<div class="flujo">
+  <div class="fl-node">
+    <div class="fl-dot" style="border-color:var(--t3);"></div>
+    <div class="fl-n">Paso 1</div>
+    <div class="fl-title">Fuentes</div>
+    <div class="fl-sub">SEC EDGAR · Google News · BLS · IR directo</div>
+  </div>
+  <div class="fl-node">
+    <div class="fl-dot"></div>
+    <div class="fl-n">Paso 2</div>
+    <div class="fl-title">Scraping</div>
+    <div class="fl-sub">El script descarga titulares y filings cada mañana 07:00 CET</div>
+  </div>
+  <div class="fl-node">
+    <div class="fl-dot"></div>
+    <div class="fl-n">Paso 3</div>
+    <div class="fl-title">Clasificación</div>
+    <div class="fl-sub">Keywords por categoría y ticker. Ruido filtrado automáticamente</div>
+  </div>
+  <div class="fl-node">
+    <div class="fl-dot"></div>
+    <div class="fl-n">Paso 4</div>
+    <div class="fl-title">Telegram</div>
+    <div class="fl-sub">Un mensaje diario consolidado. Alerta inmediata solo Cat.1</div>
+  </div>
+  <div class="fl-node">
+    <div class="fl-dot" style="border-color:var(--green);"></div>
+    <div class="fl-n">Paso 5</div>
+    <div class="fl-title">Acción humana</div>
+    <div class="fl-sub">El inversor decide. El sistema nunca actúa autónomamente</div>
+  </div>
+</div>
+
+<!-- FUENTES -->
+<div class="sec">Fuentes de datos · Sin API de pago · Compatible Colab y GitHub Actions</div>
+<table class="fuente-table">
+  <thead>
+    <tr>
+      <th>Fuente</th>
+      <th>Tipo de datos</th>
+      <th>Categorías que cubre</th>
+      <th>Latencia</th>
+      <th>Implementación</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>
+        <div class="f-name">SEC EDGAR RSS</div>
+        <div class="f-url">sec.gov/cgi-bin/browse-edgar?action=getcompany&type=8-K&output=atom</div>
+      </td>
+      <td style="font-size:12px;color:var(--t2);">8-K (eventos materiales), S-3 (diluciones), contratos material</td>
+      <td><span class="badge b-red">Cat.1</span> <span class="badge b-green">Cat.3</span></td>
+      <td style="font-family:'IBM Plex Mono',monospace;font-size:11px;color:var(--green);">Minutos</td>
+      <td style="font-size:12px;color:var(--t2);"><code>feedparser</code> — RSS nativo. Sin autenticación.</td>
+    </tr>
+    <tr>
+      <td>
+        <div class="f-name">Google News RSS</div>
+        <div class="f-url">news.google.com/rss/search?q=QUERY&hl=en&gl=US&ceid=US:en</div>
+      </td>
+      <td style="font-size:12px;color:var(--t2);">Noticias generales, prensa financiera, medios especializados</td>
+      <td><span class="badge b-red">Cat.1</span> <span class="badge b-amber">Cat.2</span> <span class="badge b-green">Cat.3</span></td>
+      <td style="font-family:'IBM Plex Mono',monospace;font-size:11px;color:var(--amber);">15–60 min</td>
+      <td style="font-size:12px;color:var(--t2);"><code>feedparser</code> — query específico por ticker y keywords.</td>
+    </tr>
+    <tr>
+      <td>
+        <div class="f-name">BLS.gov</div>
+        <div class="f-url">bls.gov/news.release/empsit.nr0.htm</div>
+      </td>
+      <td style="font-size:12px;color:var(--t2);">CES2000000001 — empleo construcción USA. Solo relevante para STZ.</td>
+      <td><span class="badge b-amber">Cat.2</span> <span class="badge b-red">Cat.1</span></td>
+      <td style="font-family:'IBM Plex Mono',monospace;font-size:11px;color:var(--green);">Inmediata post-publicación</td>
+      <td style="font-size:12px;color:var(--t2);"><code>requests + BeautifulSoup</code> — scraping HTML. 1er viernes de cada mes.</td>
+    </tr>
+    <tr>
+      <td>
+        <div class="f-name">IR directo (Golar)</div>
+        <div class="f-url">golarlng.com/investors / ir.golarlng.com</div>
+      </td>
+      <td style="font-size:12px;color:var(--t2);">Earnings releases, dividendos, press releases operativos</td>
+      <td><span class="badge b-green">Cat.3</span> <span class="badge b-amber">Cat.2</span></td>
+      <td style="font-family:'IBM Plex Mono',monospace;font-size:11px;color:var(--amber);">Horas</td>
+      <td style="font-size:12px;color:var(--t2);"><code>feedparser</code> si tiene RSS · <code>requests</code> si requiere scraping.</td>
+    </tr>
+    <tr>
+      <td>
+        <div class="f-name">yfinance (precio + volumen)</div>
+        <div class="f-url">via yfinance library</div>
+      </td>
+      <td style="font-size:12px;color:var(--t2);">Precio, volumen, movimientos inusuales (>3σ)</td>
+      <td><span class="badge b-amber">Cat.2</span></td>
+      <td style="font-family:'IBM Plex Mono',monospace;font-size:11px;color:var(--green);">Tiempo real (15 min delay)</td>
+      <td style="font-size:12px;color:var(--t2);">Ya integrado en monitor_golar_v6.py</td>
+    </tr>
+  </tbody>
+</table>
+
+<!-- FORMATO TELEGRAM -->
+<div class="sec">Formato del mensaje Telegram · Diseño del output</div>
+<p style="font-size:13px;color:var(--t2);margin-bottom:14px;">Un único mensaje diario consolidado a las 07:00 CET. Alerta inmediata adicional solo para Categoría 1 — a cualquier hora del día.</p>
+
+<div class="tg-example">
+<span class="s">━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━</span><br>
+<span class="t">MONITOR NOTICIAS · 14/03/2026 · 07:00</span><br>
+<span class="s">━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━</span><br>
+<br>
+<span class="r">🔴 CAT.1 INVALIDACION — GLNG [1]</span><br>
+<span class="t">SEC 8-K: "Material contract amendment — Hilli"</span><br>
+<span class="s">Fuente: SEC EDGAR · hace 3h</span><br>
+<span class="s">→ https://sec.gov/Archives/...</span><br>
+<span class="r">ACCION: Revisar posición en 48h</span><br>
+<br>
+<span class="a">🟡 CAT.2 CATALIZADOR — GLNG [1]</span><br>
+<span class="t">Reuters: "European gas prices hit 6-month high after Hormuz"</span><br>
+<span class="s">Fuente: Google News · hace 5h</span><br>
+<span class="s">→ https://reuters.com/...</span><br>
+<span class="a">ACCION: Evaluar ampliación tramo 2 en $41-43</span><br>
+<br>
+<span class="g">🟢 CAT.3 CONFIRMACION — GLNG [1]</span><br>
+<span class="t">Golar IR: "Dividend $0.25 per share confirmed March 18"</span><br>
+<span class="s">Fuente: Golar IR · hace 2h</span><br>
+<span class="s">→ https://golarlng.com/...</span><br>
+<span class="g">ACCION: Actualizar hito 4 en hitos_estado.json</span><br>
+<br>
+<span class="gr">⚪ RUIDO FILTRADO: 18 noticias descartadas hoy</span><br>
+<span class="gr">   (análisis analistas: 7 · sector genérico: 6 · precio sin noticia: 5)</span><br>
+<br>
+<span class="s">━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━</span><br>
+<span class="s">Próxima ejecución: 15/03/2026 07:00 CET</span>
+</div>
+
+<p style="font-size:12px;color:var(--t3);margin-bottom:28px;">El recuento de ruido filtrado es intencionado — confirma que el sistema está funcionando sin enviarte el ruido.</p>
+
+<!-- CONFIGURACION POR TICKER - GLNG -->
+<div class="sec">Configuración por ticker · GLNG (activo)</div>
+<div class="ticker-block">
+  <div class="tb-header">
+    <div class="tb-ticker" style="color:var(--cyan,#48C8C8);">GLNG</div>
+    <div class="tb-name">Golar LNG · NASDAQ · Posición activa desde $46.25</div>
+    <div class="tb-status"><span class="badge b-green">ACTIVO</span></div>
+  </div>
+  <div class="tb-cols">
+    <div>
+      <div class="tb-col-title" style="color:var(--red);">🔴 Keywords Invalidación</div>
+      <div class="kw-item"><div class="kw-dot" style="background:var(--red);"></div><span style="color:var(--t2);">Hilli + (terminate OR cancel OR renegotiate OR amendment)</span></div>
+      <div class="kw-item"><div class="kw-dot" style="background:var(--red);"></div><span style="color:var(--t2);">SESA Argentina + (cancel OR terminate OR force majeure)</span></div>
+      <div class="kw-item"><div class="kw-dot" style="background:var(--red);"></div><span style="color:var(--t2);">GLNG + (shares issued OR equity offering OR dilution)</span></div>
+      <div class="kw-item"><div class="kw-dot" style="background:var(--red);"></div><span style="color:var(--t2);">Perenco + Cameroon + (contract OR agreement) + (end OR breach)</span></div>
+      <div class="kw-item"><div class="kw-dot" style="background:var(--red);"></div><span style="color:var(--t2);">SEC 8-K: cualquier filing nuevo de Golar LNG</span></div>
+    </div>
+    <div>
+      <div class="tb-col-title" style="color:var(--amber);">🟡 Keywords Catalizador</div>
+      <div class="kw-item"><div class="kw-dot" style="background:var(--amber);"></div><span style="color:var(--t2);">LNG price + (high OR rise OR increase) + (Europe OR Asia)</span></div>
+      <div class="kw-item"><div class="kw-dot" style="background:var(--amber);"></div><span style="color:var(--t2);">Golar + (new contract OR FLNG OR LOI OR letter of intent)</span></div>
+      <div class="kw-item"><div class="kw-dot" style="background:var(--amber);"></div><span style="color:var(--t2);">MKII Argentina + (progress OR timeline OR construction)</span></div>
+      <div class="kw-item"><div class="kw-dot" style="background:var(--amber);"></div><span style="color:var(--t2);">Hormuz OR Ormuz + LNG + (disruption OR shortage)</span></div>
+      <div class="kw-item"><div class="kw-dot" style="background:var(--amber);"></div><span style="color:var(--t2);">Gimi + (first cargo OR production OR operational)</span></div>
+    </div>
+    <div>
+      <div class="tb-col-title" style="color:var(--green);">🟢 Keywords Confirmación</div>
+      <div class="kw-item"><div class="kw-dot" style="background:var(--green);"></div><span style="color:var(--t2);">Golar + earnings + (beat OR in-line OR guidance)</span></div>
+      <div class="kw-item"><div class="kw-dot" style="background:var(--green);"></div><span style="color:var(--t2);">Golar + dividend + (declared OR confirmed OR maintained)</span></div>
+      <div class="kw-item"><div class="kw-dot" style="background:var(--green);"></div><span style="color:var(--t2);">Hilli + (uptime OR production OR cargo)</span></div>
+      <div class="kw-item"><div class="kw-dot" style="background:var(--green);"></div><span style="color:var(--t2);">Golar + (FCF OR free cash flow OR EBITDA) + (increase OR growth)</span></div>
+      <div class="kw-item"><div class="kw-dot" style="background:var(--green);"></div><span style="color:var(--t2);">Golar + (Buy OR Conviction OR upgrade) + analyst</span></div>
+    </div>
+  </div>
+</div>
+
+<!-- COMO AÑADIR UN TICKER -->
+<div class="sec">Cómo añadir un ticker nuevo · Protocolo de incorporación</div>
+<div style="background:var(--goldb);border:1px solid var(--goldd);border-radius:4px;padding:14px 20px;margin-bottom:16px;font-size:12.5px;color:var(--t2);">
+  <strong style="color:var(--gold);">Input requerido:</strong> la tesis de inversión del ticker + el documento de hitos si existe. Con esos dos documentos el sistema puede generar automáticamente las keywords de las tres categorías sin intervención adicional.
+</div>
+<div class="proto-item">
+  <div class="pi-n">01</div>
+  <div class="pi-text"><strong>Facilitar la tesis de inversión del ticker.</strong> El clasificador extrae directamente de la tesis: condiciones de salida → Cat.1, condiciones de ampliación → Cat.2, hitos de seguimiento → Cat.3.</div>
+</div>
+<div class="proto-item">
+  <div class="pi-n">02</div>
+  <div class="pi-text"><strong>Identificar el CIK en SEC EDGAR</strong> para el RSS de 8-K. Para tickers USA es obligatorio. Para tickers europeos (RI.PA, RCO.PA) usar el feed de la bolsa correspondiente o IR directo.</div>
+</div>
+<div class="proto-item">
+  <div class="pi-n">03</div>
+  <div class="pi-text"><strong>Definir el dato macro principal</strong> si existe. Para STZ es BLS CES2000000001 (1er viernes de cada mes). Para Pernod es el precio JKM + señales MOFCOM China. Para GLNG es el precio spot LNG europeo.</div>
+</div>
+<div class="proto-item">
+  <div class="pi-n">04</div>
+  <div class="pi-text"><strong>Añadir el bloque de configuración del ticker</strong> en el script <code>monitor_noticias.py</code> en la sección <code>TICKERS_CONFIG</code>. El código es modular — añadir un ticker no requiere modificar la lógica central.</div>
+</div>
+<div class="proto-item">
+  <div class="pi-n">05</div>
+  <div class="pi-text"><strong>Primera ejecución en modo dry-run</strong> — el script genera el mensaje Telegram pero no lo envía, solo lo imprime. Verificar que las keywords no generan demasiados falsos positivos o demasiado silencio antes de activar las alertas reales.</div>
+</div>
+
+<!-- ESCALADO -->
+<div class="sec">Diseño para escalar · Por qué el sistema no requiere reescribirse</div>
+<div class="escala-grid">
+  <div class="escala-card" style="border-left:3px solid var(--green);">
+    <div class="ec-title" style="color:var(--green);">✓ Lo que nunca cambia</div>
+    <div class="ec-text">Las cuatro categorías son universales — aplican a cualquier ticker de cualquier sector. La lógica de clasificación, el formato del mensaje Telegram y la arquitectura de fuentes son invariantes. <strong>El núcleo del sistema es estable.</strong></div>
+  </div>
+  <div class="escala-card" style="border-left:3px solid var(--amber);">
+    <div class="ec-title" style="color:var(--amber);">→ Lo que cambia por ticker</div>
+    <div class="ec-text">Las keywords de cada categoría, el CIK de SEC, el dato macro específico y la URL de IR. Todo esto vive en un bloque de configuración por ticker en la sección <code>TICKERS_CONFIG</code> del script. <strong>Añadir un ticker = añadir un bloque de configuración.</strong></div>
+  </div>
+  <div class="escala-card" style="border-left:3px solid var(--blue);">
+    <div class="ec-title" style="color:var(--blue);">→ El rol de la tesis</div>
+    <div class="ec-text">La tesis de inversión es el input que genera las keywords automáticamente. <strong>No hay que pensar qué monitorizar</strong> — si la tesis está bien escrita, las condiciones de invalidación, catalizador y confirmación ya están documentadas. Solo hay que traducirlas a términos de búsqueda.</div>
+  </div>
+  <div class="escala-card" style="border-left:3px solid var(--gold);">
+    <div class="ec-title" style="color:var(--gold);">→ Límite de complejidad</div>
+    <div class="ec-text">El sistema está diseñado para <strong>5–10 tickers máximo</strong> con GitHub Actions gratuito (2000 min/mes). Con más tickers o mayor frecuencia de ejecución se necesitaría un servidor propio o GitHub Actions de pago. Para el portfolio actual (3 tickers) hay margen amplio.</div>
+  </div>
+</div>
+
+<!-- PROTOCOLO RESPUESTA -->
+<div class="sec">Protocolo de respuesta · Qué hacer con cada categoría</div>
+<div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:28px;">
+
+  <div style="background:var(--redb);border:1px solid var(--redd);border-radius:4px;padding:16px 20px;">
+    <div style="font-family:'IBM Plex Mono',monospace;font-size:9px;letter-spacing:2px;text-transform:uppercase;color:var(--red);margin-bottom:10px;">🔴 Cat.1 — Respuesta obligatoria</div>
+    <div style="font-size:12.5px;color:var(--t2);line-height:1.6;">
+      <strong style="color:var(--t1);">Plazo:</strong> 48 horas desde la alerta.<br>
+      <strong style="color:var(--t1);">Acción mínima:</strong> leer el filing original (no el titular). Verificar que el evento es lo que parece.<br>
+      <strong style="color:var(--t1);">Decisión:</strong> ¿invalida realmente la tesis o es ruido clasificado incorrectamente?<br>
+      <strong style="color:var(--t1);">Si invalida:</strong> cambiar hito a <code>false</code> en JSON + revisar posición.<br>
+      <strong style="color:var(--t1);">Si no invalida:</strong> anotar como falso positivo para refinar keywords.
+    </div>
+  </div>
+
+  <div style="background:var(--amberb);border:1px solid var(--amberd);border-radius:4px;padding:16px 20px;">
+    <div style="font-family:'IBM Plex Mono',monospace;font-size:9px;letter-spacing:2px;text-transform:uppercase;color:var(--amber);margin-bottom:10px;">🟡 Cat.2 — Respuesta opcional</div>
+    <div style="font-size:12.5px;color:var(--t2);line-height:1.6;">
+      <strong style="color:var(--t1);">Plazo:</strong> antes del cierre del mercado del día.<br>
+      <strong style="color:var(--t1);">Acción:</strong> verificar si el precio ha llegado a la zona de ampliación definida en la tesis.<br>
+      <strong style="color:var(--t1);">Decisión:</strong> ¿el catalizador + el precio justifican activar el tramo 2?<br>
+      <strong style="color:var(--t1);">Si sí:</strong> ejecutar la orden según el manual operativo del ticker.<br>
+      <strong style="color:var(--t1);">Si no:</strong> monitorizar — el catalizador puede persistir varios días.
+    </div>
+  </div>
+
+  <div style="background:var(--greenb);border:1px solid var(--greend);border-radius:4px;padding:16px 20px;">
+    <div style="font-family:'IBM Plex Mono',monospace;font-size:9px;letter-spacing:2px;text-transform:uppercase;color:var(--green);margin-bottom:10px;">🟢 Cat.3 — Acción de mantenimiento</div>
+    <div style="font-size:12.5px;color:var(--t2);line-height:1.6;">
+      <strong style="color:var(--t1);">Plazo:</strong> dentro de 24 horas.<br>
+      <strong style="color:var(--t1);">Acción:</strong> actualizar el hito correspondiente en <code>hitos_estado.json</code> con el nuevo estado y la fecha.<br>
+      <strong style="color:var(--t1);">Efecto:</strong> el score de convicción del monitor sube automáticamente en la siguiente ejecución.<br>
+      <strong style="color:var(--t1);">Nota:</strong> no requiere revisar la posición — solo el registro.
+    </div>
+  </div>
+
+  <div style="background:var(--grayb);border:1px solid var(--grayd);border-radius:4px;padding:16px 20px;">
+    <div style="font-family:'IBM Plex Mono',monospace;font-size:9px;letter-spacing:2px;text-transform:uppercase;color:var(--gray);margin-bottom:10px;">⚪ Cat.4 — Sin acción</div>
+    <div style="font-size:12.5px;color:var(--t2);line-height:1.6;">
+      <strong style="color:var(--t1);">Plazo:</strong> ninguno.<br>
+      <strong style="color:var(--t1);">Acción:</strong> ninguna. El recuento total aparece en el mensaje diario solo para confirmar que el sistema está funcionando.<br>
+      <strong style="color:var(--t1);">Disciplina clave:</strong> si recibes un mensaje sin Cat.1 ni Cat.2, es una buena noticia — significa que no hay nada que cambie tu decisión hoy. No busques más noticias.
+    </div>
+  </div>
+
+</div>
+
+<!-- ARQUITECTURA TÉCNICA -->
+<div class="sec">Arquitectura técnica · Estructura del script</div>
+<div style="background:var(--s1);border:1px solid var(--b1);border-radius:4px;padding:18px 22px;margin-bottom:28px;">
+  <div style="font-family:'IBM Plex Mono',monospace;font-size:11px;color:var(--t2);line-height:2.0;">
+    <span style="color:var(--gold);">monitor_noticias.py</span><br>
+    <span style="color:var(--t3);">│</span><br>
+    <span style="color:var(--t3);">├──</span> <span style="color:var(--green);">Sección 1: CONFIGURACION</span><span style="color:var(--t3);">  ← TOKEN, CHAT_ID, TICKERS_CONFIG</span><br>
+    <span style="color:var(--t3);">│   └── TICKERS_CONFIG = dict con un bloque por ticker</span><br>
+    <span style="color:var(--t3);">│       ├── sec_cik: CIK en EDGAR para RSS 8-K</span><br>
+    <span style="color:var(--t3);">│       ├── gnews_queries: lista de queries Google News</span><br>
+    <span style="color:var(--t3);">│       ├── keywords_cat1: términos de invalidación</span><br>
+    <span style="color:var(--t3);">│       ├── keywords_cat2: términos de catalizador</span><br>
+    <span style="color:var(--t3);">│       ├── keywords_cat3: términos de confirmación</span><br>
+    <span style="color:var(--t3);">│       └── macro_source: BLS/precio LNG/etc. si aplica</span><br>
+    <span style="color:var(--t3);">│</span><br>
+    <span style="color:var(--t3);">├──</span> <span style="color:var(--green);">Sección 2: FETCHERS</span><span style="color:var(--t3);">       ← descarga de cada fuente</span><br>
+    <span style="color:var(--t3);">│   ├── fetch_sec_edgar(cik)</span><br>
+    <span style="color:var(--t3);">│   ├── fetch_google_news(query)</span><br>
+    <span style="color:var(--t3);">│   └── fetch_macro(source_config)</span><br>
+    <span style="color:var(--t3);">│</span><br>
+    <span style="color:var(--t3);">├──</span> <span style="color:var(--green);">Sección 3: CLASIFICADOR</span><span style="color:var(--t3);">    ← asigna categoría a cada noticia</span><br>
+    <span style="color:var(--t3);">│   └── clasificar(titular, keywords_cat1, cat2, cat3) → categoria</span><br>
+    <span style="color:var(--t3);">│</span><br>
+    <span style="color:var(--t3);">├──</span> <span style="color:var(--green);">Sección 4: DEDUPLICACION</span><span style="color:var(--t3);">   ← evita repetir noticias ya enviadas</span><br>
+    <span style="color:var(--t3);">│   └── noticias_vistas.json — hash de titulares procesados</span><br>
+    <span style="color:var(--t3);">│</span><br>
+    <span style="color:var(--t3);">├──</span> <span style="color:var(--green);">Sección 5: RENDER TELEGRAM</span><span style="color:var(--t3);">  ← construye el mensaje</span><br>
+    <span style="color:var(--t3);">│   └── render_mensaje(noticias_clasificadas) → texto</span><br>
+    <span style="color:var(--t3);">│</span><br>
+    <span style="color:var(--t3);">└──</span> <span style="color:var(--green);">Sección 6: MAIN</span><span style="color:var(--t3);">            ← orquesta todo · envía Telegram</span><br>
+    <span style="color:var(--t3);">    └── alerta inmediata si Cat.1 detectada</span>
+  </div>
+</div>
+
+<!-- FOOTER -->
+<div class="footer-bar">
+  <div class="fb-text"><strong>Estado actual:</strong> GLNG configurado · STZ y RI.PA pendientes de tesis</div>
+  <div class="fb-text"><strong>Script activo:</strong> monitor_noticias.py · v1.0</div>
+  <div class="fb-text"><strong>Próxima actualización:</strong> cuando se añadan STZ y RI.PA</div>
+</div>
+
+</main>
+</body>
+</html>

@@ -1,11 +1,11 @@
 {
-  "version": "1.0",
-  "ultima_actualizacion": "10/03/2026",
+  "version": "2.0",
+  "ultima_actualizacion": "14/03/2026",
   "hitos": [
     {
       "id": 1,
       "hito": "Gimi — Operacion comercial plena",
-      "detalle": "Primera licuefaccion bajo contrato BP en Senegal (Greater Tortue).",
+      "detalle": "Primera licuefaccion bajo contrato BP-GTA en Guinea Ecuatorial/Senegal confirmada.",
       "estado": null,
       "fecha": null,
       "critico": true,
@@ -22,19 +22,19 @@
     },
     {
       "id": 3,
-      "hito": "Contrato FLNG Mark II anunciado",
-      "detalle": "LOI o contrato definitivo para tercer FLNG. Catalizador principal de re-rating.",
-      "estado": false,
-      "fecha": null,
+      "hito": "MKII Argentina — Contrato 20 anos firmado",
+      "detalle": "Contrato definitivo con SESA Argentina completado. Todas las condiciones precedentes cerradas oct-2025. Construccion en CIMC. Entrega Q4-2027.",
+      "estado": true,
+      "fecha": "01/10/2025",
       "critico": true,
       "categoria": "Estrategico"
     },
     {
       "id": 4,
       "hito": "Dividendo o buybacks iniciado",
-      "detalle": "Board aprueba politica de retribucion al accionista sostenida.",
-      "estado": false,
-      "fecha": null,
+      "detalle": "Board declaro dividendo de $0.25 por accion pagadero 18-mar-2026.",
+      "estado": true,
+      "fecha": "14/03/2026",
       "critico": false,
       "categoria": "Capital"
     },
@@ -49,12 +49,39 @@
     },
     {
       "id": 6,
-      "hito": "Estabilidad politica Senegal confirmada",
-      "detalle": "Nuevo gobierno ratifica contrato BP sin cambios regulatorios adversos.",
+      "hito": "Estabilidad contratos Africa Occidental",
+      "detalle": "Contratos BP-GTA y Perenco Camerun sin cambios regulatorios adversos.",
       "estado": null,
       "fecha": null,
       "critico": true,
       "categoria": "Riesgo"
+    },
+    {
+      "id": 7,
+      "hito": "Hilli — Contrato Perenco vigente",
+      "detalle": "INVALIDACION si: perdida o renegociacion a la baja del contrato Perenco en Camerun. Hilli es el generador de FCF principal hasta 2028. Cambiar a false si se confirma evento negativo.",
+      "estado": null,
+      "fecha": null,
+      "critico": true,
+      "categoria": "Invalidacion"
+    },
+    {
+      "id": 8,
+      "hito": "MKII Argentina — Deal 20 anos vigente",
+      "detalle": "INVALIDACION si: cancelacion oficial del contrato 20 anos con SESA Argentina. Equivale a perder $8B de backlog neto. Cambiar a false si se confirma cancelacion.",
+      "estado": null,
+      "fecha": null,
+      "critico": true,
+      "categoria": "Invalidacion"
+    },
+    {
+      "id": 9,
+      "hito": "Sin dilucion de capital mayor 10 pct",
+      "detalle": "INVALIDACION si: emision de acciones superior al 10 pct del capital outstanding. Destruye valor por accion de forma irreversible. Cambiar a false si se confirma emision.",
+      "estado": null,
+      "fecha": null,
+      "critico": true,
+      "categoria": "Invalidacion"
     }
   ]
 }

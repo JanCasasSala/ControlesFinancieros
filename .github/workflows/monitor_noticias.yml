@@ -1,0 +1,21 @@
+name: Monitor Noticias
+
+on:
+  schedule:
+    - cron: '0 6 * * *'  # 06:00 UTC = 07:00 CET
+  workflow_dispatch:       # permite ejecución manual
+
+jobs:
+  run:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - uses: actions/setup-python@v4
+        with:
+          python-version: '3.11'
+      - run: pip install feedparser requests beautifulsoup4
+      - run: python noticias/monitor_noticias_v3.py
+      - uses: stefanzweifel/git-auto-commit-action@v5
+        with:
+          commit_message: "Monitor noticias — actualiza vistos"
+          file_pattern: noticias/noticias_vistas.json

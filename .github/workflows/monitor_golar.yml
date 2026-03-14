@@ -18,7 +18,7 @@ jobs:
       - name: Instalar dependencias
         run: pip install yfinance requests matplotlib pandas
       - name: Ejecutar monitor
-        run: python golar/monitor_golar_v5.py
+        run: python golar/monitor_golar_v6.py
       - name: Guardar informe HTML como artefacto
         uses: actions/upload-artifact@v4
         with:

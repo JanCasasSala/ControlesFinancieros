@@ -53,7 +53,7 @@ CARPETA   = "golar"
 RUTA_JSON = os.path.join(CARPETA, "hitos_estado.json")
 RUTA_HIST = os.path.join(CARPETA, "hitos_historial.json")
 RUTA_HTML = os.path.join(CARPETA, "Monitor_Golar.html")
-GITHUB_JSON_URL = "https://raw.githubusercontent.com/JanCasasSala/MonitoresFinancieros/main/golar/hitos_estado.json"
+GITHUB_JSON_URL = "https://raw.githubusercontent.com/JanCasasSala/ControlesFinancieros/main/golar/hitos_estado.json"
 
 # --- IDs de hitos de invalidacion de tesis ---
 IDS_INVALIDACION = {7, 8, 9}

@@ -39,8 +39,8 @@ EN_GITHUB = os.getenv("GITHUB_ACTIONS") == "true"
 TOKEN           = "8754089216:AAFlgu0R-dfxWFSXG7NBPpcWXuEmW7Jim-4"
 CHAT_ID         = "8351044609"
 ENVIAR_TELEGRAM = True
-DRY_RUN         = True    # ← True = auditoría · False = producción
-HORAS_LOOKBACK  = 240     # ← 720 para refinamiento · 26 para producción
+DRY_RUN         = False    # ← True = auditoría · False = producción
+HORAS_LOOKBACK  = 26    # ← 720 para refinamiento · 26 para producción
 MUESTRA_RUIDO   = 3       # Titulares de ruido visibles en producción
 
 CARPETA     = "noticias"

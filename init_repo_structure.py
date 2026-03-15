@@ -56,7 +56,7 @@ BASE_DIR    = Path(".")
 REPO_DIR_OVERRIDE = Path(".")  # usado en crear_estructura() en lugar de base_dir/repo_nombre
 
 # Nombre del proyecto — se usa como prefijo en nombres de ficheros de output
-PROYECTO    = "monitor"
+PROYECTO    = "prueba"
 
 # Fecha de creación para los stubs
 FECHA_HOY   = datetime.now(timezone.utc).strftime("%Y-%m-%d")

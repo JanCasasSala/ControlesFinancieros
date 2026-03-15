@@ -1,2 +1,14 @@
-- name: Init estructura
-  run: python3 init_repo_structure.py
+jobs:
+  ejecutar:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repositorio
+        uses: actions/checkout@v4
+
+      - name: Configurar Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: Init estructura        ← aquí va tu paso
+        run: python3 init_repo_structure.py

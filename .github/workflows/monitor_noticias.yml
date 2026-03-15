@@ -2,20 +2,45 @@ name: Monitor Noticias
 
 on:
   schedule:
-    - cron: '0 6 * * *'  # 06:00 UTC = 07:00 CET
-  workflow_dispatch:       # permite ejecución manual
+    # Ejecución diaria principal — 07:00 CET (06:00 UTC)
+    - cron: '0 6 * * *'
+
+    # Segunda ejecución los primeros viernes de cada mes — 14:00 UTC (09:30 ET)
+    # Necesaria para el scraper BLS: el dato se publica a las 08:30 ET (13:30 UTC).
+    # Sin esta línea, la ejecución de las 06:00 UTC llega 7h antes del dato nuevo
+    # y el scraper leería el dato del mes anterior sin advertencia.
+    # Días 1-7 del mes + viernes (weekday=4) garantiza solo el primer viernes.
+    - cron: '0 14 1-7 * 5'
+
+  # Permite lanzar manualmente desde GitHub Actions → botón "Run workflow"
+  workflow_dispatch:
 
 jobs:
-  run:
+  monitor:
     runs-on: ubuntu-latest
+
     steps:
-      - uses: actions/checkout@v3
-      - uses: actions/setup-python@v4
+      - name: Checkout repositorio
+        uses: actions/checkout@v4
+
+      - name: Configurar Python
+        uses: actions/setup-python@v5
         with:
           python-version: '3.11'
-      - run: pip install feedparser requests beautifulsoup4
-      - run: python noticias/monitor_noticias_v4_final.py
-      - uses: stefanzweifel/git-auto-commit-action@v5
+
+      - name: Instalar dependencias
+        run: pip install feedparser requests
+
+      - name: Ejecutar monitor
+        run: python noticias/monitor_noticias_v5.py
+
+      # Persiste noticias_vistas.json entre ejecuciones usando caché de GitHub Actions.
+      # Sin esto, el archivo se pierde al terminar el runner y todas las noticias
+      # aparecerían como nuevas en cada ejecución.
+      - name: Guardar noticias vistas
+        uses: actions/cache@v4
         with:
-          commit_message: "Monitor noticias — actualiza vistos"
-          file_pattern: noticias/noticias_vistas.json
+          path: noticias/noticias_vistas.json
+          key: noticias-vistas-${{ runner.os }}
+          restore-keys: |
+            noticias-vistas-

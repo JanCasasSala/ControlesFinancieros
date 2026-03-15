@@ -1,3 +1,8 @@
+name: Init estructura repo
+
+on:
+  workflow_dispatch:    # ← permite ejecutarlo manualmente desde GitHub Actions
+
 jobs:
   ejecutar:
     runs-on: ubuntu-latest
@@ -10,5 +15,5 @@ jobs:
         with:
           python-version: '3.11'
 
-      - name: Init estructura        ← aquí va tu paso
+      - name: Init estructura
         run: python3 init_repo_structure.py

@@ -53,7 +53,7 @@ REPO_NOMBRE = "ControlesFinancieros"  # informativo — para mensajes y prefijos
 REPO_DIR_OVERRIDE = Path(__file__).parent.resolve()
 
 # Nombre del proyecto — se usa como prefijo en nombres de ficheros de output
-PROYECTO    = "monitor"
+PROYECTO    = "pyoyecto"
 
 # Fecha de creación para los stubs
 FECHA_HOY   = datetime.now(timezone.utc).strftime("%Y-%m-%d")

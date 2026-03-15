@@ -44,11 +44,16 @@ from datetime import datetime, timezone
 
 # DISEÑO INTENCIONADO — nombre del repo hardcodeado.
 # Este script es de utilidad puntual — no requiere parametrización externa.
-# Cambiar REPO_NOMBRE para cada nuevo proyecto.
-REPO_NOMBRE = "ControlesFinancieros"
+# ESCENARIO B: el repo ya existe y el script se ejecuta desde dentro de él.
+# Ejecutar desde la raíz de ControlesFinancieros/ para que la estructura
+# se cree en el lugar correcto sin generar una subcarpeta adicional.
+REPO_NOMBRE = "ControlesFinancieros"  # solo informativo — para nombres de ficheros y mensajes
 
-# Directorio base donde se creará el repo — por defecto el directorio actual
-BASE_DIR    = Path.cwd()
+# Directorio base = directorio actual (raíz del repo ya clonado)
+BASE_DIR    = Path(".")
+
+# El repo raíz ES el directorio actual — no crear subcarpeta adicional
+REPO_DIR_OVERRIDE = Path(".")  # usado en crear_estructura() en lugar de base_dir/repo_nombre
 
 # Nombre del proyecto — se usa como prefijo en nombres de ficheros de output
 PROYECTO    = "monitor"
@@ -462,11 +467,13 @@ build/
 
 def crear_estructura(repo_nombre: str, base_dir: Path, proyecto: str) -> tuple:
     """
-    Crea la estructura de directorios y ficheros stub en base_dir/repo_nombre.
+    Crea la estructura de directorios y ficheros stub.
+    Escenario B: usa REPO_DIR_OVERRIDE (directorio actual = raíz del repo)
+    en lugar de crear base_dir/repo_nombre para evitar subcarpeta adicional.
     No sobreescribe ficheros existentes.
-    Returns: (n_dirs_creados, n_ficheros_creados)
+    Returns: (n_dirs_creados, n_ficheros_creados, omitidos)
     """
-    repo_dir    = base_dir / repo_nombre
+    repo_dir   = REPO_DIR_OVERRIDE  # Escenario B — directorio actual
     n_dirs      = 0
     n_ficheros  = 0
     omitidos    = 0
@@ -507,7 +514,7 @@ def crear_estructura(repo_nombre: str, base_dir: Path, proyecto: str) -> tuple:
 
 def imprimir_arbol(repo_nombre: str, base_dir: Path) -> None:
     """Imprime el árbol de directorios generado."""
-    repo_dir = base_dir / repo_nombre
+    repo_dir = REPO_DIR_OVERRIDE  # Escenario B
     print(f"\n{'='*50}")
     print(f"ÁRBOL GENERADO — {repo_dir}")
     print(f"{'='*50}")
@@ -537,7 +544,7 @@ if __name__ == "__main__":
         imprimir_arbol(REPO_NOMBRE, BASE_DIR)
 
         print(f"\n{'='*50}")
-        print(f"[OK] Estructura creada en: {BASE_DIR / REPO_NOMBRE}")
+        print(f"[OK] Estructura creada en: {REPO_DIR_OVERRIDE.resolve()}")
         print(f"[OK] {n_ficheros} ficheros creados · {omitidos} omitidos (ya existían)")
         print(f"{'='*50}")
         print("\nSiguientes pasos:")

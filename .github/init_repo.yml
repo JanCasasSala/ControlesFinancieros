@@ -1,2 +1,0 @@
-- name: Init estructura
-  run: python3 init_repo_structure.py

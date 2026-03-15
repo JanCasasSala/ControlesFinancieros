@@ -32,7 +32,7 @@ jobs:
         run: pip install feedparser requests
 
       - name: Ejecutar monitor
-        run: python noticias/monitor_noticias_v5.py
+        run: python noticias/monitor_noticias.py
 
       # Persiste noticias_vistas.json entre ejecuciones usando caché de GitHub Actions.
       # Sin esto, el archivo se pierde al terminar el runner y todas las noticias

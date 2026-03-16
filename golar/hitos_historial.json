@@ -41,6 +41,24 @@
           "estado_anterior": "-"
         }
       ]
+    },
+    {
+      "fecha": "16/03/2026 13:00",
+      "cambios_count": 2,
+      "detalle": [
+        {
+          "id": 3,
+          "hito": "MKII Argentina — Contrato 20 anos firmado",
+          "estado_nuevo": "cumplido",
+          "estado_anterior": "pendiente"
+        },
+        {
+          "id": 4,
+          "hito": "Dividendo o buybacks iniciado",
+          "estado_nuevo": "cumplido",
+          "estado_anterior": "pendiente"
+        }
+      ]
     }
   ]
 }

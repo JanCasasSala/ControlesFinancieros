@@ -24,7 +24,7 @@ jobs:
         run: pip install yfinance requests matplotlib pandas
 
       - name: Ejecutar monitor
-        run: python largo/monitor_largo_v1.py
+        run: python largo/monitor_largo_v2.py
 
       - name: Commit y push archivos generados
         run: |

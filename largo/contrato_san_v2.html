@@ -1,0 +1,834 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Contrato de Desinversión — SAN.MC</title>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;1,300;1,400;1,500&family=IBM+Plex+Mono:wght@300;400;500;600&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --paper:     #F7F4EF;
+      --paper-dark:#EDE8E0;
+      --ink:       #1C1C1C;
+      --ink-mid:   #4A4A4A;
+      --ink-light: #888880;
+      --rule:      #C8C0B0;
+      --rule-dark: #A09080;
+      --red:       #8B1A1A;
+      --green:     #1A5C2A;
+      --gold:      #8B6914;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      background: #D4CFC8;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 48px 24px;
+      font-family: 'Cormorant Garamond', Georgia, serif;
+    }
+    .documento {
+      background: var(--paper);
+      max-width: 800px;
+      width: 100%;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.08), 0 8px 32px rgba(0,0,0,0.12), 0 24px 64px rgba(0,0,0,0.08);
+      position: relative;
+    }
+    .documento::before {
+      content: '';
+      position: absolute;
+      inset: 12px;
+      border: 1px solid var(--rule);
+      pointer-events: none;
+      z-index: 0;
+    }
+    .inner { padding: 56px 72px; position: relative; z-index: 1; }
+
+    /* CABECERA */
+    .notarial-header {
+      text-align: center;
+      padding-bottom: 32px;
+      border-bottom: 2px solid var(--ink);
+      margin-bottom: 32px;
+    }
+    .notarial-ref {
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 0.65rem;
+      letter-spacing: 3px;
+      text-transform: uppercase;
+      color: var(--ink-light);
+      margin-bottom: 16px;
+    }
+    .notarial-title {
+      font-size: 2.4rem;
+      font-weight: 300;
+      color: var(--ink);
+      line-height: 1.1;
+      margin-bottom: 8px;
+      letter-spacing: -0.5px;
+    }
+    .notarial-title strong { font-weight: 600; font-style: italic; }
+    .notarial-subtitle {
+      font-size: 1rem;
+      font-weight: 300;
+      color: var(--ink-mid);
+      font-style: italic;
+      margin-bottom: 20px;
+    }
+    .notarial-meta {
+      display: flex;
+      justify-content: center;
+      gap: 28px;
+      flex-wrap: wrap;
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 0.68rem;
+      color: var(--ink-light);
+    }
+    .notarial-meta span { display: flex; flex-direction: column; align-items: center; gap: 2px; }
+    .notarial-meta .val { color: var(--ink); font-weight: 500; font-size: 0.76rem; }
+
+    .ornament { text-align: center; font-size: 1.2rem; color: var(--rule-dark); margin: 24px 0; letter-spacing: 8px; }
+
+    /* SECCIONES */
+    .seccion { margin-bottom: 32px; }
+    .seccion-num {
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 0.62rem;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      color: var(--ink-light);
+      margin-bottom: 6px;
+    }
+    .seccion-titulo {
+      font-size: 1.1rem;
+      font-weight: 600;
+      color: var(--ink);
+      margin-bottom: 14px;
+      padding-bottom: 8px;
+      border-bottom: 1px solid var(--rule);
+    }
+    .seccion-cuerpo {
+      font-size: 0.97rem;
+      color: var(--ink-mid);
+      line-height: 1.85;
+      font-weight: 300;
+    }
+    .seccion-cuerpo p { margin-bottom: 12px; }
+    .seccion-cuerpo p:last-child { margin-bottom: 0; }
+    .seccion-cuerpo strong { color: var(--ink); font-weight: 500; }
+    .seccion-cuerpo em { font-style: italic; color: var(--ink); }
+
+    /* TABLA */
+    .pos-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 0.76rem;
+      margin: 16px 0;
+      border: 1px solid var(--rule);
+    }
+    .pos-table th {
+      background: var(--paper-dark);
+      padding: 8px 14px;
+      text-align: left;
+      font-size: 0.6rem;
+      letter-spacing: 1.5px;
+      text-transform: uppercase;
+      color: var(--ink-light);
+      border-bottom: 1px solid var(--rule);
+    }
+    .pos-table td {
+      padding: 10px 14px;
+      border-bottom: 1px solid var(--paper-dark);
+      color: var(--ink-mid);
+    }
+    .pos-table td:first-child { color: var(--ink); font-weight: 500; }
+    .pos-table tr:last-child td { border-bottom: none; }
+    .pos-table .highlight td { background: var(--paper-dark); }
+    .pos-table .total td {
+      background: var(--ink);
+      color: var(--paper) !important;
+      font-weight: 600;
+      border-bottom: none;
+    }
+
+    /* TRAMOS */
+    .tramo-wrapper { margin: 20px 0; }
+    .tramo-item {
+      display: grid;
+      grid-template-columns: 100px 1fr 130px 130px;
+      gap: 0;
+      border: 1px solid var(--rule);
+      border-bottom: none;
+      background: var(--paper);
+    }
+    .tramo-item:last-child { border-bottom: 1px solid var(--rule); }
+    .tramo-item.header {
+      background: var(--paper-dark);
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 0.6rem;
+      font-weight: 500;
+      letter-spacing: 1.5px;
+      text-transform: uppercase;
+      color: var(--ink-light);
+    }
+    .tramo-item.destino { background: var(--ink); }
+    .tramo-cell {
+      padding: 14px 16px;
+      border-right: 1px solid var(--rule);
+      font-size: 0.85rem;
+    }
+    .tramo-cell:last-child { border-right: none; }
+    .tramo-item.header .tramo-cell { padding: 8px 16px; font-size: 0.6rem; }
+    .tramo-num {
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 0.7rem;
+      font-weight: 600;
+      color: var(--ink-light);
+      margin-bottom: 4px;
+    }
+    .tramo-condicion {
+      font-size: 0.82rem;
+      color: var(--ink-mid);
+      line-height: 1.5;
+      font-weight: 300;
+    }
+    .tramo-condicion strong { color: var(--ink); font-weight: 500; }
+    .tramo-acc {
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 1rem;
+      font-weight: 600;
+      color: var(--ink);
+      line-height: 1.1;
+    }
+    .tramo-acc-sub {
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 0.68rem;
+      color: var(--ink-light);
+      margin-top: 3px;
+    }
+    .tramo-item.destino .tramo-num { color: var(--rule); }
+    .tramo-item.destino .tramo-condicion { color: var(--rule); }
+    .tramo-item.destino .tramo-acc { color: var(--paper); font-size: 1.1rem; }
+    .tramo-item.destino .tramo-acc-sub { color: var(--rule-dark); }
+    .tramo-item.destino .tramo-cell { border-right-color: #3A3A3A; }
+
+    /* LÍMITE OPERATIVO */
+    .limite-box {
+      background: var(--paper-dark);
+      border: 1px solid var(--rule-dark);
+      border-left: 4px solid var(--ink);
+      padding: 14px 18px;
+      margin: 16px 0;
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 0.78rem;
+    }
+    .limite-box .limite-titulo {
+      font-size: 0.62rem;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      color: var(--ink-light);
+      margin-bottom: 6px;
+    }
+    .limite-box .limite-texto { color: var(--ink-mid); line-height: 1.6; }
+    .limite-box .limite-texto strong { color: var(--ink); }
+
+    /* REGLAS */
+    .regla {
+      display: flex;
+      gap: 18px;
+      padding: 16px 0;
+      border-bottom: 1px solid var(--paper-dark);
+      align-items: flex-start;
+    }
+    .regla:last-child { border-bottom: none; }
+    .regla-num {
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 0.68rem;
+      font-weight: 600;
+      color: var(--paper);
+      background: var(--ink);
+      width: 22px; height: 22px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+      margin-top: 2px;
+    }
+    .regla-titulo {
+      font-size: 0.95rem;
+      font-weight: 600;
+      color: var(--ink);
+      margin-bottom: 5px;
+    }
+    .regla-texto {
+      font-size: 0.88rem;
+      color: var(--ink-mid);
+      line-height: 1.7;
+      font-weight: 300;
+    }
+    .regla-texto strong { color: var(--ink); font-weight: 500; }
+
+    /* CONDICIONES */
+    .condicion {
+      background: var(--paper-dark);
+      border-left: 3px solid var(--ink);
+      padding: 14px 18px;
+      margin: 10px 0;
+      font-size: 0.88rem;
+    }
+    .condicion.verde { border-left-color: var(--green); }
+    .condicion.roja  { border-left-color: var(--red); }
+    .condicion.gold  { border-left-color: var(--gold); }
+    .condicion-tipo {
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 0.6rem;
+      font-weight: 600;
+      letter-spacing: 1.5px;
+      text-transform: uppercase;
+      margin-bottom: 5px;
+    }
+    .condicion.verde .condicion-tipo { color: var(--green); }
+    .condicion.roja  .condicion-tipo { color: var(--red); }
+    .condicion.gold  .condicion-tipo { color: var(--gold); }
+    .condicion-texto { color: var(--ink-mid); line-height: 1.65; font-weight: 300; }
+    .condicion-texto strong { color: var(--ink); font-weight: 500; }
+
+    /* CLÁUSULA PSICOLÓGICA */
+    .clausula-psi {
+      background: var(--paper-dark);
+      border: 1px solid var(--rule-dark);
+      padding: 22px 26px 22px 42px;
+      margin: 20px 0;
+      position: relative;
+    }
+    .clausula-psi::before {
+      content: '"';
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 5rem;
+      color: var(--rule);
+      position: absolute;
+      top: -10px; left: 10px;
+      line-height: 1;
+    }
+    .clausula-psi p {
+      font-size: 1.05rem;
+      font-style: italic;
+      color: var(--ink);
+      line-height: 1.7;
+    }
+    .clausula-psi cite {
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 0.65rem;
+      color: var(--ink-light);
+      display: block;
+      margin-top: 10px;
+      font-style: normal;
+    }
+
+    /* MSFT BOX — lección histórica */
+    .leccion-box {
+      background: var(--paper-dark);
+      border: 1px solid var(--rule-dark);
+      border-top: 2px solid var(--ink);
+      padding: 18px 22px;
+      margin: 20px 0;
+    }
+    .leccion-titulo {
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 0.62rem;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      color: var(--ink-light);
+      margin-bottom: 10px;
+    }
+    .leccion-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr 1fr;
+      gap: 1px;
+      background: var(--rule);
+      margin-bottom: 12px;
+    }
+    .leccion-cell {
+      background: var(--paper);
+      padding: 10px 14px;
+      text-align: center;
+    }
+    .leccion-cell .lc-val {
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 1rem;
+      font-weight: 600;
+      color: var(--ink);
+      line-height: 1;
+      margin-bottom: 3px;
+    }
+    .leccion-cell .lc-lbl {
+      font-size: 0.72rem;
+      color: var(--ink-light);
+      font-weight: 300;
+    }
+    .leccion-cell.negativo .lc-val { color: var(--red); }
+    .leccion-cell.positivo .lc-val { color: var(--green); }
+    .leccion-texto {
+      font-size: 0.85rem;
+      color: var(--ink-mid);
+      line-height: 1.65;
+      font-weight: 300;
+    }
+    .leccion-texto strong { color: var(--ink); font-weight: 500; }
+
+    /* FIRMA */
+    .firma-section {
+      margin-top: 40px;
+      padding-top: 32px;
+      border-top: 2px solid var(--ink);
+    }
+    .firma-intro {
+      font-size: 0.9rem;
+      color: var(--ink-mid);
+      font-style: italic;
+      margin-bottom: 32px;
+      line-height: 1.7;
+      font-weight: 300;
+    }
+    .firma-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 40px; }
+    .firma-linea { border-bottom: 1px solid var(--ink); height: 48px; margin-bottom: 8px; }
+    .firma-label {
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 0.62rem;
+      letter-spacing: 1.5px;
+      text-transform: uppercase;
+      color: var(--ink-light);
+    }
+
+    .pie {
+      text-align: center;
+      padding-top: 28px;
+      margin-top: 28px;
+      border-top: 1px solid var(--rule);
+    }
+    .pie p {
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 0.62rem;
+      color: var(--ink-light);
+      letter-spacing: 0.5px;
+      line-height: 1.8;
+    }
+    hr.doc-rule { border: none; border-top: 1px solid var(--rule); margin: 28px 0; }
+
+    @media (max-width: 640px) {
+      .inner { padding: 36px 24px; }
+      .tramo-item { grid-template-columns: 1fr; }
+      .tramo-cell { border-right: none; border-bottom: 1px solid var(--rule); }
+      .tramo-cell:last-child { border-bottom: none; }
+      .leccion-grid { grid-template-columns: 1fr; }
+      .firma-grid { grid-template-columns: 1fr; gap: 24px; }
+    }
+  </style>
+</head>
+<body>
+<div class="documento">
+<div class="inner">
+
+  <!-- CABECERA -->
+  <div class="notarial-header">
+    <div class="notarial-ref">Documento privado de inversión &nbsp;·&nbsp; Ref. SAN-EXIT-2026-001 &nbsp;·&nbsp; v2.0</div>
+    <h1 class="notarial-title">Contrato de<br><strong>Desinversión Programada</strong></h1>
+    <div class="notarial-subtitle">Banco Santander S.A. · SAN.MC · Ibex 35</div>
+    <div class="notarial-meta">
+      <span><div class="val">6.149</div>acciones actuales</span>
+      <span><div class="val">9,51€</div>precio hoy (17/03/2026)</span>
+      <span><div class="val">58.536€</div>valor de mercado actual</span>
+      <span><div class="val">19% → 2%</div>peso en cartera</span>
+      <span><div class="val">~949 acc.</div>posición residual destino</span>
+    </div>
+  </div>
+
+  <div class="ornament">· · · · ·</div>
+
+  <!-- PREÁMBULO -->
+  <div class="seccion">
+    <div class="seccion-num">Preámbulo</div>
+    <div class="seccion-titulo">Contexto y propósito</div>
+    <div class="seccion-cuerpo">
+      <p>Esta posición en Banco Santander ha sido construida durante <strong>más de veinte años</strong>, desde 2004, mediante un programa sistemático de reinversión de dividendos que ha resultado en un precio de coste de <strong>2,43€ por acción</strong> y una plusvalía acumulada superior al <strong>290%</strong> al precio actual de 9,51€.</p>
+      <p>El propósito de este contrato es reducir la posición desde el <strong>19% actual hasta el 2% de la cartera</strong> de forma ordenada, mediante cuatro tramos de 1.300 acciones cada uno, sin superar el límite operativo de 14.950€ por operación impuesto por la estructura de comisiones del broker. El destino es el porcentaje, no el precio.</p>
+      <p>Este contrato ha sido redactado el 17 de marzo de 2026, en un momento de <em>turbulencia de mercado</em> — SAN ha caído un 10% en la última semana desde máximos de 11,26€. Esta circunstancia es precisamente la razón por la que el contrato existe: para que las reglas acordadas en momento de calma analítica sustituyan a las decisiones tomadas bajo presión emocional.</p>
+    </div>
+  </div>
+
+  <hr class="doc-rule">
+
+  <!-- LECCIÓN HISTÓRICA -->
+  <div class="seccion">
+    <div class="seccion-num">Contexto histórico personal</div>
+    <div class="seccion-titulo">Las dos lecciones que informan este contrato</div>
+
+    <div class="leccion-box">
+      <div class="leccion-titulo">Caso MSFT 2013 — el coste de no tener un plan de reentrada</div>
+      <div class="leccion-grid">
+        <div class="leccion-cell">
+          <div class="lc-val">9.500$</div>
+          <div class="lc-lbl">vendido en 2013<br>por necesidad real</div>
+        </div>
+        <div class="leccion-cell positivo">
+          <div class="lc-val">×14,8</div>
+          <div class="lc-lbl">multiplicador<br>2013 → 2026</div>
+        </div>
+        <div class="leccion-cell negativo">
+          <div class="lc-val">~151.000$</div>
+          <div class="lc-lbl">diferencia entre<br>vender y mantener</div>
+        </div>
+      </div>
+      <div class="leccion-texto">
+        Vender MSFT para comprar una casa fue una <strong>decisión de vida correcta</strong>. El error no fue vender — fue no tener un plan de reentrada cuando la necesidad pasó. La lección para este contrato: <strong>la posición residual del 2% en SAN no se toca</strong>. Es la garantía de que si la tesis se cumple, se participa. Sin plan de salida total.
+      </div>
+    </div>
+
+    <div class="leccion-box" style="margin-top:12px;">
+      <div class="leccion-titulo">Caso Telefónica — el coste de mantener sin contrato</div>
+      <div class="leccion-grid">
+        <div class="leccion-cell negativo">
+          <div class="lc-val">−30%</div>
+          <div class="lc-lbl">retorno real<br>ajustado por inflación</div>
+        </div>
+        <div class="leccion-cell negativo">
+          <div class="lc-val">~20 años</div>
+          <div class="lc-lbl">tiempo mantenida<br>sin condición de salida</div>
+        </div>
+        <div class="leccion-cell">
+          <div class="lc-val">Sin reglas</div>
+          <div class="lc-lbl">causa del resultado:<br>inercia sin contrato</div>
+        </div>
+      </div>
+      <div class="leccion-texto">
+        Telefónica no quebró — simplemente destruyó valor de forma silenciosa durante dos décadas mientras la narrativa de "ya recuperará" prorrogaba la decisión indefinidamente. <strong>SAN no es Telefónica, pero sin este contrato el mecanismo sería idéntico.</strong>
+      </div>
+    </div>
+  </div>
+
+  <hr class="doc-rule">
+
+  <!-- POSICIÓN ACTUAL -->
+  <div class="seccion">
+    <div class="seccion-num">Artículo I</div>
+    <div class="seccion-titulo">Estado actual de la posición</div>
+    <table class="pos-table">
+      <thead>
+        <tr>
+          <th>Parámetro</th>
+          <th>Valor actual</th>
+          <th>Valor objetivo</th>
+          <th>Observación</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>Acciones</td>
+          <td>6.149</td>
+          <td>~949</td>
+          <td>Reducción de 5.200 acc. en 4 tramos</td>
+        </tr>
+        <tr>
+          <td>Precio actual</td>
+          <td>9,51€</td>
+          <td>—</td>
+          <td>Dato 17/03/2026 — actualmente bajo mínimos</td>
+        </tr>
+        <tr>
+          <td>Valor de mercado</td>
+          <td>~58.536€</td>
+          <td>~9.023€</td>
+          <td>Estimado a precio actual</td>
+        </tr>
+        <tr>
+          <td>Peso en cartera</td>
+          <td>19%</td>
+          <td>~2%</td>
+          <td>−17 puntos porcentuales</td>
+        </tr>
+        <tr>
+          <td>Precio de coste</td>
+          <td>2,43€</td>
+          <td>2,43€</td>
+          <td>No varía — referencia de Y-CST, no de venta</td>
+        </tr>
+        <tr>
+          <td>Plusvalía actual</td>
+          <td>+291%</td>
+          <td>—</td>
+          <td>A 9,51€. Cualquier venta sigue siendo +291% sobre coste</td>
+        </tr>
+        <tr class="highlight">
+          <td>Última venta ejecutada</td>
+          <td>11,05€</td>
+          <td>—</td>
+          <td>Referencia psicológica — no es un suelo ni un objetivo</td>
+        </tr>
+        <tr class="highlight">
+          <td>Máx. 52 semanas</td>
+          <td>11,26€</td>
+          <td>—</td>
+          <td>SAN ha caído ~15% desde máximos</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <hr class="doc-rule">
+
+  <!-- LÍMITE OPERATIVO -->
+  <div class="seccion">
+    <div class="seccion-num">Artículo II</div>
+    <div class="seccion-titulo">Límite operativo por tramo</div>
+
+    <div class="limite-box">
+      <div class="limite-titulo">Restricción de broker — obligatoria</div>
+      <div class="limite-texto">
+        Cada operación de venta no puede superar los <strong>14.950€</strong> sin incurrir en estructura de comisiones desfavorable.
+        Con tramos de <strong>1.300 acciones</strong>, el importe por operación queda entre <strong>11.700€</strong> (a 9,00€/acc.) y <strong>14.950€</strong> (a 11,50€/acc.) — dentro del límite en todo el rango de precios relevante.
+        Si en el momento de ejecutar un tramo el precio implica superar 14.950€, se <strong>reduce el número de acciones</strong> del tramo para mantenerse bajo el límite. Las acciones sobrantes se ejecutan en una segunda operación en la sesión siguiente.
+      </div>
+    </div>
+  </div>
+
+  <hr class="doc-rule">
+
+  <!-- TRAMOS -->
+  <div class="seccion">
+    <div class="seccion-num">Artículo III</div>
+    <div class="seccion-titulo">Estructura de desinversión por tramos</div>
+    <div class="seccion-cuerpo">
+      <p>La desinversión se articula en <strong>cuatro tramos de 1.300 acciones</strong> cada uno. Los tramos son secuenciales — no se puede ejecutar el Tramo N+1 sin haber completado el Tramo N. Cada tramo tiene una condición mínima de precio que actúa como filtro de confort, no como objetivo.</p>
+    </div>
+
+    <div class="tramo-wrapper">
+      <!-- Header -->
+      <div class="tramo-item header">
+        <div class="tramo-cell">Tramo</div>
+        <div class="tramo-cell">Condición de activación</div>
+        <div class="tramo-cell">Acciones · Importe est.</div>
+        <div class="tramo-cell">Posición resultante</div>
+      </div>
+
+      <!-- Tramo 1 -->
+      <div class="tramo-item">
+        <div class="tramo-cell">
+          <div class="tramo-num">TRAMO 1</div>
+        </div>
+        <div class="tramo-cell">
+          <div class="tramo-condicion">SAN cotiza <strong>≥ 10,00€</strong> durante al menos <strong>10 sesiones consecutivas</strong>. Precio psicológico redondo, primer nivel de recuperación desde los mínimos actuales.</div>
+        </div>
+        <div class="tramo-cell">
+          <div class="tramo-acc">1.300 acc.</div>
+          <div class="tramo-acc-sub">~13.000€ estimado a 10,00€<br>Dentro del límite de 14.950€</div>
+        </div>
+        <div class="tramo-cell">
+          <div class="tramo-acc">4.849 acc.</div>
+          <div class="tramo-acc-sub">~14–15% de cartera estimado</div>
+        </div>
+      </div>
+
+      <!-- Tramo 2 -->
+      <div class="tramo-item">
+        <div class="tramo-cell">
+          <div class="tramo-num">TRAMO 2</div>
+        </div>
+        <div class="tramo-cell">
+          <div class="tramo-condicion">SAN cotiza <strong>≥ 10,50€</strong> durante al menos <strong>10 sesiones consecutivas</strong>. Zona de consolidación intermedia antes del nivel de la última venta.</div>
+        </div>
+        <div class="tramo-cell">
+          <div class="tramo-acc">1.300 acc.</div>
+          <div class="tramo-acc-sub">~13.650€ estimado a 10,50€<br>Dentro del límite de 14.950€</div>
+        </div>
+        <div class="tramo-cell">
+          <div class="tramo-acc">3.549 acc.</div>
+          <div class="tramo-acc-sub">~10–11% de cartera estimado</div>
+        </div>
+      </div>
+
+      <!-- Tramo 3 -->
+      <div class="tramo-item">
+        <div class="tramo-cell">
+          <div class="tramo-num">TRAMO 3</div>
+        </div>
+        <div class="tramo-cell">
+          <div class="tramo-condicion">SAN cotiza <strong>≥ 11,00€</strong> durante al menos <strong>10 sesiones consecutivas</strong>. Zona de la última venta ejecutada. Si se llega aquí, se ha demostrado que el precio puede sostener ese nivel.</div>
+        </div>
+        <div class="tramo-cell">
+          <div class="tramo-acc">1.300 acc.</div>
+          <div class="tramo-acc-sub">~14.300€ estimado a 11,00€<br>Dentro del límite de 14.950€</div>
+        </div>
+        <div class="tramo-cell">
+          <div class="tramo-acc">2.249 acc.</div>
+          <div class="tramo-acc-sub">~6–7% de cartera estimado</div>
+        </div>
+      </div>
+
+      <!-- Tramo 4 -->
+      <div class="tramo-item">
+        <div class="tramo-cell">
+          <div class="tramo-num">TRAMO 4</div>
+        </div>
+        <div class="tramo-cell">
+          <div class="tramo-condicion"><strong>Sin condición mínima de precio.</strong> Se activa por: (a) underperformance vs Ibex ≥15pp en 6 meses, o (b) decisión libre del inversor tras revisión semestral del contrato.</div>
+        </div>
+        <div class="tramo-cell">
+          <div class="tramo-acc">1.300 acc.</div>
+          <div class="tramo-acc-sub">Importe variable según precio<br>Respetar límite de 14.950€</div>
+        </div>
+        <div class="tramo-cell">
+          <div class="tramo-acc">~949 acc.</div>
+          <div class="tramo-acc-sub">Posición residual permanente</div>
+        </div>
+      </div>
+
+      <!-- Destino -->
+      <div class="tramo-item destino">
+        <div class="tramo-cell">
+          <div class="tramo-num">DESTINO</div>
+        </div>
+        <div class="tramo-cell">
+          <div class="tramo-condicion">Posición residual permanente de cosecha. No se vende por precio. Solo se liquida por ruptura formal de tesis.</div>
+        </div>
+        <div class="tramo-cell">
+          <div class="tramo-acc">~949 acc.</div>
+          <div class="tramo-acc-sub">Y-CST ~2,5% sobre coste<br>Dividendo anual ~228€</div>
+        </div>
+        <div class="tramo-cell">
+          <div class="tramo-acc">~2%</div>
+          <div class="tramo-acc-sub">peso objetivo permanente</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <hr class="doc-rule">
+
+  <!-- REGLAS -->
+  <div class="seccion">
+    <div class="seccion-num">Artículo IV</div>
+    <div class="seccion-titulo">Reglas de ejecución — de obligado cumplimiento</div>
+
+    <div class="regla">
+      <div class="regla-num">1</div>
+      <div class="regla-body">
+        <div class="regla-titulo">El destino es el porcentaje, no el precio</div>
+        <div class="regla-texto">Los umbrales de precio son <strong>filtros mínimos de confort</strong>, no objetivos de venta. Si las condiciones se cumplen, el tramo se ejecuta. Si no, se espera. <strong>No se inventan nuevas razones para no ejecutar cuando el precio supera el mínimo.</strong></div>
+      </div>
+    </div>
+
+    <div class="regla">
+      <div class="regla-num">2</div>
+      <div class="regla-body">
+        <div class="regla-titulo">Prohibición de anclaje al precio de venta anterior</div>
+        <div class="regla-texto">El precio de 11,05€ de la última venta <strong>no es un suelo ni un mínimo aceptable</strong>. Vender a 10,00€ no es una pérdida — es una venta al <strong>+312% sobre el precio de coste de 2,43€</strong>. Cualquier decisión que use 11,05€ como referencia de "no vendo por debajo" viola este contrato.</div>
+      </div>
+    </div>
+
+    <div class="regla">
+      <div class="regla-num">3</div>
+      <div class="regla-body">
+        <div class="regla-titulo">Los resultados históricos no suspenden el contrato</div>
+        <div class="regla-texto">Que los resultados de Santander sean históricos, que el ciclo continúe, o que los analistas sean alcistas <strong>son argumentos para mantener la posición residual del 2% con convicción — no para retrasar los tramos</strong>. La tesis de cosecha del 2% es perfectamente compatible con resultados históricos y con un ciclo alcista.</div>
+      </div>
+    </div>
+
+    <div class="regla">
+      <div class="regla-num">4</div>
+      <div class="regla-body">
+        <div class="regla-titulo">La turbulencia no suspende el contrato</div>
+        <div class="regla-texto">Este contrato fue redactado <em>durante</em> un período de turbulencia. La turbulencia puede retrasar la activación de un tramo si el precio mínimo no se cumple — eso es correcto y esperado. <strong>Lo que no puede hacer es pausar el contrato en sí.</strong> Si el precio está bajo el mínimo, se espera con calma. Si está sobre el mínimo, se ejecuta.</div>
+      </div>
+    </div>
+
+    <div class="regla">
+      <div class="regla-num">5</div>
+      <div class="regla-body">
+        <div class="regla-titulo">Revisión obligatoria cada seis meses sin ejecución</div>
+        <div class="regla-texto">Si transcurren seis meses sin ejecutar ningún tramo, el inversor debe responder por escrito: <em>¿Por qué no se ha ejecutado y sigue siendo la razón correcta?</em> Si la respuesta es que el precio no ha alcanzado el mínimo: el contrato sigue sin cambios. Si es cualquier otra razón: el contrato debe reafirmarse o revisarse explícitamente. <strong>El silencio no es una respuesta válida.</strong></div>
+      </div>
+    </div>
+
+    <div class="regla">
+      <div class="regla-num">6</div>
+      <div class="regla-body">
+        <div class="regla-titulo">Respeto estricto del límite de 14.950€ por operación</div>
+        <div class="regla-texto">Si en el momento de ejecutar un tramo el precio implica superar 14.950€ con 1.300 acciones, <strong>se reduce el número de acciones del tramo hasta mantenerse bajo el límite</strong>. Las acciones sobrantes se ejecutan en la sesión siguiente como segunda operación del mismo tramo. El tramo no se considera completo hasta que todas las acciones estén vendidas.</div>
+      </div>
+    </div>
+  </div>
+
+  <hr class="doc-rule">
+
+  <!-- CONDICIONES ESPECIALES -->
+  <div class="seccion">
+    <div class="seccion-num">Artículo V</div>
+    <div class="seccion-titulo">Condiciones especiales</div>
+
+    <div class="condicion verde">
+      <div class="condicion-tipo">Acelerador — precio favorable</div>
+      <div class="condicion-texto">Si SAN supera <strong>12,00€</strong> durante 15 sesiones consecutivas, el inversor puede ejecutar dos tramos en el mismo mes respetando en todo caso el límite de 14.950€ por operación. Esta es una opción, no una obligación.</div>
+    </div>
+
+    <div class="condicion gold">
+      <div class="condicion-tipo">Revisión obligatoria — underperformance relativa</div>
+      <div class="condicion-texto">Si SAN cae más de <strong>15 puntos porcentuales por debajo del Ibex 35</strong> en un período de 6 meses, el inversor revisa el contrato en los 15 días siguientes. La revisión evalúa si la tesis de cosecha del 2% residual sigue siendo válida. Si la conclusión es que no, se activa el Tramo 4 independientemente del precio.</div>
+    </div>
+
+    <div class="condicion roja">
+      <div class="condicion-tipo">Ruptura de tesis — liquidación inmediata del remanente</div>
+      <div class="condicion-texto">Si se produce alguna de las siguientes condiciones, la posición remanente se liquida íntegramente: <strong>(1)</strong> CET1 por debajo del 11% durante dos trimestres consecutivos. <strong>(2)</strong> Suspensión del dividendo por decisión regulatoria o deterioro. <strong>(3)</strong> Crisis sistémica en Brasil o México que impacte más del 30% del beneficio neto de forma sostenida. En ese caso el límite de 14.950€ no aplica — se liquida todo en una o dos operaciones.</div>
+    </div>
+  </div>
+
+  <hr class="doc-rule">
+
+  <!-- CLÁUSULA PSICOLÓGICA -->
+  <div class="seccion">
+    <div class="seccion-num">Artículo VI</div>
+    <div class="seccion-titulo">Cláusula de honestidad — leer antes de cualquier pausa no justificada</div>
+
+    <div class="clausula-psi">
+      <p>Si estás leyendo esto porque estás a punto de no ejecutar un tramo cuando las condiciones se han cumplido, recuerda lo que perdiste con MSFT y lo que perdiste con Telefónica. Son dos lecciones opuestas que apuntan al mismo lugar: necesitas un plan, y el plan eres tú mismo hace tres meses, cuando pensabas con claridad. El mercado no sabe que vendiste a 11,05€. El mercado no te debe nada. Lo que sí te debes tú es cumplir el contrato que firmaste.</p>
+      <cite>— Recordatorio personal, Contrato SAN-EXIT-2026-001</cite>
+    </div>
+  </div>
+
+  <hr class="doc-rule">
+
+  <!-- POSICIÓN RESIDUAL -->
+  <div class="seccion">
+    <div class="seccion-num">Artículo VII</div>
+    <div class="seccion-titulo">La posición residual de ~949 acciones — qué es y qué no es</div>
+    <div class="seccion-cuerpo">
+      <p>Las ~949 acciones que permanecen no son un residuo — son una posición de cosecha pura con Y-CST superior al 9%, dividendo reinvertible, y exposición real a una tesis en la que se mantiene convicción de largo plazo. Esta posición no se vende por precio. Solo se liquida por ruptura formal de tesis.</p>
+      <p>El inversor que completa los cuatro tramos ha ejecutado con disciplina la desinversión de una posición construida durante veinte años. <strong>Eso es gestión de patrimonio, no derrota. Y la posición residual garantiza que si SAN continúa su ciclo alcista, se participa.</strong></p>
+    </div>
+  </div>
+
+  <!-- FIRMA -->
+  <div class="firma-section">
+    <p class="firma-intro">El inversor, al firmar este documento, declara haber leído y comprendido todas las cláusulas, acepta las reglas de ejecución como de obligado cumplimiento personal, y se compromete a revisar este contrato cada seis meses o antes de cualquier decisión que modifique su estructura.</p>
+    <div class="firma-grid">
+      <div>
+        <div class="firma-linea"></div>
+        <div class="firma-label">Firma del inversor &nbsp;·&nbsp; Jan Casas Sala</div>
+      </div>
+      <div>
+        <div class="firma-linea"></div>
+        <div class="firma-label">Fecha de firma &nbsp;·&nbsp; Marzo 2026</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="pie">
+    <p>SAN-EXIT-2026-001 v2.0 &nbsp;·&nbsp; Documento privado de inversión &nbsp;·&nbsp; Jan Casas Sala<br>
+    Precio de referencia: 9,51€ (17/03/2026) &nbsp;·&nbsp; No constituye asesoramiento financiero &nbsp;·&nbsp; Uso personal exclusivo</p>
+  </div>
+
+</div>
+</div>
+</body>
+</html>

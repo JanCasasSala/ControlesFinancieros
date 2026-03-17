@@ -1,0 +1,1238 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Cartera Largo — Estrategia de Cosecha · Tesis de Inversión</title>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;0,700;0,900;1,400;1,600&family=Source+Serif+4:ital,opsz,wght@0,8..60,300;0,8..60,400;0,8..60,600;1,8..60,300;1,8..60,400&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --salmon:     #FFF1E5;
+      --salmon-mid: #F8E0CC;
+      --salmon-dark:#F2C9A8;
+      --ft-red:     #C8102E;
+      --ft-blue:    #0F5499;
+      --ink:        #1A1A1A;
+      --ink-mid:    #3D3D3D;
+      --ink-light:  #6B6B6B;
+      --rule:       #CCC0B0;
+      --rule-dark:  #A89880;
+      --white:      #FFFFFF;
+      --san:        #C8102E;
+      --itx:        #0F5499;
+      --log:        #2E7D32;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      background: var(--salmon);
+      color: var(--ink);
+      font-family: 'Source Serif 4', Georgia, serif;
+      font-size: 16px;
+      line-height: 1.65;
+    }
+
+    /* ── MASTHEAD ── */
+    .masthead {
+      background: var(--white);
+      border-bottom: 3px solid var(--ink);
+      padding: 0;
+    }
+    .masthead-top {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 10px 40px;
+      border-bottom: 1px solid var(--rule);
+    }
+    .masthead-date {
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 0.72rem;
+      color: var(--ink-light);
+      letter-spacing: 0.5px;
+    }
+    .masthead-logo {
+      text-align: center;
+    }
+    .masthead-logo .pub-name {
+      font-family: 'Playfair Display', Georgia, serif;
+      font-size: 0.78rem;
+      font-weight: 400;
+      letter-spacing: 4px;
+      text-transform: uppercase;
+      color: var(--ink-light);
+      display: block;
+      margin-bottom: 2px;
+    }
+    .masthead-logo .pub-title {
+      font-family: 'Playfair Display', Georgia, serif;
+      font-size: 2.6rem;
+      font-weight: 700;
+      color: var(--ink);
+      line-height: 1;
+      letter-spacing: -1px;
+    }
+    .masthead-logo .pub-title span {
+      color: var(--ft-red);
+    }
+    .masthead-meta {
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 0.68rem;
+      color: var(--ink-light);
+      text-align: right;
+      line-height: 1.8;
+    }
+    .masthead-nav {
+      display: flex;
+      gap: 0;
+      padding: 0 40px;
+      background: var(--salmon);
+      border-bottom: 2px solid var(--ink);
+    }
+    .masthead-nav a {
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 0.72rem;
+      font-weight: 500;
+      color: var(--ink);
+      text-decoration: none;
+      padding: 8px 16px 8px 0;
+      margin-right: 16px;
+      border-right: 1px solid var(--rule-dark);
+      letter-spacing: 0.5px;
+      text-transform: uppercase;
+      white-space: nowrap;
+    }
+    .masthead-nav a:last-child { border-right: none; }
+    .masthead-nav a:hover { color: var(--ft-red); }
+    .masthead-nav a.active { color: var(--ft-red); font-weight: 600; }
+
+    /* ── LAYOUT ── */
+    .page { max-width: 1100px; margin: 0 auto; padding: 0 40px 80px; }
+
+    /* ── PORTADA / HERO ── */
+    .front-page {
+      padding: 32px 0 0;
+      border-bottom: 3px solid var(--ink);
+      margin-bottom: 0;
+    }
+    .front-kicker {
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 0.72rem;
+      font-weight: 600;
+      color: var(--ft-red);
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      margin-bottom: 10px;
+    }
+    .front-headline {
+      font-family: 'Playfair Display', Georgia, serif;
+      font-size: 3.4rem;
+      font-weight: 900;
+      line-height: 1.05;
+      letter-spacing: -1.5px;
+      color: var(--ink);
+      margin-bottom: 16px;
+      max-width: 780px;
+    }
+    .front-headline em {
+      font-style: italic;
+      color: var(--ft-red);
+    }
+    .front-deck {
+      font-family: 'Source Serif 4', Georgia, serif;
+      font-size: 1.15rem;
+      font-weight: 300;
+      color: var(--ink-mid);
+      line-height: 1.5;
+      max-width: 680px;
+      margin-bottom: 20px;
+      border-left: 3px solid var(--ft-red);
+      padding-left: 16px;
+    }
+    .front-byline {
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 0.72rem;
+      color: var(--ink-light);
+      margin-bottom: 28px;
+      letter-spacing: 0.3px;
+    }
+    .front-byline strong { color: var(--ink); }
+
+    /* ── GRID PORTADA ── */
+    .front-grid {
+      display: grid;
+      grid-template-columns: 2fr 1fr;
+      gap: 0;
+      border-top: 1px solid var(--rule-dark);
+      padding-top: 24px;
+      padding-bottom: 32px;
+    }
+    .front-col-main {
+      padding-right: 36px;
+      border-right: 1px solid var(--rule-dark);
+    }
+    .front-col-sidebar {
+      padding-left: 28px;
+    }
+
+    /* Texto narrativo apertura */
+    .lede {
+      font-family: 'Source Serif 4', Georgia, serif;
+      font-size: 1.05rem;
+      font-weight: 600;
+      line-height: 1.6;
+      color: var(--ink);
+      margin-bottom: 14px;
+    }
+    .body-text {
+      font-family: 'Source Serif 4', Georgia, serif;
+      font-size: 0.94rem;
+      line-height: 1.75;
+      color: var(--ink-mid);
+      margin-bottom: 14px;
+    }
+    .body-text strong { color: var(--ink); font-weight: 600; }
+
+    /* ── PULLQUOTE ── */
+    .pullquote {
+      border-top: 3px solid var(--ft-red);
+      border-bottom: 1px solid var(--rule-dark);
+      padding: 16px 0 14px;
+      margin: 24px 0;
+    }
+    .pullquote p {
+      font-family: 'Playfair Display', Georgia, serif;
+      font-size: 1.3rem;
+      font-weight: 400;
+      font-style: italic;
+      line-height: 1.4;
+      color: var(--ink);
+    }
+    .pullquote cite {
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 0.7rem;
+      color: var(--ink-light);
+      display: block;
+      margin-top: 8px;
+      font-style: normal;
+    }
+
+    /* ── SIDEBAR MÉTRICAS ── */
+    .sidebar-title {
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 0.68rem;
+      font-weight: 600;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      color: var(--ink-light);
+      border-bottom: 2px solid var(--ink);
+      padding-bottom: 6px;
+      margin-bottom: 16px;
+    }
+    .metric-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: baseline;
+      padding: 10px 0;
+      border-bottom: 1px solid var(--rule);
+    }
+    .metric-row:last-child { border-bottom: none; }
+    .metric-label {
+      font-family: 'Source Serif 4', Georgia, serif;
+      font-size: 0.82rem;
+      color: var(--ink-mid);
+    }
+    .metric-value {
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 0.9rem;
+      font-weight: 600;
+      color: var(--ink);
+    }
+    .metric-value.red   { color: var(--san); }
+    .metric-value.blue  { color: var(--itx); }
+    .metric-value.green { color: var(--log); }
+
+    /* ── TICKER CARDS SIDEBAR ── */
+    .ticker-mini {
+      background: var(--white);
+      border: 1px solid var(--rule-dark);
+      border-left: 3px solid var(--rule-dark);
+      padding: 12px 14px;
+      margin-bottom: 8px;
+    }
+    .ticker-mini.san { border-left-color: var(--san); }
+    .ticker-mini.itx { border-left-color: var(--itx); }
+    .ticker-mini.log { border-left-color: var(--log); }
+    .ticker-mini .tk {
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 0.78rem;
+      font-weight: 600;
+      margin-bottom: 2px;
+    }
+    .ticker-mini.san .tk { color: var(--san); }
+    .ticker-mini.itx .tk { color: var(--itx); }
+    .ticker-mini.log .tk { color: var(--log); }
+    .ticker-mini .empresa {
+      font-size: 0.72rem;
+      color: var(--ink-light);
+      margin-bottom: 8px;
+    }
+    .ticker-mini .met-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 4px 8px;
+    }
+    .ticker-mini .met-item .val {
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 0.88rem;
+      font-weight: 600;
+      color: var(--ink);
+    }
+    .ticker-mini .met-item .lbl {
+      font-size: 0.65rem;
+      color: var(--ink-light);
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    /* ── SECCIONES ── */
+    .section-rule {
+      border: none;
+      border-top: 2px solid var(--ink);
+      margin: 40px 0 0;
+    }
+    .section-header {
+      display: flex;
+      align-items: baseline;
+      gap: 16px;
+      padding: 12px 0 16px;
+      border-bottom: 1px solid var(--rule-dark);
+      margin-bottom: 28px;
+    }
+    .section-num {
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 0.68rem;
+      color: var(--ft-red);
+      font-weight: 600;
+      letter-spacing: 1px;
+      white-space: nowrap;
+    }
+    .section-title {
+      font-family: 'Playfair Display', Georgia, serif;
+      font-size: 1.5rem;
+      font-weight: 700;
+      color: var(--ink);
+      letter-spacing: -0.3px;
+    }
+
+    /* ── COLUMNAS DOBLES ── */
+    .two-col {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 36px;
+    }
+    .three-col {
+      display: grid;
+      grid-template-columns: 1fr 1fr 1fr;
+      gap: 24px;
+    }
+
+    /* ── ARTÍCULO SUBSECCIÓN ── */
+    .subsection-head {
+      font-family: 'Playfair Display', Georgia, serif;
+      font-size: 1.05rem;
+      font-weight: 700;
+      color: var(--ink);
+      margin: 20px 0 8px;
+      padding-bottom: 4px;
+      border-bottom: 1px solid var(--rule);
+    }
+
+    /* ── TABLA EDITORIAL ── */
+    .ft-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 0.85rem;
+      margin: 16px 0;
+    }
+    .ft-table thead tr {
+      border-top: 2px solid var(--ink);
+      border-bottom: 1px solid var(--ink);
+    }
+    .ft-table th {
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 0.68rem;
+      font-weight: 600;
+      letter-spacing: 1px;
+      text-transform: uppercase;
+      color: var(--ink-light);
+      padding: 8px 12px;
+      text-align: left;
+    }
+    .ft-table td {
+      padding: 10px 12px;
+      border-bottom: 1px solid var(--rule);
+      color: var(--ink-mid);
+      vertical-align: top;
+    }
+    .ft-table td:first-child {
+      font-family: 'IBM Plex Mono', monospace;
+      font-weight: 600;
+      color: var(--ink);
+      font-size: 0.8rem;
+    }
+    .ft-table tfoot td {
+      border-top: 2px solid var(--ink);
+      border-bottom: none;
+      font-weight: 600;
+      color: var(--ink);
+    }
+    .ft-table tr:last-child td { border-bottom: none; }
+
+    /* ── BADGE ESTADO ── */
+    .estado-badge {
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 0.68rem;
+      font-weight: 600;
+      padding: 2px 8px;
+      letter-spacing: 0.5px;
+    }
+    .estado-ok    { background: #E8F5E9; color: #2E7D32; border: 1px solid #A5D6A7; }
+    .estado-aire  { background: #FFF8E1; color: #F57F17; border: 1px solid #FFE082; }
+    .estado-caro  { background: #FFEBEE; color: #C62828; border: 1px solid #FFCDD2; }
+
+    /* ── HITOS ── */
+    .hito-item {
+      display: flex;
+      gap: 14px;
+      padding: 14px 0;
+      border-bottom: 1px solid var(--rule);
+      align-items: flex-start;
+    }
+    .hito-item:last-child { border-bottom: none; }
+    .hito-dot {
+      width: 8px; height: 8px;
+      border-radius: 50%;
+      margin-top: 6px;
+      flex-shrink: 0;
+    }
+    .hito-dot.ok    { background: var(--log); }
+    .hito-dot.ko    { background: var(--salmon-dark); border: 2px solid var(--rule-dark); }
+    .hito-dot.seg   { background: var(--ft-blue); }
+    .hito-body {}
+    .hito-tk {
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 0.68rem;
+      font-weight: 600;
+      padding: 1px 6px;
+      margin-right: 6px;
+      border-radius: 2px;
+    }
+    .hito-tk.san { background: #FFEBEE; color: var(--san); }
+    .hito-tk.itx { background: #E3F2FD; color: var(--itx); }
+    .hito-tk.log { background: #E8F5E9; color: var(--log); }
+    .hito-tk.mac { background: #FFF8E1; color: #E65100; }
+    .hito-critico {
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 0.62rem;
+      color: var(--ft-red);
+      border: 1px solid var(--ft-red);
+      padding: 0px 5px;
+      margin-left: 4px;
+    }
+    .hito-auto {
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 0.62rem;
+      color: var(--ft-blue);
+      border: 1px solid var(--ft-blue);
+      padding: 0px 5px;
+      margin-left: 4px;
+    }
+    .hito-title {
+      font-family: 'Source Serif 4', Georgia, serif;
+      font-size: 0.88rem;
+      font-weight: 600;
+      color: var(--ink);
+      margin-bottom: 3px;
+    }
+    .hito-detail {
+      font-size: 0.78rem;
+      color: var(--ink-light);
+      line-height: 1.5;
+    }
+
+    /* ── CONVICTION BOX ── */
+    .conviction-box {
+      background: var(--white);
+      border: 1px solid var(--rule-dark);
+      border-top: 3px solid var(--ink);
+      padding: 20px 24px;
+      margin-bottom: 24px;
+    }
+    .conviction-label {
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 0.68rem;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      color: var(--ink-light);
+      margin-bottom: 8px;
+    }
+    .conviction-score {
+      font-family: 'Playfair Display', Georgia, serif;
+      font-size: 2.2rem;
+      font-weight: 700;
+      color: var(--ink);
+      line-height: 1;
+      margin-bottom: 4px;
+    }
+    .conviction-name {
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 0.75rem;
+      font-weight: 600;
+      margin-bottom: 12px;
+    }
+    .conviction-bar-bg {
+      background: var(--salmon-mid);
+      height: 4px;
+      border-radius: 2px;
+      margin-bottom: 8px;
+    }
+    .conviction-bar-fill {
+      height: 4px;
+      border-radius: 2px;
+      background: var(--ink);
+    }
+    .conviction-counts {
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 0.7rem;
+      color: var(--ink-light);
+    }
+
+    /* ── RIESGO / DIAGNÓSTICO ── */
+    .risk-item {
+      padding: 16px 0;
+      border-bottom: 1px solid var(--rule);
+    }
+    .risk-item:last-child { border-bottom: none; }
+    .risk-title {
+      font-family: 'Playfair Display', Georgia, serif;
+      font-size: 0.95rem;
+      font-weight: 700;
+      color: var(--ink);
+      margin-bottom: 6px;
+    }
+    .risk-title::before {
+      content: '▪ ';
+      color: var(--ft-red);
+    }
+
+    /* ── NIVELES TABLE ── */
+    .nivel-row {
+      display: grid;
+      grid-template-columns: 90px 1fr 1fr 80px;
+      gap: 12px;
+      padding: 12px 0;
+      border-bottom: 1px solid var(--rule);
+      align-items: start;
+      font-size: 0.85rem;
+    }
+    .nivel-row.header {
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 0.65rem;
+      font-weight: 600;
+      letter-spacing: 1px;
+      text-transform: uppercase;
+      color: var(--ink-light);
+      border-bottom: 2px solid var(--ink);
+      padding-bottom: 8px;
+    }
+
+    /* ── ACCORDION ── */
+    details {
+      border-bottom: 1px solid var(--rule);
+      margin-bottom: 0;
+    }
+    details summary {
+      padding: 14px 0;
+      cursor: pointer;
+      font-family: 'Source Serif 4', Georgia, serif;
+      font-size: 0.92rem;
+      font-weight: 600;
+      color: var(--ink);
+      list-style: none;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      user-select: none;
+    }
+    details summary::-webkit-details-marker { display: none; }
+    details summary::after {
+      content: '+';
+      font-family: 'Playfair Display', serif;
+      font-size: 1.4rem;
+      color: var(--ft-red);
+      font-weight: 300;
+      line-height: 1;
+    }
+    details[open] summary::after { content: '−'; }
+    .details-inner {
+      padding: 4px 0 20px;
+      font-size: 0.86rem;
+      color: var(--ink-mid);
+      line-height: 1.7;
+    }
+    .details-inner p { margin-bottom: 10px; }
+    .details-inner ol, .details-inner ul {
+      padding-left: 20px;
+      margin-bottom: 10px;
+    }
+    .details-inner li { margin-bottom: 6px; }
+
+    /* ── AVISO ── */
+    .aviso {
+      background: var(--white);
+      border-top: 2px solid var(--rule-dark);
+      padding: 20px 0 0;
+      margin-top: 40px;
+      font-size: 0.78rem;
+      color: var(--ink-light);
+      line-height: 1.7;
+    }
+
+    /* ── FOOTER ── */
+    .ft-footer {
+      background: var(--ink);
+      color: var(--salmon-mid);
+      padding: 20px 40px;
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 0.68rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      letter-spacing: 0.5px;
+      margin-top: 48px;
+    }
+
+    /* ── SEPARADOR ARTÍCULO ── */
+    .article-rule {
+      border: none;
+      border-top: 1px solid var(--rule-dark);
+      margin: 24px 0;
+    }
+
+    code {
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 0.82rem;
+      background: var(--salmon-mid);
+      padding: 1px 5px;
+      border-radius: 2px;
+      color: var(--ink);
+    }
+
+    @media (max-width: 768px) {
+      .page { padding: 0 20px 60px; }
+      .masthead-top { padding: 10px 20px; }
+      .masthead-nav { padding: 0 20px; flex-wrap: wrap; }
+      .front-headline { font-size: 2.2rem; }
+      .front-grid { grid-template-columns: 1fr; }
+      .front-col-main { padding-right: 0; border-right: none; border-bottom: 1px solid var(--rule-dark); padding-bottom: 24px; margin-bottom: 24px; }
+      .front-col-sidebar { padding-left: 0; }
+      .two-col { grid-template-columns: 1fr; }
+      .three-col { grid-template-columns: 1fr; }
+      .nivel-row { grid-template-columns: 1fr; }
+      .ft-footer { flex-direction: column; gap: 8px; text-align: center; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- MASTHEAD -->
+<header class="masthead">
+  <div class="masthead-top">
+    <div class="masthead-date">Marzo 2026 &nbsp;·&nbsp; Documento de tesis activo &nbsp;·&nbsp; Versión 1.0</div>
+    <div class="masthead-logo">
+      <span class="pub-name">Tesis de Inversión</span>
+      <div class="pub-title">Cartera <span>Largo</span></div>
+    </div>
+    <div class="masthead-meta">
+      SAN.MC · ITX.MC · LOG.MC<br>
+      Ibex 35 · BME Madrid<br>
+      Estrategia de Cosecha
+    </div>
+  </div>
+  <nav class="masthead-nav">
+    <a href="#portada" class="active">Portada</a>
+    <a href="#cartera">La Cartera</a>
+    <a href="#modelo">Modelo</a>
+    <a href="#riesgos">Riesgos</a>
+    <a href="#niveles">Niveles</a>
+    <a href="#hitos">Hitos T-G</a>
+    <a href="#diagnosticos">Diagnósticos</a>
+    <a href="#valoracion">Valoración</a>
+    <a href="#manual">Manual</a>
+  </nav>
+</header>
+
+<div class="page">
+
+  <!-- PORTADA -->
+  <section class="front-page" id="portada">
+    <div class="front-kicker">Análisis de cartera &nbsp;·&nbsp; Renta variable española &nbsp;·&nbsp; Estrategia de rentas</div>
+    <h1 class="front-headline">Tres posiciones, un principio:<br><em>cobrar más que el bono</em></h1>
+    <p class="front-deck">Una cartera concentrada en Santander, Inditex y Logista diseñada para generar un flujo de rentas sostenible y creciente que supere sistemáticamente al bono español a diez años, con horizonte de inversión de largo plazo y reglas explícitas de salida.</p>
+    <div class="front-byline">
+      Por <strong>Jan Casas Sala</strong> &nbsp;·&nbsp; Documento de tesis · Uso personal &nbsp;·&nbsp; Actualizado marzo 2026
+    </div>
+
+    <div class="front-grid">
+      <!-- APERTURA NARRATIVA -->
+      <div class="front-col-main">
+        <p class="lede">Cuando el bono español a diez años rinde un 3,4%, cualquier inversor en acciones tiene una pregunta obligatoria antes de comprar: ¿por qué asumir el riesgo adicional si el activo libre de riesgo ya ofrece ese cupón garantizado?</p>
+        <p class="body-text">La respuesta de la Cartera Largo es concreta: porque Banco Santander rinde más del 9% sobre el precio de coste, porque Inditex ha crecido su dividendo por acción de forma ininterrumpida durante una década, y porque Logista distribuye un flujo de caja predecible respaldado por contratos de larga duración en mercados cuasi-monopolísticos. El diferencial —el GAP— no es un número accesorio. Es la razón de existir de cada posición.</p>
+        <p class="body-text">La estrategia no persigue revalorización extraordinaria. No tiene objetivos de precio. Lo que mide, vigila y optimiza es el rendimiento total —dividendo más equivalente de recompras— expresado como diferencial sobre el coste de oportunidad sin riesgo. Cuando ese diferencial desaparece, la posición entra en revisión. Cuando un hito crítico de la tesis se rompe de forma irreversible, la posición se liquida al precio de mercado, independientemente de las pérdidas acumuladas.</p>
+
+        <div class="pullquote">
+          <p>"El GAP positivo respecto al bono ES10Y es la métrica central de vigilancia. Una posición en CARO señala revisión, no salida automática."</p>
+          <cite>— Tesis de inversión, Cartera Largo v1.0</cite>
+        </div>
+
+        <p class="body-text"><strong>Tres empresas del Ibex 35</strong>, tres tesis distintas pero con un denominador común: generación de caja visible, capacidad de mantener o crecer el dividendo, y posición competitiva estructural en sus mercados respectivos. Santander aporta yield elevado y exposición a mercados emergentes con mayor crecimiento. Inditex aporta calidad de márgenes y dividendo creciente desde una posición de liderazgo global. Logista aporta flujo de caja predecible y prima de riesgo por el descuento secular del tabaco, que la tesis considera sobreestimado.</p>
+        <p class="body-text">El monitor automático ejecuta la vigilancia diaria: descarga precios, calcula hitos financieros desde los estados contables públicos, evalúa el bono de referencia y genera el semáforo de estado de cada posición. El inversor solo interviene cuando los earnings trimestrales actualizan los hitos manuales.</p>
+      </div>
+
+      <!-- SIDEBAR MÉTRICAS -->
+      <div class="front-col-sidebar">
+        <div class="sidebar-title">Posiciones activas</div>
+        <div class="ticker-mini san">
+          <div class="tk">SAN.MC</div>
+          <div class="empresa">Banco Santander · Financiero</div>
+          <div class="met-grid">
+            <div class="met-item"><div class="val">6.149</div><div class="lbl">Acciones</div></div>
+            <div class="met-item"><div class="val">2,43€</div><div class="lbl">P. coste</div></div>
+            <div class="met-item"><div class="val">0,24€</div><div class="lbl">Div./acc.</div></div>
+            <div class="met-item"><div class="val">2,6%</div><div class="lbl">BB yield</div></div>
+          </div>
+        </div>
+        <div class="ticker-mini itx">
+          <div class="tk">ITX.MC</div>
+          <div class="empresa">Inditex · Consumo discrecional</div>
+          <div class="met-grid">
+            <div class="met-item"><div class="val">520</div><div class="lbl">Acciones</div></div>
+            <div class="met-item"><div class="val">19,20€</div><div class="lbl">P. coste</div></div>
+            <div class="met-item"><div class="val">1,90€</div><div class="lbl">Div./acc.</div></div>
+            <div class="met-item"><div class="val">—</div><div class="lbl">BB yield</div></div>
+          </div>
+        </div>
+        <div class="ticker-mini log">
+          <div class="tk">LOG.MC</div>
+          <div class="empresa">Logista · Logística / Distribución</div>
+          <div class="met-grid">
+            <div class="met-item"><div class="val">1.070</div><div class="lbl">Acciones</div></div>
+            <div class="met-item"><div class="val">16,89€</div><div class="lbl">P. coste</div></div>
+            <div class="met-item"><div class="val">2,10€</div><div class="lbl">Div./acc.</div></div>
+            <div class="met-item"><div class="val">—</div><div class="lbl">BB yield</div></div>
+          </div>
+        </div>
+
+        <hr class="article-rule">
+        <div class="sidebar-title">Indicadores clave</div>
+        <div class="metric-row">
+          <span class="metric-label">Bono ES10Y ref.</span>
+          <span class="metric-value">3,40%</span>
+        </div>
+        <div class="metric-row">
+          <span class="metric-label">Y-CST Santander</span>
+          <span class="metric-value red">&gt;10%</span>
+        </div>
+        <div class="metric-row">
+          <span class="metric-label">Y-CST Inditex</span>
+          <span class="metric-value blue">9,9%</span>
+        </div>
+        <div class="metric-row">
+          <span class="metric-label">Y-CST Logista</span>
+          <span class="metric-value green">12,4%</span>
+        </div>
+        <div class="metric-row">
+          <span class="metric-label">Trigger revisión</span>
+          <span class="metric-value">ES10Y &gt;4,0%</span>
+        </div>
+        <div class="metric-row">
+          <span class="metric-label">Estrategia</span>
+          <span class="metric-value">Cosecha</span>
+        </div>
+        <div class="metric-row">
+          <span class="metric-label">Horizonte</span>
+          <span class="metric-value">5–10 años</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 02 LA CARTERA -->
+  <hr class="section-rule">
+  <div class="section-header" id="cartera">
+    <span class="section-num">§ 02</span>
+    <h2 class="section-title">La Cartera — Tres tesis, un denominador común</h2>
+  </div>
+
+  <div class="three-col">
+    <div>
+      <div class="subsection-head" style="color:var(--san);">Banco Santander</div>
+      <p class="body-text">El mayor banco europeo por base de clientes opera en diez mercados con exposición significativa a Brasil y México. El yield total sobre precio de coste —dividendo más equivalente de recompras— supera el 10%. El riesgo cambiario latinoamericano es inherente a la tesis y se acepta como contrapartida del diferencial de crecimiento.</p>
+      <p class="body-text">El hito crítico es el ratio CET1: si el capital regulatorio de máxima calidad cae y se mantiene por debajo del 12%, la capacidad de mantener el dividendo y las recompras se compromete estructuralmente. Sin ese hito, la tesis pierde su fundamento.</p>
+    </div>
+    <div>
+      <div class="subsection-head" style="color:var(--itx);">Inditex</div>
+      <p class="body-text">La mayor empresa de moda del mundo por capitalización mantiene márgenes brutos consistentemente superiores al 55%. Su modelo de integración vertical y rotación rápida de inventario genera una ventaja competitiva difícil de replicar. En esta cartera, Inditex es el ancla de calidad: yield modesto pero creciente, dividendo que ha subido cada año durante una década.</p>
+      <p class="body-text">La posición, comprada a 19,20€, genera un Y-CST del 9,9% —lo que la reclasifica como activo de cosecha aunque la tesis original fuera de crecimiento. El dividendo sobre coste supera el doble del bono de referencia.</p>
+    </div>
+    <div>
+      <div class="subsection-head" style="color:var(--log);">Logista</div>
+      <p class="body-text">Distribuidor cuasi-monopolístico en España, Francia, Italia y Portugal con contratos de larga duración y flujos de caja predecibles. El mercado aplica un descuento por el riesgo secular del tabaco que la tesis considera sobreestimado: el ritmo de caída del volumen es gradual, el poder de fijación de precios es elevado, y la diversificación hacia farmacia y paquetería avanza.</p>
+      <p class="body-text">El hito estructural es la ocupación de naves: por encima del 95% garantiza la base de FCF. La diversificación no-tabaco se vigila con un umbral de crecimiento de 2 puntos porcentuales anuales.</p>
+    </div>
+  </div>
+
+  <!-- 03 MODELO -->
+  <hr class="section-rule">
+  <div class="section-header" id="modelo">
+    <span class="section-num">§ 03</span>
+    <h2 class="section-title">Fundamentos del Modelo — La lógica de la cosecha</h2>
+  </div>
+
+  <div class="two-col">
+    <div>
+      <div class="subsection-head">Yield vs Bono — el GAP como brújula</div>
+      <p class="body-text">El concepto es deliberadamente sencillo: cada posición debe generar un rendimiento total —dividendo más equivalente de recompras— superior al bono español a diez años. El diferencial positivo es la prima que el mercado ofrece por asumir riesgo accionarial. Mientras el GAP sea positivo, la posición compensa.</p>
+      <p class="body-text"><strong>Y-TOT</strong> es el rendimiento total sobre el precio actual de mercado. Es la métrica de entrada: mide si la posición sigue siendo atractiva hoy. <strong>Y-CST</strong> es el rendimiento sobre el precio de coste original. Es la métrica de largo plazo: mide el retorno real sobre el capital comprometido, y crece de forma silenciosa con cada subida del dividendo.</p>
+
+      <div class="subsection-head">Semáforo de estado</div>
+      <table class="ft-table">
+        <thead>
+          <tr><th>Estado</th><th>Condición</th><th>Acción</th></tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><span class="estado-badge estado-ok">OK</span></td>
+            <td>GAP &gt; 0% y precio &gt; SMA100</td>
+            <td>Mantener. No añadir salvo oportunidad excepcional.</td>
+          </tr>
+          <tr>
+            <td><span class="estado-badge estado-aire">AIRE</span></td>
+            <td>GAP &gt; 0% pero precio &lt; SMA100</td>
+            <td>Vigilancia activa. No añadir. Revisar hitos.</td>
+          </tr>
+          <tr>
+            <td><span class="estado-badge estado-caro">CARO</span></td>
+            <td>GAP &lt; 0%</td>
+            <td>Revisar tesis. No añadir. Reducir si persiste &gt;2 trimestres.</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+    <div>
+      <div class="subsection-head">Bono ES10Y como ancla de referencia</div>
+      <p class="body-text">El bono español a diez años representa el coste de oportunidad sin riesgo del inversor español. Cuando el tipo libre de riesgo sube, el umbral de atractivo de las acciones sube también. El monitor descarga este dato automáticamente con dos tickers de fallback, garantizando que la comparación sea siempre contra el tipo vigente.</p>
+      <p class="body-text">El trigger de revisión de sizing se activa cuando el ES10Y supera el 4,0% de forma sostenida —definida como 40 o más días de cotización por encima del umbral en los últimos tres meses. El 4,0% no es arbitrario: a ese nivel, el GAP de Inditex cae a aproximadamente 0,3 puntos porcentuales, zona de alerta real. Santander y Logista mantienen GAP positivo, pero la compresión simultánea de las tres posiciones justifica la revisión.</p>
+
+      <div class="pullquote">
+        <p>"A 4,0% de bono, el GAP de Inditex cae a 0,3pp. La revisión de sizing no es una señal de salida — es una obligación de pensar."</p>
+        <cite>— Nota metodológica, v2.0</cite>
+      </div>
+
+      <div class="subsection-head">Y-CST y la decisión de sizing</div>
+      <p class="body-text">Cuando el trigger macro se activa, el Y-CST es el primer argumento que evaluar antes de reducir. Un Y-CST del 9,9% en Inditex con bono al 4,0% implica un GAP sobre coste de casi seis puntos porcentuales. Ese diferencial es un argumento fuerte para no reducir aunque el Y-TOT esté ajustado. El Y-CST alto no justifica ignorar el cambio de entorno, pero sí modula la respuesta.</p>
+    </div>
+  </div>
+
+  <!-- 04 RIESGOS -->
+  <hr class="section-rule">
+  <div class="section-header" id="riesgos">
+    <span class="section-num">§ 04</span>
+    <h2 class="section-title">Análisis de Riesgos</h2>
+  </div>
+
+  <div class="two-col">
+    <div>
+      <div class="risk-item">
+        <div class="risk-title">Regulatorio bancario — SAN</div>
+        <p class="body-text">Santander opera bajo supervisión del BCE y reguladores locales en más de diez países. Un endurecimiento del requerimiento de capital CET1 podría forzar a reducir o suspender el dividendo y las recompras. Si el ratio cae y se mantiene por debajo del 11% durante dos trimestres consecutivos, la tesis se considera formalmente rota.</p>
+      </div>
+      <div class="risk-item">
+        <div class="risk-title">Divisa latinoamericana — SAN</div>
+        <p class="body-text">Más del 50% del beneficio procede de Brasil y México. Una devaluación significativa del real o el peso impacta directamente el beneficio por acción y el dividendo en euros. Este riesgo es inherente a la tesis — se acepta como contrapartida del diferencial de yield.</p>
+      </div>
+      <div class="risk-item">
+        <div class="risk-title">Consumo discrecional — ITX</div>
+        <p class="body-text">Una recesión profunda en Europa o una contracción del consumo en China presionaría ventas y márgenes. El modelo fast-fashion de precio accesible ha demostrado resiliencia en recesiones moderadas, pero no es inmune a contracciones severas.</p>
+      </div>
+    </div>
+    <div>
+      <div class="risk-item">
+        <div class="risk-title">Concentración tabaco — LOG</div>
+        <p class="body-text">Aproximadamente el 60-70% del FCF sigue vinculado a la distribución de tabaco. La tendencia secular de descenso del consumo en Europa occidental es un riesgo estructural de largo plazo que la diversificación activa mitiga a ritmo más lento que el declive del volumen convencional.</p>
+      </div>
+      <div class="risk-item">
+        <div class="risk-title">Tipo de interés — toda la cartera</div>
+        <p class="body-text">Una subida sostenida del ES10Y por encima del 4,0% comprimiría el GAP de las tres posiciones simultáneamente. Este es el riesgo sistémico principal de una estrategia de cosecha basada en el diferencial yield-bono, y el único riesgo sin hito individual de captura en el sistema.</p>
+      </div>
+      <div class="risk-item">
+        <div class="risk-title">Correlación en caídas — cartera</div>
+        <p class="body-text">Las tres posiciones son valores del Ibex 35 y correlacionan positivamente en contextos de sell-off generalizado. La diversificación sectorial —financiero, consumo, logística— reduce pero no elimina la correlación. En una crisis severa, las tres posiciones caerán simultáneamente.</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- 05 NIVELES -->
+  <hr class="section-rule">
+  <div class="section-header" id="niveles">
+    <span class="section-num">§ 05</span>
+    <h2 class="section-title">Niveles y Señales de Decisión</h2>
+  </div>
+
+  <p class="body-text" style="max-width:680px;margin-bottom:20px;">La Cartera Largo no tiene stop loss por precio. Las señales de decisión se articulan en torno al estado del semáforo GAP-SMA y al score de convicción de hitos. El precio de coste no es un nivel de salida — es la referencia del Y-CST.</p>
+
+  <div class="nivel-row header">
+    <div>Estado</div><div>Condición</div><div>Acción</div><div>Prioridad</div>
+  </div>
+  <div class="nivel-row">
+    <div><span class="estado-badge estado-ok">OK</span></div>
+    <div style="font-size:0.83rem;color:var(--ink-mid);">GAP &gt; 0% y precio &gt; SMA100</div>
+    <div style="font-size:0.83rem;color:var(--ink-mid);">Mantener posición completa. No añadir salvo oportunidad excepcional.</div>
+    <div style="font-family:'IBM Plex Mono',monospace;font-size:0.7rem;color:var(--ink-light);">Rutina</div>
+  </div>
+  <div class="nivel-row">
+    <div><span class="estado-badge estado-aire">AIRE</span></div>
+    <div style="font-size:0.83rem;color:var(--ink-mid);">GAP &gt; 0% pero precio &lt; SMA100</div>
+    <div style="font-size:0.83rem;color:var(--ink-mid);">Vigilancia activa. No añadir. Revisar hitos manualmente.</div>
+    <div style="font-family:'IBM Plex Mono',monospace;font-size:0.7rem;color:var(--ink-light);">Vigilar</div>
+  </div>
+  <div class="nivel-row">
+    <div><span class="estado-badge estado-caro">CARO</span></div>
+    <div style="font-size:0.83rem;color:var(--ink-mid);">GAP &lt; 0% (yield &lt; bono ref.)</div>
+    <div style="font-size:0.83rem;color:var(--ink-mid);">Revisar tesis. No añadir. Considerar reducción si persiste 2+ trimestres.</div>
+    <div style="font-family:'IBM Plex Mono',monospace;font-size:0.7rem;color:var(--ft-red);">Revisar</div>
+  </div>
+  <div class="nivel-row">
+    <div><span style="font-family:'IBM Plex Mono',monospace;font-size:0.68rem;font-weight:600;background:#EDE7F6;color:#4527A0;border:1px solid #B39DDB;padding:2px 6px;">CONV. BAJA</span></div>
+    <div style="font-size:0.83rem;color:var(--ink-mid);">Score hitos &lt; 40%</div>
+    <div style="font-size:0.83rem;color:var(--ink-mid);">Revisión formal de la tesis. Si score no recupera en 2 trimestres, evaluar reducción.</div>
+    <div style="font-family:'IBM Plex Mono',monospace;font-size:0.7rem;color:#4527A0;">Urgente</div>
+  </div>
+  <div class="nivel-row" style="border-bottom:none;">
+    <div><span class="estado-badge estado-caro">RUPTURA</span></div>
+    <div style="font-size:0.83rem;color:var(--ink-mid);">Hito crítico roto de forma irreversible</div>
+    <div style="font-size:0.83rem;color:var(--ink-mid);">Salida al precio de mercado, independientemente del P&amp;L. La tesis es el contrato.</div>
+    <div style="font-family:'IBM Plex Mono',monospace;font-size:0.7rem;color:var(--ft-red);">Inmediato</div>
+  </div>
+
+  <!-- 06 HITOS -->
+  <hr class="section-rule">
+  <div class="section-header" id="hitos">
+    <span class="section-num">§ 06</span>
+    <h2 class="section-title">Hitos T-G y Convicción</h2>
+  </div>
+
+  <div class="two-col" style="align-items:start;">
+    <div>
+      <!-- Hitos manuales -->
+      <div style="font-family:'IBM Plex Mono',monospace;font-size:0.68rem;font-weight:600;letter-spacing:1.5px;text-transform:uppercase;color:var(--ink-light);margin-bottom:12px;">Hitos manuales — actualizar tras earnings</div>
+
+      <div class="hito-item">
+        <div class="hito-dot ko"></div>
+        <div class="hito-body">
+          <div class="hito-title"><span class="hito-tk san">SAN</span>Ratio CET1 ≥ 12%<span class="hito-critico">CRÍTICO</span></div>
+          <div class="hito-detail">Capital regulatorio Tier 1 de máxima calidad. Si cae y se mantiene por debajo del 12%, la capacidad de sostener dividendo y recompras se compromete. Fuente: informe trimestral.</div>
+        </div>
+      </div>
+      <div class="hito-item">
+        <div class="hito-dot ko"></div>
+        <div class="hito-body">
+          <div class="hito-title"><span class="hito-tk log">LOG</span>Ocupación de naves ≥ 95%<span class="hito-critico">CRÍTICO</span></div>
+          <div class="hito-detail">Tasa de ocupación del portfolio logístico. Una caída sostenida señala pérdida de contratos o sobreoferta. Fuente: suplemento operativo semestral.</div>
+        </div>
+      </div>
+      <div class="hito-item">
+        <div class="hito-dot ko"></div>
+        <div class="hito-body">
+          <div class="hito-title"><span class="hito-tk itx">ITX</span>Expansión sin deterioro de márgenes</div>
+          <div class="hito-detail">Aperturas netas positivas con margen EBIT estable o creciente. Valida que el crecimiento no se compra a costa de la rentabilidad. Fuente: presentación anual.</div>
+        </div>
+      </div>
+      <div class="hito-item">
+        <div class="hito-dot ko"></div>
+        <div class="hito-body">
+          <div class="hito-title"><span class="hito-tk log">LOG</span>Diversificación no-tabaco ≥ 2pp/año<span class="hito-critico">CRÍTICO</span></div>
+          <div class="hito-detail">El % de FCF procedente de segmentos no-tabaco debe crecer al menos 2pp al año. Sin este umbral la diversificación es narrativa sin verificación. Fuente: suplemento operativo semestral.</div>
+        </div>
+      </div>
+
+      <!-- Hitos automáticos -->
+      <div style="font-family:'IBM Plex Mono',monospace;font-size:0.68rem;font-weight:600;letter-spacing:1.5px;text-transform:uppercase;color:var(--ink-light);margin:20px 0 12px;">Hitos automáticos — calculados por el script</div>
+
+      <div class="hito-item">
+        <div class="hito-dot seg"></div>
+        <div class="hito-body">
+          <div class="hito-title">
+            <span class="hito-tk san">SAN</span><span class="hito-tk itx">ITX</span><span class="hito-tk log">LOG</span>
+            Dividendo sostenible<span class="hito-critico">CRÍTICO</span><span class="hito-auto">AUTO</span>
+          </div>
+          <div class="hito-detail">Payout ≤ 80% y FCF cubre el dividendo total de la posición. Calculado desde financials y cashflow anuales. Fuente: yfinance.</div>
+        </div>
+      </div>
+      <div class="hito-item">
+        <div class="hito-dot seg"></div>
+        <div class="hito-body">
+          <div class="hito-title">
+            <span class="hito-tk san">SAN</span><span class="hito-tk itx">ITX</span><span class="hito-tk log">LOG</span>
+            FCF por acción creciente YoY<span class="hito-critico">CRÍTICO</span><span class="hito-auto">AUTO</span>
+          </div>
+          <div class="hito-detail">FCF por acción del año más reciente vs año anterior. Un FCF/acción decreciente sostenido señala deterioro de la calidad del negocio. Fuente: yfinance cashflow anual.</div>
+        </div>
+      </div>
+      <div class="hito-item">
+        <div class="hito-dot seg"></div>
+        <div class="hito-body">
+          <div class="hito-title"><span class="hito-tk san">SAN</span>Tendencia FCF/acción — no 3 ejercicios decrecientes<span class="hito-critico">CRÍTICO</span><span class="hito-auto">AUTO</span></div>
+          <div class="hito-detail">Verificación independiente del hito de dividendo. Tres ejercicios consecutivos de FCF/acción decreciente señala deterioro aunque el payout sea ≤ 80%. Fuente: yfinance, 4 años de datos.</div>
+        </div>
+      </div>
+      <div class="hito-item">
+        <div class="hito-dot seg"></div>
+        <div class="hito-body">
+          <div class="hito-title"><span class="hito-tk itx">ITX</span>Márgenes estables o crecientes<span class="hito-critico">CRÍTICO</span><span class="hito-auto">AUTO</span></div>
+          <div class="hito-detail">Margen bruto y operativo del año más reciente vs año anterior. Tolerancia ±0,5pp. La ventaja de Inditex descansa en mantener márgenes altos con rotación rápida. Fuente: yfinance financials.</div>
+        </div>
+      </div>
+      <div class="hito-item" style="border-bottom:none;">
+        <div class="hito-dot seg"></div>
+        <div class="hito-body">
+          <div class="hito-title"><span class="hito-tk mac">MACRO</span>ES10Y &lt; 4,0% sostenido<span class="hito-critico">CRÍTICO</span><span class="hito-auto">AUTO</span></div>
+          <div class="hito-detail">Si el bono ES10Y supera el 4,0% durante 40+ días de cotización (~2 meses), trigger de revisión de sizing. No es condición de salida. Al revisar: comparar Y-CST de cada posición vs bono antes de actuar.</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Conviction box -->
+    <div>
+      <div class="conviction-box">
+        <div class="conviction-label">Score de convicción T-G</div>
+        <div class="conviction-score">—%</div>
+        <div class="conviction-name" style="color:var(--ink-light);">Pendiente próxima ejecución</div>
+        <div class="conviction-bar-bg">
+          <div class="conviction-bar-fill" style="width:0%;"></div>
+        </div>
+        <div class="conviction-counts">✓ — cumplidos &nbsp;·&nbsp; ··· — seguimiento &nbsp;·&nbsp; ✕ — pendientes</div>
+      </div>
+
+      <div style="background:var(--white);border:1px solid var(--rule-dark);padding:18px 20px;font-size:0.82rem;color:var(--ink-mid);line-height:1.8;">
+        <div style="font-family:'IBM Plex Mono',monospace;font-size:0.68rem;font-weight:600;letter-spacing:1.5px;text-transform:uppercase;color:var(--ink-light);margin-bottom:10px;">Cómo se calcula</div>
+        Los hitos marcados como <strong style="color:var(--ink);">CRÍTICO</strong> tienen peso doble. Los hitos en seguimiento aportan el 50% de su peso. Si tres o más críticos están simultáneamente en PENDIENTE, el score máximo se limita al 35% — señal de revisión inmediata.<br><br>
+        <strong style="color:var(--ink);">≥ 70%</strong> Alta convicción &nbsp;·&nbsp; <strong style="color:var(--ink);">40–70%</strong> Media &nbsp;·&nbsp; <strong style="color:var(--ink);">&lt; 40%</strong> Baja — revisar tesis
+      </div>
+
+      <div style="margin-top:20px;">
+        <div style="font-family:'IBM Plex Mono',monospace;font-size:0.68rem;font-weight:600;letter-spacing:1.5px;text-transform:uppercase;color:var(--ink-light);margin-bottom:10px;">Ruptura formal de tesis</div>
+        <div class="risk-item" style="padding:10px 0;">
+          <div style="font-family:'IBM Plex Mono',monospace;font-size:0.75rem;font-weight:600;color:var(--san);margin-bottom:4px;">SAN</div>
+          <div class="hito-detail">CET1 &lt; 11% sostenido · Suspensión dividendo · Crisis sistémica LatAm &gt;30% del beneficio neto</div>
+        </div>
+        <div class="risk-item" style="padding:10px 0;">
+          <div style="font-family:'IBM Plex Mono',monospace;font-size:0.75rem;font-weight:600;color:var(--itx);margin-bottom:4px;">ITX</div>
+          <div class="hito-detail">Margen bruto &lt;50% sostenido · Aperturas netas negativas 2 ejercicios consecutivos · Pérdida acceso mercado chino</div>
+        </div>
+        <div class="risk-item" style="padding:10px 0;border-bottom:none;">
+          <div style="font-family:'IBM Plex Mono',monospace;font-size:0.75rem;font-weight:600;color:var(--log);margin-bottom:4px;">LOG</div>
+          <div class="hito-detail">Ocupación &lt;85% sostenida · Pérdida contratos &gt;20% FCF · Prohibición distribución tabaco en 2+ países core</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 07 DIAGNÓSTICOS -->
+  <hr class="section-rule">
+  <div class="section-header" id="diagnosticos">
+    <span class="section-num">§ 07</span>
+    <h2 class="section-title">Diagnósticos de Mercado</h2>
+  </div>
+
+  <div class="three-col">
+    <div style="background:var(--white);border-top:3px solid var(--log);border:1px solid var(--rule-dark);border-top:3px solid var(--log);padding:18px 20px;">
+      <div style="font-family:'Playfair Display',serif;font-size:1rem;font-weight:700;color:var(--log);margin-bottom:8px;">✓ OK — Cosecha activa</div>
+      <p class="body-text" style="font-size:0.83rem;">GAP positivo y precio sobre SMA100. El rendimiento supera al bono y el precio tiene momentum favorable. Escenario óptimo. Mantener sin cambios.</p>
+    </div>
+    <div style="background:var(--white);border:1px solid var(--rule-dark);border-top:3px solid #F57F17;padding:18px 20px;">
+      <div style="font-family:'Playfair Display',serif;font-size:1rem;font-weight:700;color:#F57F17;margin-bottom:8px;">~ AIRE — Rendimiento sí, precio no</div>
+      <p class="body-text" style="font-size:0.83rem;">GAP positivo pero precio bajo SMA100. El negocio sigue siendo atractivo en rendimiento pero el precio no acompaña. Vigilar — no añadir. Si el GAP se mantiene positivo, conservar.</p>
+    </div>
+    <div style="background:var(--white);border:1px solid var(--rule-dark);border-top:3px solid var(--san);padding:18px 20px;">
+      <div style="font-family:'Playfair Display',serif;font-size:1rem;font-weight:700;color:var(--san);margin-bottom:8px;">✕ CARO — Rendimiento insuficiente</div>
+      <p class="body-text" style="font-size:0.83rem;">Yield inferior al bono de referencia. No añadir. Si persiste más de dos trimestres: revisar si el precio ha subido demasiado o si el dividendo ha caído. No implica venta automática.</p>
+    </div>
+  </div>
+
+  <!-- 08 VALORACIÓN -->
+  <hr class="section-rule">
+  <div class="section-header" id="valoracion">
+    <span class="section-num">§ 08</span>
+    <h2 class="section-title">Marco de Valoración</h2>
+  </div>
+
+  <div class="two-col">
+    <div>
+      <p class="body-text">A diferencia de una cartera de crecimiento donde el P/FCF es el múltiplo central, en la Cartera Largo la métrica de valoración principal es el <strong>GAP = Y-TOT − Bono ES10Y</strong>. Esta métrica responde a la pregunta que importa: ¿cuánto cobro de más respecto al activo libre de riesgo por asumir riesgo accionarial?</p>
+      <table class="ft-table" style="margin-top:16px;">
+        <thead>
+          <tr><th>Ticker</th><th>P. coste</th><th>Métrica clave</th><th>Tesis</th></tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td style="color:var(--san);">SAN</td>
+            <td>2,43€</td>
+            <td>Y-CST &gt;10% · P/BV descuento</td>
+            <td>Yield elevado sobre coste. Riesgo cambiario LatAm inherente.</td>
+          </tr>
+          <tr>
+            <td style="color:var(--itx);">ITX</td>
+            <td>19,20€</td>
+            <td>Margen bruto &gt;55%</td>
+            <td>Prima de calidad justificada. Growth reclasificado como cosecha por Y-CST.</td>
+          </tr>
+          <tr>
+            <td style="color:var(--log);">LOG</td>
+            <td>16,89€</td>
+            <td>FCF / div. cobertura</td>
+            <td>Descuento tabaco sobreestimado. Alto yield con alta visibilidad.</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+    <div>
+      <div class="subsection-head">ITX — Growth reclasificado como cosecha</div>
+      <p class="body-text">La posición en Inditex fue construida como una tesis de crecimiento. El precio de coste de 19,20€ —significativamente por debajo de los niveles actuales— ha elevado el Y-CST hasta un nivel comparable al de un activo de cosecha puro.</p>
+      <p class="body-text">El patrón de reclasificación se activa cuando el Y-CST supera el doble del bono de referencia vigente, independientemente del Y-TOT actual. En ese momento, los hitos relevantes cambian: se eliminan los hitos de re-rating (múltiplos, ROIC marginal) y se sustituyen por hitos de mantenimiento (márgenes, dividendo creciente).</p>
+      <p class="body-text"><strong>Riesgo específico del patrón:</strong> el inversor puede confundir la inercia de una posición ganadora con convicción renovada. El Y-CST atractivo no justifica mantener si la tesis subyacente se ha deteriorado — la condición de invalidación por deterioro de márgenes sigue siendo crítica.</p>
+    </div>
+  </div>
+
+  <!-- 09 MANUAL -->
+  <hr class="section-rule">
+  <div class="section-header" id="manual">
+    <span class="section-num">§ 09</span>
+    <h2 class="section-title">Manual de Operación del Monitor</h2>
+  </div>
+
+  <div class="two-col" style="align-items:start;">
+    <div>
+      <details open>
+        <summary>Estructura de archivos</summary>
+        <div class="details-inner">
+          <table class="ft-table">
+            <thead><tr><th>Archivo</th><th>Función</th><th>Editable</th></tr></thead>
+            <tbody>
+              <tr><td>largo/hitos_largo.json</td><td>Estado actual de cada hito. El único archivo que el inversor edita manualmente.</td><td>Sí — desde GitHub</td></tr>
+              <tr><td>largo/monitor_largo_v2.py</td><td>Script principal. Descarga datos, calcula hitos automáticos, genera HTML y envía Telegram.</td><td>Solo LARGO_DATA</td></tr>
+              <tr><td>largo/Monitor_Largo.html</td><td>Informe generado en cada ejecución. Disponible en GitHub Pages.</td><td>No — automático</td></tr>
+              <tr><td>.github/workflows/monitor_largo.yml</td><td>Workflow que ejecuta el monitor lunes a viernes a las 17:05 UTC.</td><td>Solo horarios</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </details>
+
+      <details>
+        <summary>Cómo actualizar un hito manual</summary>
+        <div class="details-inner">
+          <table class="ft-table" style="margin-bottom:14px;">
+            <thead><tr><th>Situación</th><th>estado</th><th>fecha</th></tr></thead>
+            <tbody>
+              <tr><td>No ocurrido todavía</td><td>false</td><td>null</td></tr>
+              <tr><td>Indicios pero sin confirmar</td><td>null</td><td>null</td></tr>
+              <tr><td>Confirmado oficialmente</td><td>true</td><td>"DD/MM/AAAA"</td></tr>
+            </tbody>
+          </table>
+          <ol>
+            <li>Recibe el informe de resultados de SAN, ITX o LOG.</li>
+            <li>Ve al repo en GitHub y abre <code>largo/hitos_largo.json</code>.</li>
+            <li>Pulsa el lápiz ✏️ arriba a la derecha del archivo.</li>
+            <li>Localiza el hito y cambia <code>"estado": false</code> por <code>"estado": true</code>.</li>
+            <li>Añade la fecha: <code>"fecha": "10/03/2026"</code>.</li>
+            <li>Pulsa Commit changes. El cambio se aplica en la próxima ejecución.</li>
+          </ol>
+          <p style="margin-top:10px;color:var(--ink-light);font-size:0.78rem;">Los hitos con <code>"auto": true</code> son sobreescritos automáticamente — no editarlos manualmente.</p>
+        </div>
+      </details>
+
+      <details>
+        <summary>Cómo ejecutar el monitor</summary>
+        <div class="details-inner">
+          <p><strong>Automático — GitHub Actions:</strong> lunes a viernes a las 17:05 UTC (18:05 España invierno). Sin intervención.</p>
+          <p><strong>Manual — GitHub Actions:</strong> pestaña Actions → Monitor Largo → Run workflow.</p>
+          <p><strong>Manual — Google Colab:</strong> pegar el contenido de <code>monitor_largo_v2.py</code> en una celda. El script detecta automáticamente el entorno y desactiva Telegram. Si quieres persistir los cambios del JSON, descargarlo y subirlo manualmente al repo.</p>
+        </div>
+      </details>
+    </div>
+
+    <div>
+      <details>
+        <summary>Cómo actualizar cantidades y precios</summary>
+        <div class="details-inner">
+          <p>Todos los datos de la cartera están en la sección <code>LARGO_DATA</code> al inicio de <code>monitor_largo_v2.py</code>:</p>
+          <table class="ft-table" style="margin-top:10px;">
+            <thead><tr><th>Campo</th><th>Descripción</th><th>Cuándo actualizar</th></tr></thead>
+            <tbody>
+              <tr><td>cant</td><td>Número de acciones</td><td>Si compras o vendes</td></tr>
+              <tr><td>cp</td><td>Precio medio de coste</td><td>Si promedias la posición</td></tr>
+              <tr><td>div</td><td>Dividendo anual estimado</td><td>Tras anuncio en earnings</td></tr>
+              <tr><td>bb</td><td>Yield equivalente de buybacks</td><td>Si la empresa anuncia o cancela programa</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </details>
+
+      <details>
+        <summary>Cuándo considerar ruptura formal de la tesis</summary>
+        <div class="details-inner">
+          <p>La tesis se considera formalmente rota si se da alguna de estas condiciones, independientemente del precio:</p>
+          <p><strong style="color:var(--san);">SAN:</strong> CET1 &lt;11% durante 2+ trimestres · Suspensión dividendo · Crisis sistémica Brasil o México impactando &gt;30% del beneficio neto.</p>
+          <p><strong style="color:var(--itx);">ITX:</strong> Margen bruto &lt;50% sostenido · Aperturas netas negativas 2 ejercicios consecutivos · Pérdida acceso mercado chino.</p>
+          <p><strong style="color:var(--log);">LOG:</strong> Ocupación &lt;85% sostenida · Pérdida contratos &gt;20% FCF · Prohibición distribución tabaco en 2+ países core simultáneamente.</p>
+          <p style="margin-top:12px;color:var(--ink-light);font-size:0.82rem;">Si se rompe la tesis, la acción recomendada es salir al precio de mercado independientemente del P&amp;L. La tesis es el contrato con uno mismo, no el precio.</p>
+        </div>
+      </details>
+
+      <details>
+        <summary>Glosario de métricas</summary>
+        <div class="details-inner">
+          <table class="ft-table">
+            <thead><tr><th>Métrica</th><th>Definición</th></tr></thead>
+            <tbody>
+              <tr><td>Y-TOT</td><td>Yield total sobre precio de mercado actual. Dividendo + equivalente buybacks.</td></tr>
+              <tr><td>Y-CST</td><td>Yield sobre precio de coste. Mide el retorno real sobre el capital comprometido.</td></tr>
+              <tr><td>GAP</td><td>Y-TOT menos el bono de referencia. Positivo = la acción bate al bono.</td></tr>
+              <tr><td>BB</td><td>Rendimiento equivalente de recompras expresado como % del precio.</td></tr>
+              <tr><td>SMA100</td><td>Media móvil 100 sesiones. Filtro técnico de tendencia para el semáforo.</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </details>
+    </div>
+  </div>
+
+  <!-- AVISO -->
+  <div class="aviso" id="aviso">
+    <strong style="color:var(--ink);">Aviso legal</strong><br>
+    Este documento es un registro personal de tesis de inversión y no constituye asesoramiento financiero, recomendación de compra o venta, ni oferta de ningún instrumento financiero. La inversión en acciones conlleva riesgo de pérdida total del capital invertido. Los niveles de precio, hitos y diagnósticos descritos reflejan el análisis particular del inversor en la fecha indicada y pueden quedar obsoletos sin previo aviso. Cualquier decisión de inversión debe basarse en el propio análisis y criterio del inversor, eventualmente con el asesoramiento de un profesional regulado. Las rentabilidades pasadas no garantizan rentabilidades futuras.
+  </div>
+
+</div><!-- /page -->
+
+<!-- FOOTER -->
+<footer class="ft-footer">
+  <div>Cartera Largo · Tesis de Inversión v1.0 · Marzo 2026</div>
+  <div>SAN.MC · ITX.MC · LOG.MC · Ibex 35 · BME Madrid</div>
+  <div>Uso personal · No constituye asesoramiento financiero</div>
+</footer>
+
+</body>
+</html>

@@ -116,6 +116,39 @@
       "categoria": "Financiero",
       "auto": true,
       "detalle_auto": "Bruto 57.8% vs 57.8% | Operativo 19.9% vs 19.2%"
+    },
+    {
+      "id": 11,
+      "tk": "LOG",
+      "hito": "Diversificacion no-tabaco: FCF crece >= 2pp/año",
+      "detalle": "El % de FCF procedente de segmentos no-tabaco debe crecer al menos 2pp/año. Sin este umbral la diversificacion es narrativa sin verificacion. Fuente: suplemento operativo semestral de Logista.",
+      "estado": false,
+      "fecha": null,
+      "critico": true,
+      "categoria": "Estrategico",
+      "auto": false
+    },
+    {
+      "id": 12,
+      "tk": "SAN",
+      "hito": "Tendencia FCF/accion: no 3 ejercicios consecutivos decrecientes",
+      "detalle": "Si FCF/accion lleva 3 ejercicios consecutivos decreciendo: deterioro aunque el payout sea <= 80%. Fuente: yfinance financials anuales.",
+      "estado": null,
+      "fecha": null,
+      "critico": true,
+      "categoria": "Financiero",
+      "auto": true
+    },
+    {
+      "id": 13,
+      "tk": "MACRO",
+      "hito": "ES10Y < 4.0% sostenido (trigger de revision de sizing)",
+      "detalle": "Si el bono ES10Y supera el 4.0% durante 40+ dias de cotizacion (~2 meses), revisar sizing de toda la cartera. No es condicion de salida. Al revisar: comparar Y-CST de cada posicion vs bono — un Y-CST alto (ej. ITX 9.9%) es argumento para no reducir aunque el Y-TOT este ajustado.",
+      "estado": null,
+      "fecha": null,
+      "critico": true,
+      "categoria": "Macro",
+      "auto": true
     }
   ]
 }

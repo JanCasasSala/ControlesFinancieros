@@ -1,0 +1,997 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Análisis de Cartera Fintech — Marzo 2026</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400;1,600&family=Source+Serif+4:ital,opsz,wght@0,8..60,300;0,8..60,400;0,8..60,600;1,8..60,300;1,8..60,400&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --salmon: #FFF1E5;
+    --salmon-dark: #FAE6D3;
+    --salmon-mid: #F2D4B8;
+    --ink: #1A1A1A;
+    --ink-mid: #3D3530;
+    --ink-light: #6B5E55;
+    --ink-faint: #9C8E86;
+    --accent-red: #CC2929;
+    --accent-green: #1A6B3C;
+    --accent-amber: #8B5E00;
+    --accent-blue: #1A3B6B;
+    --rule: #C8B4A3;
+    --rule-light: #E0CFC4;
+    --white: #FFFDF9;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    background: var(--salmon);
+    color: var(--ink);
+    font-family: 'Source Serif 4', Georgia, serif;
+    font-size: 16px;
+    line-height: 1.7;
+  }
+
+  /* ── MASTHEAD ── */
+  .masthead {
+    background: var(--ink);
+    color: var(--salmon);
+    padding: 0;
+    text-align: center;
+    border-bottom: 3px solid var(--accent-red);
+  }
+
+  .masthead-top {
+    padding: 8px 40px;
+    border-bottom: 1px solid rgba(255,241,229,0.2);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-family: 'DM Mono', monospace;
+    font-size: 11px;
+    color: rgba(255,241,229,0.6);
+    letter-spacing: 0.08em;
+  }
+
+  .masthead-main {
+    padding: 28px 40px 20px;
+  }
+
+  .publication-name {
+    font-family: 'Playfair Display', serif;
+    font-size: 52px;
+    font-weight: 700;
+    letter-spacing: -0.02em;
+    line-height: 1;
+    color: var(--salmon);
+    margin-bottom: 6px;
+  }
+
+  .publication-sub {
+    font-family: 'Source Serif 4', serif;
+    font-style: italic;
+    font-size: 15px;
+    color: rgba(255,241,229,0.7);
+    letter-spacing: 0.04em;
+  }
+
+  .masthead-rule {
+    height: 1px;
+    background: rgba(255,241,229,0.25);
+    margin: 16px 40px 0;
+  }
+
+  .masthead-nav {
+    padding: 10px 40px;
+    display: flex;
+    gap: 32px;
+    justify-content: center;
+    font-family: 'DM Mono', monospace;
+    font-size: 11px;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: rgba(255,241,229,0.55);
+  }
+
+  /* ── HERO ── */
+  .hero {
+    background: var(--white);
+    border-bottom: 3px double var(--rule);
+    padding: 48px 60px 40px;
+    position: relative;
+  }
+
+  .hero::after {
+    content: '';
+    position: absolute;
+    bottom: -6px;
+    left: 0; right: 0;
+    height: 1px;
+    background: var(--rule-light);
+  }
+
+  .hero-eyebrow {
+    font-family: 'DM Mono', monospace;
+    font-size: 11px;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: var(--accent-red);
+    margin-bottom: 14px;
+  }
+
+  .hero-headline {
+    font-family: 'Playfair Display', serif;
+    font-size: 42px;
+    font-weight: 700;
+    line-height: 1.15;
+    color: var(--ink);
+    max-width: 820px;
+    margin-bottom: 18px;
+    letter-spacing: -0.02em;
+  }
+
+  .hero-deck {
+    font-size: 18px;
+    font-style: italic;
+    color: var(--ink-mid);
+    max-width: 700px;
+    line-height: 1.6;
+    margin-bottom: 24px;
+    font-weight: 300;
+  }
+
+  .hero-meta {
+    font-family: 'DM Mono', monospace;
+    font-size: 11px;
+    color: var(--ink-faint);
+    letter-spacing: 0.06em;
+    border-top: 1px solid var(--rule-light);
+    padding-top: 14px;
+    display: flex;
+    gap: 32px;
+  }
+
+  .hero-meta span { color: var(--ink-light); }
+
+  /* ── LAYOUT ── */
+  .page {
+    max-width: 1160px;
+    margin: 0 auto;
+    padding: 48px 40px;
+  }
+
+  .columns-3 {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    gap: 0;
+    border-top: 2px solid var(--ink);
+    border-bottom: 1px solid var(--rule);
+    margin-bottom: 48px;
+  }
+
+  /* ── SECTION HEADERS ── */
+  .section-rule {
+    border: none;
+    border-top: 2px solid var(--ink);
+    margin: 48px 0 28px;
+    position: relative;
+  }
+
+  .section-rule::after {
+    content: attr(data-label);
+    position: absolute;
+    top: -11px;
+    left: 0;
+    background: var(--salmon);
+    padding-right: 16px;
+    font-family: 'Playfair Display', serif;
+    font-size: 13px;
+    font-weight: 600;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--ink);
+  }
+
+  /* ── TICKER CARDS ── */
+  .ticker-article {
+    background: var(--white);
+    border: 1px solid var(--rule);
+    margin-bottom: 40px;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .ticker-article::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0;
+    width: 5px;
+    height: 100%;
+  }
+
+  .article-pypl::before { background: var(--accent-blue); }
+  .article-fisv::before { background: var(--accent-amber); }
+  .article-block::before { background: var(--accent-green); }
+
+  .ticker-header {
+    background: var(--ink);
+    color: var(--salmon);
+    padding: 20px 28px 18px 32px;
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+  }
+
+  .ticker-flag {
+    font-family: 'Playfair Display', serif;
+    font-size: 32px;
+    font-weight: 700;
+    letter-spacing: -0.02em;
+    line-height: 1;
+  }
+
+  .ticker-company {
+    font-size: 13px;
+    color: rgba(255,241,229,0.65);
+    margin-top: 3px;
+    font-style: italic;
+    font-weight: 300;
+  }
+
+  .ticker-right { text-align: right; }
+
+  .stance-label {
+    font-family: 'DM Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    margin-bottom: 4px;
+    color: rgba(255,241,229,0.5);
+  }
+
+  .stance-value {
+    font-family: 'Playfair Display', serif;
+    font-size: 16px;
+    font-weight: 600;
+    color: #FFD4A8;
+  }
+
+  .pnl-tag {
+    display: inline-block;
+    margin-top: 6px;
+    font-family: 'DM Mono', monospace;
+    font-size: 12px;
+    font-weight: 500;
+    padding: 3px 10px;
+    border-radius: 2px;
+  }
+
+  .pnl-loss { background: rgba(204,41,41,0.25); color: #FF9B9B; }
+  .pnl-flat { background: rgba(255,200,100,0.2); color: #FFD080; }
+
+  .ticker-body { padding: 28px 32px; }
+
+  /* ── METRICS TABLE ── */
+  .metrics-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 1px;
+    background: var(--rule-light);
+    border: 1px solid var(--rule-light);
+    margin-bottom: 28px;
+  }
+
+  .metric-cell {
+    background: var(--white);
+    padding: 14px 16px;
+  }
+
+  .metric-label {
+    font-family: 'DM Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--ink-faint);
+    margin-bottom: 4px;
+  }
+
+  .metric-value {
+    font-family: 'Playfair Display', serif;
+    font-size: 20px;
+    font-weight: 600;
+    line-height: 1.2;
+  }
+
+  .metric-note {
+    font-size: 11px;
+    color: var(--ink-faint);
+    margin-top: 2px;
+    font-style: italic;
+  }
+
+  .val-green { color: var(--accent-green); }
+  .val-red { color: var(--accent-red); }
+  .val-amber { color: var(--accent-amber); }
+  .val-blue { color: var(--accent-blue); }
+  .val-ink { color: var(--ink); }
+
+  /* ── ARTICLE COLUMNS ── */
+  .body-columns {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 32px;
+    margin-bottom: 24px;
+  }
+
+  .body-col h4 {
+    font-family: 'Playfair Display', serif;
+    font-size: 14px;
+    font-weight: 600;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: var(--ink-mid);
+    border-bottom: 1px solid var(--rule-light);
+    padding-bottom: 6px;
+    margin-bottom: 12px;
+  }
+
+  .body-col p {
+    font-size: 14px;
+    color: var(--ink-mid);
+    line-height: 1.65;
+    margin-bottom: 8px;
+  }
+
+  .body-col ul {
+    list-style: none;
+    padding: 0;
+  }
+
+  .body-col ul li {
+    font-size: 14px;
+    color: var(--ink-mid);
+    line-height: 1.55;
+    padding: 6px 0;
+    border-bottom: 1px solid var(--rule-light);
+    display: flex;
+    gap: 8px;
+  }
+
+  .body-col ul li:last-child { border-bottom: none; }
+
+  .li-icon { flex-shrink: 0; font-weight: 600; }
+  .li-green { color: var(--accent-green); }
+  .li-red { color: var(--accent-red); }
+  .li-amber { color: var(--accent-amber); }
+
+  /* ── PULLQUOTE ── */
+  .pullquote {
+    border-top: 2px solid var(--ink);
+    border-bottom: 1px solid var(--rule);
+    margin: 24px 0;
+    padding: 18px 0;
+    font-family: 'Playfair Display', serif;
+    font-size: 19px;
+    font-style: italic;
+    font-weight: 400;
+    line-height: 1.45;
+    color: var(--ink);
+  }
+
+  /* ── EXIT / CATALYST BOXES ── */
+  .infobox-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    gap: 16px;
+    margin-top: 24px;
+  }
+
+  .infobox {
+    padding: 14px 16px;
+    border: 1px solid;
+  }
+
+  .infobox-exit {
+    border-color: var(--accent-red);
+    background: #FDF5F5;
+  }
+
+  .infobox-catalyst {
+    border-color: var(--accent-green);
+    background: #F3FAF6;
+  }
+
+  .infobox-noise {
+    border-color: var(--accent-blue);
+    background: #F3F6FC;
+  }
+
+  .infobox-label {
+    font-family: 'DM Mono', monospace;
+    font-size: 9px;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    font-weight: 500;
+    margin-bottom: 8px;
+  }
+
+  .exit-label { color: var(--accent-red); }
+  .catalyst-label { color: var(--accent-green); }
+  .noise-label { color: var(--accent-blue); }
+
+  .infobox p {
+    font-size: 13px;
+    line-height: 1.55;
+    color: var(--ink-mid);
+  }
+
+  /* ── SHAREHOLDER YIELD FEATURE ── */
+  .yield-feature {
+    background: var(--ink);
+    color: var(--salmon);
+    padding: 28px 32px;
+    margin: 32px 0;
+    display: grid;
+    grid-template-columns: 1fr 2px 1fr 2px 1fr;
+    gap: 24px;
+    align-items: center;
+  }
+
+  .yield-divider { background: rgba(255,241,229,0.2); }
+
+  .yield-item { text-align: center; }
+
+  .yield-ticker {
+    font-family: 'DM Mono', monospace;
+    font-size: 11px;
+    letter-spacing: 0.12em;
+    color: rgba(255,241,229,0.5);
+    margin-bottom: 6px;
+  }
+
+  .yield-number {
+    font-family: 'Playfair Display', serif;
+    font-size: 38px;
+    font-weight: 700;
+    line-height: 1;
+    margin-bottom: 4px;
+  }
+
+  .yield-label {
+    font-size: 12px;
+    color: rgba(255,241,229,0.6);
+    font-style: italic;
+  }
+
+  /* ── SUMMARY TABLE ── */
+  .summary-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 14px;
+    margin-bottom: 40px;
+    border: 1px solid var(--rule);
+  }
+
+  .summary-table thead tr {
+    background: var(--ink);
+    color: var(--salmon);
+  }
+
+  .summary-table th {
+    font-family: 'DM Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    padding: 12px 16px;
+    text-align: left;
+    font-weight: 500;
+  }
+
+  .summary-table td {
+    padding: 12px 16px;
+    border-bottom: 1px solid var(--rule-light);
+    color: var(--ink-mid);
+    font-size: 13px;
+  }
+
+  .summary-table tr:nth-child(even) td {
+    background: var(--white);
+  }
+
+  .summary-table tr:last-child td { border-bottom: none; }
+
+  /* ── FOOTER ── */
+  footer {
+    background: var(--ink);
+    color: rgba(255,241,229,0.4);
+    padding: 32px 60px;
+    font-family: 'DM Mono', monospace;
+    font-size: 11px;
+    letter-spacing: 0.06em;
+    line-height: 1.8;
+    border-top: 3px solid var(--accent-red);
+  }
+
+  footer strong {
+    color: rgba(255,241,229,0.7);
+    display: block;
+    margin-bottom: 6px;
+  }
+
+  /* ── UTILITIES ── */
+  .text-center { text-align: center; }
+  strong { font-weight: 600; }
+  em { font-style: italic; }
+
+  @media print {
+    body { background: white; }
+    .masthead { background: #1A1A1A !important; }
+  }
+</style>
+</head>
+<body>
+
+<!-- MASTHEAD -->
+<header class="masthead">
+  <div class="masthead-top">
+    <span>Análisis Fundamental · Renta Variable</span>
+    <span>Miércoles, 18 de marzo de 2026</span>
+    <span>Edición de Cartera · Vol. I</span>
+  </div>
+  <div class="masthead-main">
+    <div class="publication-name">The Fintech Observer</div>
+    <div class="publication-sub">Análisis independiente del ecosistema de pagos global</div>
+  </div>
+  <div class="masthead-rule"></div>
+  <div class="masthead-nav">
+    <span>Pagos</span>
+    <span>Adquirencia</span>
+    <span>Ecosistemas</span>
+    <span>Crédito Digital</span>
+    <span>Infraestructura</span>
+  </div>
+</header>
+
+<!-- HERO -->
+<div class="hero">
+  <div class="hero-eyebrow">Análisis de Cartera — Sector Fintech US</div>
+  <h1 class="hero-headline">Tres posiciones en pérdidas, tres negocios que generan caja: el caso para la paciencia estructurada</h1>
+  <p class="hero-deck">PayPal, Fiserv y Block comparten un perfil inusual en el mercado actual: precios que descuentan deterioro severo mientras los fundamentales muestran generación de caja masiva, spreads ROIC-WACC positivos y programas de recompra que devuelven valor por acción cada trimestre.</p>
+  <div class="hero-meta">
+    <span>Fecha de análisis: <strong>18 marzo 2026</strong></span>
+    <span>Horizonte: <strong>3–5 años</strong></span>
+    <span>Geografía: <strong>US / NYSE-Nasdaq</strong></span>
+    <span>Posición total en sector: <strong>9,20% de cartera</strong></span>
+  </div>
+</div>
+
+<!-- PAGE CONTENT -->
+<div class="page">
+
+  <!-- YIELD FEATURE STRIP -->
+  <div class="yield-feature">
+    <div class="yield-item">
+      <div class="yield-ticker">PYPL — Shareholder Yield</div>
+      <div class="yield-number" style="color:#FFD4A8">~28%</div>
+      <div class="yield-label">FCF yield + buyback yield combinado</div>
+    </div>
+    <div class="yield-divider"></div>
+    <div class="yield-item">
+      <div class="yield-ticker">FISV — Shareholder Yield</div>
+      <div class="yield-number" style="color:#FFD4A8">~13%</div>
+      <div class="yield-label">Con restricción por deuda de $23,7B</div>
+    </div>
+    <div class="yield-divider"></div>
+    <div class="yield-item">
+      <div class="yield-ticker">SQ — Shareholder Yield potencial</div>
+      <div class="yield-number" style="color:#FFD4A8">~11%</div>
+      <div class="yield-label">$9B autorizado · sujeto a ejecución</div>
+    </div>
+  </div>
+
+  <!-- SUMMARY TABLE -->
+  <hr class="section-rule" data-label="Resumen de Posiciones">
+  <table class="summary-table">
+    <thead>
+      <tr>
+        <th>Ticker</th>
+        <th>Entrada</th>
+        <th>Precio actual</th>
+        <th>P&L latente</th>
+        <th>Peso cartera</th>
+        <th>ROIC</th>
+        <th>Spread ROIC–WACC</th>
+        <th>FCF Yield</th>
+        <th>P/E fwd</th>
+        <th>Valor intrínseco</th>
+        <th>Stance</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><strong>PYPL</strong></td>
+        <td>$53,31</td>
+        <td>~$46,13</td>
+        <td style="color:var(--accent-red);font-weight:600">−13,4%</td>
+        <td>4,65%</td>
+        <td style="color:var(--accent-green);font-weight:600">23,6%</td>
+        <td style="color:var(--accent-green);font-weight:600">+13–14pp</td>
+        <td style="color:var(--accent-green);font-weight:600">~14%</td>
+        <td style="color:var(--accent-green);font-weight:600">~8x</td>
+        <td style="color:var(--accent-green);font-weight:600">~$94</td>
+        <td style="font-weight:600;color:var(--accent-blue)">Long — Contrarian</td>
+      </tr>
+      <tr>
+        <td><strong>FISV</strong></td>
+        <td>$66,95</td>
+        <td>~$56,50</td>
+        <td style="color:var(--accent-red);font-weight:600">−16,4%</td>
+        <td>1,87%</td>
+        <td style="color:var(--accent-amber);font-weight:600">8,5–8,7%</td>
+        <td style="color:var(--accent-amber);font-weight:600">+0,4–2,4pp</td>
+        <td style="color:var(--accent-amber);font-weight:600">~7%</td>
+        <td style="color:var(--accent-amber);font-weight:600">~8–9x</td>
+        <td style="color:var(--accent-green);font-weight:600">~$167</td>
+        <td style="font-weight:600;color:var(--accent-amber)">Mantener — Defensivo</td>
+      </tr>
+      <tr>
+        <td><strong>SQ / XYZ</strong></td>
+        <td>$55,24</td>
+        <td>~$55–58</td>
+        <td style="color:var(--accent-green);font-weight:600">~Plano</td>
+        <td>2,68%</td>
+        <td style="color:var(--accent-red);font-weight:600">WACC negativo</td>
+        <td style="color:var(--accent-red);font-weight:600">Negativo hoy</td>
+        <td style="color:var(--accent-amber);font-weight:600">~6%</td>
+        <td style="color:var(--accent-amber);font-weight:600">Alto</td>
+        <td style="color:var(--accent-amber);font-weight:600">En transición</td>
+        <td style="font-weight:600;color:var(--accent-green)">Vigilar — Inflexión</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <!-- ══════════ PYPL ARTICLE ══════════ -->
+  <hr class="section-rule" data-label="PayPal · PYPL">
+
+  <article class="ticker-article article-pypl">
+    <div class="ticker-header">
+      <div>
+        <div class="ticker-flag">PayPal Holdings</div>
+        <div class="ticker-company">PYPL · Nasdaq · Checkout &amp; Ecosistema de Pagos</div>
+      </div>
+      <div class="ticker-right">
+        <div class="stance-label">Posicionamiento</div>
+        <div class="stance-value">Long — Contrarian</div>
+        <div class="pnl-tag pnl-loss">P&amp;L: −13,4% latente</div>
+      </div>
+    </div>
+
+    <div class="ticker-body">
+
+      <div class="metrics-grid">
+        <div class="metric-cell">
+          <div class="metric-label">FCF Yield</div>
+          <div class="metric-value val-green">~14%</div>
+          <div class="metric-note">$6,0–7,0B FCF anual</div>
+        </div>
+        <div class="metric-cell">
+          <div class="metric-label">Shareholder Yield total</div>
+          <div class="metric-value val-green">~28%</div>
+          <div class="metric-note">FCF yield + buyback yield</div>
+        </div>
+        <div class="metric-cell">
+          <div class="metric-label">Buyback 2025</div>
+          <div class="metric-value val-green">$6,05B</div>
+          <div class="metric-note">100% del FCF devuelto</div>
+        </div>
+        <div class="metric-cell">
+          <div class="metric-label">ROIC</div>
+          <div class="metric-value val-green">23,6%</div>
+          <div class="metric-note">Spread +13–14pp vs WACC</div>
+        </div>
+        <div class="metric-cell">
+          <div class="metric-label">EV / FCF</div>
+          <div class="metric-value val-green">7,0x</div>
+          <div class="metric-note">Mínimo histórico</div>
+        </div>
+        <div class="metric-cell">
+          <div class="metric-label">Valor intrínseco estimado</div>
+          <div class="metric-value val-green">~$94</div>
+          <div class="metric-note">Descuento del 51% vs precio</div>
+        </div>
+        <div class="metric-cell">
+          <div class="metric-label">Branded Checkout Growth Q4</div>
+          <div class="metric-value val-amber">+1%</div>
+          <div class="metric-note">Mínimo histórico</div>
+        </div>
+        <div class="metric-cell">
+          <div class="metric-label">Venmo Revenue 2025</div>
+          <div class="metric-value val-green">$1,7B</div>
+          <div class="metric-note">+20% YoY</div>
+        </div>
+        <div class="metric-cell">
+          <div class="metric-label">Acciones eliminadas 2 años</div>
+          <div class="metric-value val-green">−143M</div>
+          <div class="metric-note">−13% del float</div>
+        </div>
+      </div>
+
+      <div class="pullquote">
+        "El mercado descuenta a PYPL como si Braintree destruyera margen indefinidamente. La tesis contrarian es que la compresión ya está en precio, y que el botón amarillo sigue siendo el activo más reconocido del checkout global."
+      </div>
+
+      <div class="body-columns">
+        <div class="body-col">
+          <h4>Por qué está en cartera</h4>
+          <ul>
+            <li><span class="li-icon li-green">1</span><span><strong>Narrativa rota vs números sólidos.</strong> El mercado descuenta deterioro permanente. ROIC del 23,6% y EV/FCF de 7x dicen otra cosa. La dislocación es real y medible: descuento del 51% sobre valor intrínseco de $94.</span></li>
+            <li><span class="li-icon li-green">2</span><span><strong>Los buybacks hacen el trabajo mientras esperas.</strong> Cada trimestre sin catalizador, PYPL posee el 3–4% más de sí misma. La paciencia tiene rentabilidad implícita del 14% anual aunque el precio no se mueva.</span></li>
+            <li><span class="li-icon li-green">3</span><span><strong>Venmo y BNPL como sustituto parcial del branded checkout.</strong> No necesita recuperarse al 8%. Solo necesita que los nuevos vectores compensen. En 2025 ya cubrieron casi la mitad del crecimiento de Transaction Margin Dollars.</span></li>
+          </ul>
+        </div>
+        <div class="body-col">
+          <h4>El riesgo que el mercado ve</h4>
+          <ul>
+            <li><span class="li-icon li-red">→</span><span><strong>Branded checkout creciendo solo al 1%</strong> mientras Apple Pay, Google Pay y Shop Pay ganan al consumidor que elige método de pago por primera vez. Ese consumidor no vuelve.</span></li>
+            <li><span class="li-icon li-red">→</span><span><strong>Guidance multianual retirada en Q4 2025.</strong> El mercado interpreta que el negocio no es predecible. Señal de que el management gestiona la transición, no la recuperación.</span></li>
+            <li><span class="li-icon li-red">→</span><span><strong>Nuevo CEO Enrique Lores</strong> —cuarto cambio de liderazgo en tres años— sin plan estratégico público todavía. El historial genera escepticismo legítimo.</span></li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="infobox-grid">
+        <div class="infobox infobox-exit">
+          <div class="infobox-label exit-label">◼ Condición de salida</div>
+          <p>Branded checkout TPV negativo dos trimestres consecutivos <em>y</em> Lores sin guidance multianual en el earnings del 5 de mayo. Los dos simultáneamente. Uno solo no es suficiente.</p>
+        </div>
+        <div class="infobox infobox-catalyst">
+          <div class="infobox-label catalyst-label">◼ Catalizador de re-rating</div>
+          <p>Branded checkout vuelve a +4% cualquier trimestre. El mercado re-ratea de 8x a 14–16x de forma rápida. No hace falta que sea perfecto — solo que deje de deteriorarse.</p>
+        </div>
+        <div class="infobox infobox-noise">
+          <div class="infobox-label noise-label">◼ Ruido que ignorar</div>
+          <p>Demanda colectiva abril 2026. Rumor Stripe M&A. Bajadas de precio objetivo de Goldman y Rothschild. Volatilidad macro. Ninguno dice nada sobre el valor intrínseco.</p>
+        </div>
+      </div>
+
+    </div>
+  </article>
+
+  <!-- ══════════ FISV ARTICLE ══════════ -->
+  <hr class="section-rule" data-label="Fiserv · FISV">
+
+  <article class="ticker-article article-fisv">
+    <div class="ticker-header">
+      <div>
+        <div class="ticker-flag">Fiserv</div>
+        <div class="ticker-company">FISV · Nasdaq · Core Bancario &amp; Adquirencia</div>
+      </div>
+      <div class="ticker-right">
+        <div class="stance-label">Posicionamiento</div>
+        <div class="stance-value">Mantener — Value Defensivo</div>
+        <div class="pnl-tag pnl-loss">P&amp;L: −16,4% latente</div>
+      </div>
+    </div>
+
+    <div class="ticker-body">
+
+      <div class="metrics-grid">
+        <div class="metric-cell">
+          <div class="metric-label">FCF anual</div>
+          <div class="metric-value val-amber">$5,06B</div>
+          <div class="metric-note">FCF Yield ~7%</div>
+        </div>
+        <div class="metric-cell">
+          <div class="metric-label">Shareholder Yield total</div>
+          <div class="metric-value val-amber">~12–13%</div>
+          <div class="metric-note">$2,2B recomprado solo en Q1 2025</div>
+        </div>
+        <div class="metric-cell">
+          <div class="metric-label">Deuda neta</div>
+          <div class="metric-value val-red">$23,7B</div>
+          <div class="metric-note">~3x EBITDA — restricción real</div>
+        </div>
+        <div class="metric-cell">
+          <div class="metric-label">ROIC</div>
+          <div class="metric-value val-amber">8,5–8,7%</div>
+          <div class="metric-note">Spread +0,4 a +2,4pp vs WACC</div>
+        </div>
+        <div class="metric-cell">
+          <div class="metric-label">Clover Revenue 2025</div>
+          <div class="metric-value val-green">$3,3B</div>
+          <div class="metric-note">+23% YoY · guía double digits 2026</div>
+        </div>
+        <div class="metric-cell">
+          <div class="metric-label">Valor intrínseco estimado</div>
+          <div class="metric-value val-green">~$167</div>
+          <div class="metric-note">Descuento del 66% vs precio actual</div>
+        </div>
+        <div class="metric-cell">
+          <div class="metric-label">Financial Solutions H1 2026</div>
+          <div class="metric-value val-red">En caída</div>
+          <div class="metric-note">Recuperación prometida en H2</div>
+        </div>
+        <div class="metric-cell">
+          <div class="metric-label">Margen operativo Q4 2026e</div>
+          <div class="metric-value val-green">35–36%</div>
+          <div class="metric-note">Desde &lt;30% en Q1 2026</div>
+        </div>
+        <div class="metric-cell">
+          <div class="metric-label">Activismo</div>
+          <div class="metric-value val-amber">Jana</div>
+          <div class="metric-note">Apoyo al CEO Lyons — constructivo</div>
+        </div>
+      </div>
+
+      <div class="pullquote">
+        "Cambiar el core bancario de un banco es un proyecto de 3–5 años, $200M de coste y riesgo operativo enorme. Nadie lo hace sin una razón muy poderosa. Eso es pricing power silencioso —el suelo de la tesis."
+      </div>
+
+      <div class="body-columns">
+        <div class="body-col">
+          <h4>Por qué está en cartera</h4>
+          <ul>
+            <li><span class="li-icon li-green">1</span><span><strong>El suelo del core bancario es real.</strong> Coste de cambio extremo en banca sistémica. El riesgo de pérdida de ingresos es bajo estructuralmente, lo que convierte el estrecho spread ROIC–WACC en defensivo.</span></li>
+            <li><span class="li-icon li-green">2</span><span><strong>Clover es el activo de crecimiento ignorado.</strong> $3,3B de revenue creciendo al 23%. Hardware + software + pagos integrados para pymes. El mercado lo trata como legacy cuando tiene métricas de disruptor.</span></li>
+            <li><span class="li-icon li-green">3</span><span><strong>La caída del 75% castigó la transparencia, no el negocio.</strong> Jana y Lyons tienen incentivo directo para restaurar credibilidad. El re-rating puede ser rápido cuando las métricas recuperen confianza.</span></li>
+          </ul>
+        </div>
+        <div class="body-col">
+          <h4>El riesgo que el mercado ve</h4>
+          <ul>
+            <li><span class="li-icon li-red">→</span><span><strong>Spread ROIC–WACC de solo 2pp.</strong> No hay colchón. Si la deuda presiona o el FCF se comprime, el spread se invierte y el suelo de valoración desaparece.</span></li>
+            <li><span class="li-icon li-red">→</span><span><strong>Competidores cloud-native en ascenso.</strong> Thought Machine, Mambu y Temenos ganan contratos bancarios que hace cinco años habrían ido automáticamente a Fiserv.</span></li>
+            <li><span class="li-icon li-amber">→</span><span><strong>El activismo de Jana</strong> puede ser catalizador positivo, pero históricamente llega cuando el problema ya es visible internamente desde tiempo atrás.</span></li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="infobox-grid">
+        <div class="infobox infobox-exit">
+          <div class="infobox-label exit-label">◼ Condición de salida</div>
+          <p>Financial Solutions no crece en términos orgánicos en H2 2026 después de que Lyons lo prometió explícitamente. Señal de declive estructural. El earnings crítico es agosto, no mayo.</p>
+        </div>
+        <div class="infobox infobox-catalyst">
+          <div class="infobox-label catalyst-label">◼ Catalizador de re-rating</div>
+          <p>Financial Solutions vuelve a crecer en Q3 2026 y Clover mantiene double digit growth. Jana presiona para métricas limpias. El mercado recalibra de 8x hacia 14–16x histórico.</p>
+        </div>
+        <div class="infobox infobox-noise">
+          <div class="infobox-label noise-label">◼ Ruido que ignorar</div>
+          <p>La caída del 75% ya ocurrió — no dice nada del futuro. Los competidores cloud-native son amenaza en horizonte 7–10 años, no 3–5. El activismo es positivo mientras apoye a Lyons.</p>
+        </div>
+      </div>
+
+    </div>
+  </article>
+
+  <!-- ══════════ BLOCK ARTICLE ══════════ -->
+  <hr class="section-rule" data-label="Block · SQ / XYZ">
+
+  <article class="ticker-article article-block">
+    <div class="ticker-header">
+      <div>
+        <div class="ticker-flag">Block (XYZ)</div>
+        <div class="ticker-company">SQ · NYSE · Square + Cash App + Afterpay</div>
+      </div>
+      <div class="ticker-right">
+        <div class="stance-label">Posicionamiento</div>
+        <div class="stance-value">Vigilar — Punto de Inflexión</div>
+        <div class="pnl-tag pnl-flat">P&amp;L: ~Plano</div>
+      </div>
+    </div>
+
+    <div class="ticker-body">
+
+      <div class="metrics-grid">
+        <div class="metric-cell">
+          <div class="metric-label">FCF guía 2026</div>
+          <div class="metric-value val-amber">$2,4B</div>
+          <div class="metric-note">FCF Yield ~6%</div>
+        </div>
+        <div class="metric-cell">
+          <div class="metric-label">Buyback autorizado total</div>
+          <div class="metric-value val-green">$9,0B</div>
+          <div class="metric-note">~25% del market cap</div>
+        </div>
+        <div class="metric-cell">
+          <div class="metric-label">EPS guía 2026</div>
+          <div class="metric-value val-green">$3,66</div>
+          <div class="metric-note">+54% vs 2025</div>
+        </div>
+        <div class="metric-cell">
+          <div class="metric-label">EPS guía 2028</div>
+          <div class="metric-value val-green">$5,50</div>
+          <div class="metric-note">+30%/año 2026–2028</div>
+        </div>
+        <div class="metric-cell">
+          <div class="metric-label">Adj. Operating Margin 2026</div>
+          <div class="metric-value val-green">26%</div>
+          <div class="metric-note">$3,2B adj. operating income</div>
+        </div>
+        <div class="metric-cell">
+          <div class="metric-label">Rule of 40</div>
+          <div class="metric-value val-green">Superada</div>
+          <div class="metric-note">Q4 2025 — primera vez</div>
+        </div>
+        <div class="metric-cell">
+          <div class="metric-label">Plantilla 2026</div>
+          <div class="metric-value val-amber">10K → 6K</div>
+          <div class="metric-note">−40% apuesta IA de Dorsey</div>
+        </div>
+        <div class="metric-cell">
+          <div class="metric-label">WACC</div>
+          <div class="metric-value val-red">~20%</div>
+          <div class="metric-note">Beta 2,67 — prima de riesgo</div>
+        </div>
+        <div class="metric-cell">
+          <div class="metric-label">Afterpay cohorts 2026</div>
+          <div class="metric-value val-green">En target</div>
+          <div class="metric-note">Por debajo de targets de pérdida</div>
+        </div>
+      </div>
+
+      <div class="pullquote">
+        "Block no es una posición value hoy — es una apuesta a que el punto de inflexión ya ocurrió. El ROIC negativo vs WACC es foto del pasado si el EPS crece al 54% en 2026. La Rule of 40 superada es la primera evidencia de que la transición de modo inversión a modo caja está ocurriendo."
+      </div>
+
+      <div class="body-columns">
+        <div class="body-col">
+          <h4>Por qué está en cartera</h4>
+          <ul>
+            <li><span class="li-icon li-green">1</span><span><strong>El closed loop Square + Cash App.</strong> Ningún otro player tiene simultáneamente el lado comercio y el lado consumidor con datos de ambos. Si monetizan ese circuito, el TAM es transformador.</span></li>
+            <li><span class="li-icon li-green">2</span><span><strong>El punto de inflexión ya tiene evidencia.</strong> EPS +38% en Q4, Rule of 40 superada, Afterpay estabilizado, recorte estructural del 40% de plantilla. Son resultados, no promesas.</span></li>
+            <li><span class="li-icon li-green">3</span><span><strong>Naturaleza diferente a PYPL y FISV.</strong> No es value con narrativa rota — es crecimiento en transición hacia generación de caja. La condición de salida y el marco de análisis son distintos.</span></li>
+          </ul>
+        </div>
+        <div class="body-col">
+          <h4>El riesgo que el mercado ve</h4>
+          <ul>
+            <li><span class="li-icon li-red">→</span><span><strong>WACC del 20% no es un accidente.</strong> Beta 2,67 refleja volatilidad de ingresos real: Afterpay en ciclo adverso, BTC en balance, guía que ya ha fallado una vez en Q3 2025.</span></li>
+            <li><span class="li-icon li-red">→</span><span><strong>Los $9B autorizados en buybacks</strong> no cuadran aritméticamente con $2,4B de FCF en 2026. O es señal de confianza a largo plazo o es una promesa que no pueden cumplir al ritmo implícito.</span></li>
+            <li><span class="li-icon li-amber">→</span><span><strong>Investigación de fiscales estatales</strong> sobre prácticas de Afterpay. Riesgo regulatorio no cuantificado en ningún modelo actual.</span></li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="infobox-grid">
+        <div class="infobox infobox-exit">
+          <div class="infobox-label exit-label">◼ Condición de salida</div>
+          <p>EPS miss mayor del 15% sobre guía propia en H1 2026 <em>y</em> riesgo de pérdida crediticia de Borrow supera los targets comunicados. Los dos juntos. Uno solo no es suficiente.</p>
+        </div>
+        <div class="infobox infobox-catalyst">
+          <div class="infobox-label catalyst-label">◼ Catalizador de re-rating</div>
+          <p>EPS 2026 supera la guía de $3,66 y Cash App ARPU crece doble dígito. El WACC empieza a comprimirse cuando el mercado percibe que el riesgo de Afterpay está controlado.</p>
+        </div>
+        <div class="infobox infobox-noise">
+          <div class="infobox-label noise-label">◼ Ruido que ignorar</div>
+          <p>Investigación fiscal hasta que haya resolución concreta. Volatilidad contable del BTC en balance — no afecta al negocio operativo. El cambio de nombre a XYZ es irrelevante para la tesis.</p>
+        </div>
+      </div>
+
+    </div>
+  </article>
+
+  <!-- CLOSING NOTE -->
+  <hr class="section-rule" data-label="Nota Metodológica">
+  <div style="display:grid;grid-template-columns:1fr 1fr;gap:40px;margin-bottom:40px;">
+    <div>
+      <p style="font-size:14px;color:var(--ink-mid);line-height:1.7;margin-bottom:12px;">El análisis presentado se basa en datos fundamentales de Q4 2025 y H1 2026, informes de consenso de analistas, y proyecciones propias basadas en guidance oficial de las compañías a fecha 18 de marzo de 2026.</p>
+      <p style="font-size:14px;color:var(--ink-mid);line-height:1.7;">Los valores intrínsecos estimados corresponden al escenario base de Alpha Spread y modelos DCF propios con WACC ajustado por sector. Las condiciones de salida son objetivas y pre-definidas para eliminar el sesgo de confirmación.</p>
+    </div>
+    <div>
+      <p style="font-size:14px;color:var(--ink-mid);line-height:1.7;margin-bottom:12px;"><strong>Métricas clave del framework:</strong> ROIC (Return on Invested Capital), WACC (Weighted Average Cost of Capital), FCF Yield (Free Cash Flow / Enterprise Value), Shareholder Yield (FCF Yield + Buyback Yield), Spread ROIC–WACC (creación o destrucción de valor por unidad de capital invertido).</p>
+      <p style="font-size:14px;color:var(--ink-mid);line-height:1.7;">Horizonte de inversión declarado: 3–5 años. Geografía: US exclusivamente. Posición total en sector fintech: 9,20% de cartera. Sin apalancamiento.</p>
+    </div>
+  </div>
+
+</div>
+
+<!-- FOOTER -->
+<footer>
+  <strong>The Fintech Observer · Análisis de Cartera · Marzo 2026</strong>
+  Este documento es de uso exclusivo del inversor y no constituye asesoramiento financiero regulado. Las proyecciones son estimaciones basadas en datos públicos y no garantizan rentabilidades futuras. Los precios de mercado reflejan cotizaciones aproximadas a fecha de publicación y pueden variar. · Datos fundamentales: SEC filings, Alpha Spread, guidance oficial de compañías · Elaborado con metodología de análisis value con horizonte 3–5 años.
+</footer>
+
+</body>
+</html>

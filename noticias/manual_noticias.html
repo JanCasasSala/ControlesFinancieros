@@ -1,0 +1,1037 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Manual de Operativa · Sistema de Noticias · Portfolio Monitor v2.0</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;900&family=IBM+Plex+Mono:wght@400;500&family=Libre+Franklin:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#07080A;--s1:#0D0F12;--s2:#131518;--s3:#191C20;--s4:#1F2226;
+  --t1:#E2E4EA;--t2:#7C8090;--t3:#42454E;
+  --b1:rgba(220,225,240,0.05);--b2:rgba(220,225,240,0.10);--b3:rgba(220,225,240,0.16);
+  --gold:#C8A84A;--goldb:rgba(200,168,74,0.08);--goldd:rgba(200,168,74,0.22);
+  --green:#48D878;--greenb:rgba(72,216,120,0.07);--greend:rgba(72,216,120,0.20);
+  --red:#D86050;--redb:rgba(216,96,80,0.07);--redd:rgba(216,96,80,0.22);
+  --amber:#D8A040;--amberb:rgba(216,160,64,0.07);--amberd:rgba(216,160,64,0.22);
+  --blue:#60A8D8;--blueb:rgba(96,168,216,0.07);--blued:rgba(96,168,216,0.22);
+  --purple:#A878D8;--purpleb:rgba(168,120,216,0.07);--purpled:rgba(168,120,216,0.22);
+  --gray:#888;--grayb:rgba(136,136,136,0.07);--grayd:rgba(136,136,136,0.20);
+}
+*{box-sizing:border-box;margin:0;padding:0;}
+html{scroll-behavior:smooth;}
+body{background:var(--bg);color:var(--t1);font-family:'Libre Franklin',sans-serif;font-weight:300;font-size:13.5px;line-height:1.72;}
+
+/* ── NAV ── */
+nav{position:sticky;top:0;z-index:100;background:var(--s1);border-bottom:1px solid var(--b2);padding:0 56px;display:flex;gap:0;overflow-x:auto;}
+.nav-item{font-family:'IBM Plex Mono',monospace;font-size:9px;letter-spacing:1.5px;text-transform:uppercase;color:var(--t3);padding:14px 18px;white-space:nowrap;text-decoration:none;border-bottom:2px solid transparent;transition:color .15s,border-color .15s;}
+.nav-item:hover{color:var(--t1);border-bottom-color:var(--gold);}
+
+/* ── HEADER ── */
+header{background:var(--s1);border-bottom:1px solid var(--b2);padding:48px 56px 40px;}
+.h-eyebrow{font-family:'IBM Plex Mono',monospace;font-size:9px;letter-spacing:3.5px;color:var(--gold);text-transform:uppercase;margin-bottom:10px;}
+.h-title{font-family:'Playfair Display',serif;font-size:38px;font-weight:900;line-height:1.05;margin-bottom:8px;}
+.h-title em{color:var(--gold);font-style:normal;}
+.h-sub{font-size:13.5px;color:var(--t2);max-width:680px;line-height:1.65;margin-bottom:20px;}
+.h-meta{display:flex;gap:10px;flex-wrap:wrap;}
+.meta-chip{font-family:'IBM Plex Mono',monospace;font-size:9px;letter-spacing:1.5px;padding:4px 10px;border-radius:2px;border:1px solid var(--b2);color:var(--t3);}
+.meta-chip.active{border-color:var(--greend);color:var(--green);}
+.meta-chip.new{border-color:var(--goldd);color:var(--gold);}
+
+main{max-width:1200px;margin:0 auto;padding:52px 56px 80px;}
+
+.sec{font-family:'IBM Plex Mono',monospace;font-size:9px;letter-spacing:3px;text-transform:uppercase;color:var(--gold);border-bottom:1px solid var(--b2);padding-bottom:9px;margin:44px 0 20px;}
+.sec:first-child{margin-top:0;}
+
+.badge{font-family:'IBM Plex Mono',monospace;font-size:7.5px;letter-spacing:.5px;padding:2px 8px;border-radius:2px;border:1px solid;white-space:nowrap;display:inline-block;}
+.b-red{background:var(--redb);border-color:var(--redd);color:var(--red);}
+.b-green{background:var(--greenb);border-color:var(--greend);color:var(--green);}
+.b-amber{background:var(--amberb);border-color:var(--amberd);color:var(--amber);}
+.b-gold{background:var(--goldb);border-color:var(--goldd);color:var(--gold);}
+.b-blue{background:var(--blueb);border-color:var(--blued);color:var(--blue);}
+.b-purple{background:var(--purpleb);border-color:var(--purpled);color:var(--purple);}
+.b-gray{background:var(--grayb);border-color:var(--grayd);color:var(--gray);}
+
+/* ── PRINCIPIO ── */
+.principio{background:var(--goldb);border:1px solid var(--goldd);border-left:3px solid var(--gold);border-radius:0 4px 4px 0;padding:20px 26px;margin-bottom:28px;}
+.p-label{font-family:'IBM Plex Mono',monospace;font-size:9px;letter-spacing:2px;text-transform:uppercase;color:var(--gold);margin-bottom:8px;}
+.p-text{font-family:'Playfair Display',serif;font-size:17px;font-weight:700;color:var(--t1);line-height:1.4;}
+
+/* ── PORTFOLIO OVERVIEW ── */
+.portfolio-grid{display:grid;grid-template-columns:repeat(5,1fr);gap:10px;margin-bottom:28px;}
+.pf-card{background:var(--s1);border:1px solid var(--b1);border-radius:4px;padding:14px 16px;position:relative;}
+.pf-card.new-ticker{border-color:var(--goldd);}
+.pf-ticker{font-family:'IBM Plex Mono',monospace;font-size:14px;font-weight:500;letter-spacing:2px;margin-bottom:4px;}
+.pf-name{font-size:11px;color:var(--t3);margin-bottom:8px;}
+.pf-entry{font-family:'IBM Plex Mono',monospace;font-size:10px;color:var(--t2);margin-bottom:2px;}
+.pf-pnl{font-family:'IBM Plex Mono',monospace;font-size:11px;font-weight:500;margin-bottom:6px;}
+.pf-pnl.loss{color:var(--red);}
+.pf-pnl.flat{color:var(--amber);}
+.pf-pnl.noentry{color:var(--t3);}
+.pf-thesis{font-size:11px;color:var(--t3);line-height:1.45;}
+.pf-new-tag{position:absolute;top:10px;right:10px;font-family:'IBM Plex Mono',monospace;font-size:8px;padding:2px 6px;border-radius:2px;background:var(--goldb);border:1px solid var(--goldd);color:var(--gold);}
+.pf-exit{font-size:10.5px;color:var(--t3);margin-top:6px;padding-top:6px;border-top:1px solid var(--b1);line-height:1.4;}
+.pf-exit strong{color:var(--red);font-weight:500;}
+
+/* ── CATEGORIAS ── */
+.cat-grid{display:grid;grid-template-columns:1fr 1fr 1fr 1fr;gap:10px;margin-bottom:28px;}
+.cat-card{border-radius:4px;padding:18px 18px 16px;border:1px solid;}
+.cat-name{font-family:'IBM Plex Mono',monospace;font-size:10px;letter-spacing:2px;text-transform:uppercase;font-weight:500;margin-bottom:6px;}
+.cat-def{font-size:12px;color:var(--t2);line-height:1.55;margin-bottom:10px;}
+.cat-def strong{color:var(--t1);font-weight:500;}
+.cat-accion{font-family:'IBM Plex Mono',monospace;font-size:9px;color:var(--t3);padding-top:8px;border-top:1px solid rgba(220,225,240,0.08);}
+
+/* ── FLUJO ── */
+.flujo{display:grid;grid-template-columns:repeat(5,1fr);gap:0;margin:20px 0 28px;position:relative;}
+.flujo::before{content:'';position:absolute;top:28px;left:10%;right:10%;height:1px;background:linear-gradient(to right,var(--t3),var(--gold),var(--t3));z-index:0;}
+.fl-node{text-align:center;position:relative;z-index:1;}
+.fl-dot{width:14px;height:14px;border-radius:50%;border:2px solid var(--gold);background:var(--bg);margin:21px auto 10px;}
+.fl-n{font-family:'IBM Plex Mono',monospace;font-size:8px;letter-spacing:1px;text-transform:uppercase;color:var(--t3);margin-bottom:4px;}
+.fl-title{font-size:12px;font-weight:500;color:var(--t1);line-height:1.3;margin-bottom:3px;}
+.fl-sub{font-size:10.5px;color:var(--t2);line-height:1.3;}
+
+/* ── TICKER CARDS ── */
+.ticker-block{background:var(--s1);border:1px solid var(--b1);border-radius:4px;padding:20px 24px;margin-bottom:16px;}
+.ticker-block.new-ticker{border-color:var(--goldd);}
+.tb-header{display:flex;align-items:center;gap:14px;margin-bottom:16px;padding-bottom:14px;border-bottom:1px solid var(--b2);}
+.tb-ticker{font-family:'IBM Plex Mono',monospace;font-size:16px;font-weight:500;letter-spacing:2px;}
+.tb-meta{flex:1;}
+.tb-name{font-size:13px;color:var(--t2);}
+.tb-detail{font-family:'IBM Plex Mono',monospace;font-size:10px;color:var(--t3);margin-top:2px;}
+.tb-status{display:flex;flex-direction:column;align-items:flex-end;gap:4px;}
+
+/* ── TESIS CARD ── */
+.tesis-card{background:var(--goldb);border:1px solid var(--goldd);border-radius:3px;padding:12px 16px;margin-bottom:14px;}
+.tesis-label{font-family:'IBM Plex Mono',monospace;font-size:8px;letter-spacing:2px;text-transform:uppercase;color:var(--gold);margin-bottom:6px;}
+.tesis-text{font-size:12.5px;color:var(--t2);line-height:1.6;}
+.tesis-text strong{color:var(--t1);font-weight:500;}
+
+/* ── EXIT CARD ── */
+.exit-card{background:var(--redb);border:1px solid var(--redd);border-left:3px solid var(--red);border-radius:0 3px 3px 0;padding:10px 14px;margin-bottom:14px;}
+.exit-label{font-family:'IBM Plex Mono',monospace;font-size:8px;letter-spacing:2px;text-transform:uppercase;color:var(--red);margin-bottom:4px;}
+.exit-text{font-size:12px;color:var(--t2);line-height:1.55;}
+.exit-text strong{color:var(--t1);font-weight:500;}
+
+/* ── CATALYST CARD ── */
+.cat2-card{background:var(--amberb);border:1px solid var(--amberd);border-left:3px solid var(--amber);border-radius:0 3px 3px 0;padding:10px 14px;margin-bottom:14px;}
+.cat2-label{font-family:'IBM Plex Mono',monospace;font-size:8px;letter-spacing:2px;text-transform:uppercase;color:var(--amber);margin-bottom:4px;}
+.cat2-text{font-size:12px;color:var(--t2);line-height:1.55;}
+
+/* ── NOISE CARD ── */
+.noise-card{background:var(--blueb);border:1px solid var(--blued);border-left:3px solid var(--blue);border-radius:0 3px 3px 0;padding:10px 14px;margin-bottom:14px;}
+.noise-label{font-family:'IBM Plex Mono',monospace;font-size:8px;letter-spacing:2px;text-transform:uppercase;color:var(--blue);margin-bottom:4px;}
+.noise-text{font-size:12px;color:var(--t2);line-height:1.55;}
+
+/* ── KEYWORDS COLUMNS ── */
+.tb-cols{display:grid;grid-template-columns:1fr 1fr 1fr;gap:16px;margin-top:4px;}
+.tb-col-title{font-family:'IBM Plex Mono',monospace;font-size:8px;letter-spacing:2px;text-transform:uppercase;margin-bottom:8px;}
+.kw-item{font-size:11.5px;color:var(--t2);padding:5px 0;border-bottom:1px solid var(--b1);display:flex;gap:8px;line-height:1.4;}
+.kw-item:last-child{border-bottom:none;}
+.kw-dot{flex-shrink:0;margin-top:5px;width:5px;height:5px;border-radius:50%;}
+.kw-hito{font-family:'IBM Plex Mono',monospace;font-size:9px;color:var(--t3);margin-top:2px;}
+
+/* ── MANOS FUERTES ── */
+.mf-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:8px;margin-top:12px;}
+.mf-item{background:var(--s2);border:1px solid var(--b1);border-radius:3px;padding:9px 12px;}
+.mf-name{font-size:12px;font-weight:500;color:var(--t1);margin-bottom:2px;}
+.mf-detail{font-size:11px;color:var(--t3);}
+
+/* ── FUENTES ── */
+.fuente-table{width:100%;border-collapse:collapse;margin:14px 0 24px;}
+.fuente-table th{font-family:'IBM Plex Mono',monospace;font-size:8px;letter-spacing:1.5px;text-transform:uppercase;color:var(--t3);padding:9px 14px;border-bottom:1px solid var(--b2);background:var(--s2);text-align:left;}
+.fuente-table td{padding:12px 14px;border-bottom:1px solid var(--b1);background:var(--s1);font-size:12.5px;vertical-align:top;}
+.fuente-table tr:hover td{background:var(--s2);}
+.f-name{font-weight:500;color:var(--t1);}
+.f-url{font-family:'IBM Plex Mono',monospace;font-size:10px;color:var(--t2);margin-top:2px;}
+
+/* ── TELEGRAM EXAMPLE ── */
+.tg-example{background:var(--s2);border:1px solid var(--b2);border-radius:6px;padding:20px 22px;margin-bottom:14px;font-family:'IBM Plex Mono',monospace;font-size:11.5px;line-height:1.9;color:var(--t2);}
+.tg-example .r{color:var(--red);font-weight:500;}
+.tg-example .a{color:var(--amber);font-weight:500;}
+.tg-example .g{color:var(--green);font-weight:500;}
+.tg-example .b{color:var(--blue);font-weight:500;}
+.tg-example .gr{color:var(--gray);}
+.tg-example .t{color:var(--t1);}
+.tg-example .s{color:var(--t3);}
+
+/* ── PROTOCOLO ── */
+.proto-item{background:var(--s1);border:1px solid var(--b1);border-radius:3px;padding:14px 18px;margin-bottom:8px;display:grid;grid-template-columns:32px 1fr;gap:12px;align-items:start;}
+.pi-n{font-family:'IBM Plex Mono',monospace;font-size:18px;font-weight:500;color:var(--t3);line-height:1;margin-top:2px;}
+.pi-text{font-size:13px;color:var(--t2);line-height:1.6;}
+.pi-text strong{color:var(--t1);font-weight:500;}
+
+/* ── ESCALADO ── */
+.escala-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:24px;}
+.escala-card{background:var(--s1);border:1px solid var(--b1);border-radius:4px;padding:16px 18px;}
+.ec-title{font-size:13px;font-weight:500;color:var(--t1);margin-bottom:8px;}
+.ec-text{font-size:12.5px;color:var(--t2);line-height:1.6;}
+.ec-text strong{color:var(--t1);font-weight:500;}
+
+/* ── FOOTER ── */
+.footer-bar{background:var(--s2);border:1px solid var(--b2);border-radius:4px;padding:16px 22px;margin-top:8px;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:10px;}
+.fb-text{font-size:12px;color:var(--t2);}
+.fb-text strong{color:var(--t1);font-weight:500;}
+
+code{font-family:'IBM Plex Mono',monospace;font-size:11px;background:var(--s3);color:var(--gold);padding:2px 6px;border-radius:3px;}
+
+@media(max-width:900px){
+  header,main{padding-left:20px;padding-right:20px;}
+  nav{padding:0 20px;}
+  .portfolio-grid,.cat-grid{grid-template-columns:1fr 1fr;}
+  .flujo{grid-template-columns:1fr;}
+  .tb-cols,.escala-grid{grid-template-columns:1fr;}
+}
+</style>
+</head>
+<body>
+
+<nav>
+  <a class="nav-item" href="#principio">Principio</a>
+  <a class="nav-item" href="#portfolio">Portfolio</a>
+  <a class="nav-item" href="#categorias">Categorías</a>
+  <a class="nav-item" href="#glng">GLNG</a>
+  <a class="nav-item" href="#lulu">LULU</a>
+  <a class="nav-item" href="#pypl">PYPL</a>
+  <a class="nav-item" href="#fisv">FISV</a>
+  <a class="nav-item" href="#sq">SQ</a>
+  <a class="nav-item" href="#protocolo">Protocolo</a>
+  <a class="nav-item" href="#tecnico">Técnico</a>
+</nav>
+
+<header>
+  <div class="h-eyebrow">Sistema de Monitorización · Manual de Operativa v2.0</div>
+  <h1 class="h-title">Monitor de <em>Noticias</em><br>Portfolio Inversor</h1>
+  <p class="h-sub">Sistema de alerta selectiva basado en tesis de inversión. El objetivo no es leer todas las noticias — es no perderse ninguna que cambie una decisión de inversión. Versión 2.0: cinco tickers activos, tres nuevos del sector fintech US con horizonte 3–5 años.</p>
+  <div class="h-meta">
+    <span class="meta-chip">VERSIÓN 2.0 · 18-MAR-2026</span>
+    <span class="meta-chip active">GLNG · ACTIVO</span>
+    <span class="meta-chip active">LULU · ACTIVO</span>
+    <span class="meta-chip new">PYPL · NUEVO v6.8</span>
+    <span class="meta-chip new">FISV · NUEVO v6.8</span>
+    <span class="meta-chip new">SQ · NUEVO v6.8</span>
+    <span class="meta-chip">EJECUCIÓN: 07:00 CET DIARIO</span>
+    <span class="meta-chip">SCRIPT: monitor_noticias_v6.8.py</span>
+  </div>
+</header>
+
+<main>
+
+<!-- ── PRINCIPIO ── -->
+<div class="sec" id="principio" style="margin-top:0;">Principio de diseño · Por qué este sistema existe</div>
+<div class="principio">
+  <div class="p-label">El principio fundamental</div>
+  <div class="p-text">No filtras noticias por ticker — filtras por tipo de evento. La pregunta no es "¿hay noticias sobre PYPL hoy?" sino "¿ha ocurrido algo que cambie mi decisión de mantener, ampliar o salir de la posición?" Esa distinción reduce el universo de alertas de 50 noticias al día a 2–3 por semana.</div>
+</div>
+
+<div style="background:var(--s1);border:1px solid var(--b1);border-radius:4px;padding:16px 20px;margin-bottom:28px;font-size:13px;color:var(--t2);line-height:1.7;">
+  <strong style="color:var(--t1);">Por qué la tesis de inversión es el input del clasificador:</strong> si la tesis está bien escrita, las tres categorías de noticias se derivan directamente de ella. Invalidación = condiciones de salida definidas en la tesis. Catalizador = condiciones de entrada/ampliación. Confirmación = hitos de seguimiento. Cuando se añade un nuevo ticker, el trabajo es leer su tesis y extraer las keywords — no reescribir el sistema.
+  <br><br>
+  <strong style="color:var(--t1);">Nota v2.0 — una condición de salida por ticker:</strong> los tres tickers fintech (PYPL, FISV, SQ) fueron incorporados siguiendo el principio de <em>una condición de salida única y binaria</em>, no diez. El sistema alerta con señales individuales para que el inversor evalúe — la decisión de salida requiere las condiciones explicitadas en la sección de cada ticker.
+</div>
+
+<!-- ── PORTFOLIO OVERVIEW ── -->
+<div class="sec" id="portfolio">Portfolio activo · Estado 18 marzo 2026</div>
+<div class="portfolio-grid">
+
+  <div class="pf-card">
+    <div class="pf-ticker" style="color:#48C8C8;">GLNG</div>
+    <div class="pf-name">Golar LNG</div>
+    <div class="pf-entry">Entrada: $46.25</div>
+    <div class="pf-pnl noentry">Seguimiento activo</div>
+    <div class="pf-thesis">Contratos take-or-pay FLNG. Hilli + Gimi + MKII Argentina.</div>
+    <div class="pf-exit"><strong>Salida:</strong> cancelación contrato material o dilución &gt;10%</div>
+  </div>
+
+  <div class="pf-card">
+    <div class="pf-ticker" style="color:var(--purple);">LULU</div>
+    <div class="pf-name">Lululemon Athletica</div>
+    <div class="pf-entry">Entrada: $159.27</div>
+    <div class="pf-pnl noentry">Seguimiento activo</div>
+    <div class="pf-thesis">Catalizador binario Chip Wilson / board 2026. Suelo financiero.</div>
+    <div class="pf-exit"><strong>Salida:</strong> Wilson pierde proxy battle Y margen bruto &lt;52%</div>
+  </div>
+
+  <div class="pf-card new-ticker">
+    <div class="pf-new-tag">NUEVO v6.8</div>
+    <div class="pf-ticker" style="color:var(--blue);">PYPL</div>
+    <div class="pf-name">PayPal Holdings</div>
+    <div class="pf-entry">Entrada: $53.31 · Peso: 4.65%</div>
+    <div class="pf-pnl loss">P&L: −13.4% latente</div>
+    <div class="pf-thesis">Value contrarian. ROIC 23.6%, EV/FCF 7x, shareholder yield ~28%.</div>
+    <div class="pf-exit"><strong>Salida:</strong> branded checkout negativo 2T + CEO sin plan (ambas)</div>
+  </div>
+
+  <div class="pf-card new-ticker">
+    <div class="pf-new-tag">NUEVO v6.8</div>
+    <div class="pf-ticker" style="color:var(--amber);">FISV</div>
+    <div class="pf-name">Fiserv</div>
+    <div class="pf-entry">Entrada: $66.95 · Peso: 1.87%</div>
+    <div class="pf-pnl loss">P&L: −16.4% latente</div>
+    <div class="pf-thesis">Suelo core bancario. Clover +23%. Jana activista constructivo.</div>
+    <div class="pf-exit"><strong>Salida:</strong> Financial Solutions sin crecimiento orgánico H2 2026</div>
+  </div>
+
+  <div class="pf-card new-ticker">
+    <div class="pf-new-tag">NUEVO v6.8</div>
+    <div class="pf-ticker" style="color:var(--green);">SQ</div>
+    <div class="pf-name">Block (XYZ)</div>
+    <div class="pf-entry">Entrada: $55.24 · Peso: 2.68%</div>
+    <div class="pf-pnl flat">P&L: ~plano</div>
+    <div class="pf-thesis">Punto de inflexión. EPS +38% Q4. Rule of 40 superada. Afterpay estabilizado.</div>
+    <div class="pf-exit"><strong>Salida:</strong> EPS miss &gt;15% + Afterpay supera targets (ambas)</div>
+  </div>
+
+</div>
+
+<!-- ── CATEGORIAS ── -->
+<div class="sec" id="categorias">Las 4 categorías · Definición y protocolo de respuesta</div>
+<div class="cat-grid">
+
+  <div class="cat-card" style="background:var(--redb);border-color:var(--redd);">
+    <div class="cat-name" style="color:var(--red);">🔴 Categoría 1<br>Invalidación</div>
+    <div class="cat-def">Eventos que <strong>cambian la decisión de mantener la posición</strong>. Son los eventos que la tesis identifica explícitamente como condiciones de salida. Si ocurren, la tesis ya no es válida independientemente del precio.</div>
+    <div class="cat-accion">
+      ACCION: Revisar posición en 48h.<br>
+      ALERTA: Inmediata · cualquier hora.<br>
+      FUENTE: SEC 8-K prioritaria.
+    </div>
+  </div>
+
+  <div class="cat-card" style="background:var(--amberb);border-color:var(--amberd);">
+    <div class="cat-name" style="color:var(--amber);">🟡 Categoría 2<br>Catalizador</div>
+    <div class="cat-def">Eventos que <strong>activan o aceleran la tesis</strong>. Son los catalizadores identificados como condiciones de ampliación de posición. Si ocurren, la ecuación riesgo-retorno mejora.</div>
+    <div class="cat-accion">
+      ACCION: Evaluar ampliación de posición.<br>
+      ALERTA: Mañana · mensaje diario.<br>
+      FUENTE: Google News + datos macro.
+    </div>
+  </div>
+
+  <div class="cat-card" style="background:var(--greenb);border-color:var(--greend);">
+    <div class="cat-name" style="color:var(--green);">🟢 Categoría 3<br>Confirmación</div>
+    <div class="cat-def">Eventos que <strong>confirman que la tesis avanza según lo previsto</strong>. No cambian ninguna decisión pero actualizan el estado del monitor y aumentan la convicción.</div>
+    <div class="cat-accion">
+      ACCION: Actualizar hito en JSON.<br>
+      ALERTA: Mañana · mensaje diario.<br>
+      FUENTE: IR company + earnings.
+    </div>
+  </div>
+
+  <div class="cat-card" style="background:var(--blueb);border-color:var(--blued);">
+    <div class="cat-name" style="color:var(--blue);">🔵 Categoría 4<br>Manos Fuertes</div>
+    <div class="cat-def">Movimientos de <strong>fondos institucionales en lista blanca</strong> o posiciones nuevas que superan el umbral de relevancia. Se evalúa antes que Cat.3 para no confundir compras con ratings de analista.</div>
+    <div class="cat-accion">
+      ACCION: Verificar dirección del movimiento.<br>
+      ALERTA: Mañana · mensaje diario.<br>
+      FUENTE: SEC 13F + Google News.
+    </div>
+  </div>
+
+</div>
+
+<!-- ── FLUJO ── -->
+<div class="sec">Flujo de trabajo · De la noticia a la acción</div>
+<div class="flujo">
+  <div class="fl-node">
+    <div class="fl-dot" style="border-color:var(--t3);"></div>
+    <div class="fl-n">Paso 1</div>
+    <div class="fl-title">Fuentes</div>
+    <div class="fl-sub">SEC EDGAR · Google News · BLS · IR directo</div>
+  </div>
+  <div class="fl-node">
+    <div class="fl-dot"></div>
+    <div class="fl-n">Paso 2</div>
+    <div class="fl-title">Scraping</div>
+    <div class="fl-sub">El script descarga titulares y filings cada mañana 07:00 CET</div>
+  </div>
+  <div class="fl-node">
+    <div class="fl-dot"></div>
+    <div class="fl-n">Paso 3</div>
+    <div class="fl-title">Clasificación</div>
+    <div class="fl-sub">Keywords por categoría y ticker. Ruido filtrado automáticamente</div>
+  </div>
+  <div class="fl-node">
+    <div class="fl-dot"></div>
+    <div class="fl-n">Paso 4</div>
+    <div class="fl-title">Telegram</div>
+    <div class="fl-sub">Un mensaje diario consolidado. Alerta inmediata solo Cat.1</div>
+  </div>
+  <div class="fl-node">
+    <div class="fl-dot" style="border-color:var(--green);"></div>
+    <div class="fl-n">Paso 5</div>
+    <div class="fl-title">Acción humana</div>
+    <div class="fl-sub">El inversor decide. El sistema nunca actúa autónomamente</div>
+  </div>
+</div>
+
+<!-- ══════════ GLNG ══════════ -->
+<div class="sec" id="glng">Configuración GLNG · Golar LNG</div>
+<div class="ticker-block">
+  <div class="tb-header">
+    <div class="tb-ticker" style="color:#48C8C8;">GLNG</div>
+    <div class="tb-meta">
+      <div class="tb-name">Golar LNG · NASDAQ · Entrada $46.25</div>
+      <div class="tb-detail">SEC CIK: 0001166663 · 6 queries Google News · Activo desde v1.0</div>
+    </div>
+    <div class="tb-status"><span class="badge b-green">ACTIVO</span></div>
+  </div>
+
+  <div class="tesis-card">
+    <div class="tesis-label">Tesis de inversión</div>
+    <div class="tesis-text">Contratos take-or-pay FLNG de larga duración (10–20 años) generan flujos de caja predecibles y desconectados del precio spot del LNG. <strong>El valor está en la cartera de contratos, no en el precio del gas.</strong> Hilli Episeyo (Camerún), Gimi (BP/GTA), y MKII Argentina son los tres activos centrales. La cuarta unidad FLNG es el catalizador pendiente de FID.</div>
+  </div>
+
+  <div class="exit-card">
+    <div class="exit-label">Condición de salida</div>
+    <div class="exit-text"><strong>Cancelación o terminación de cualquier contrato material</strong> (Hilli/Perenco, MKII/SESA, Gimi/BP) OR dilución de capital &gt;10% vía equity offering. Cualquiera de los dos de forma individual es suficiente para revisar la posición en 48h.</div>
+  </div>
+
+  <div class="cat2-card">
+    <div class="cat2-label">Catalizador principal</div>
+    <div class="cat2-text">Gimi inicia operaciones comerciales completas + decisión de inversión (FID) de la cuarta unidad FLNG. Macro LNG: disrupciones en Hormuz o Qatar activan el tramo 2 en $41–43.</div>
+  </div>
+
+  <div class="tb-cols">
+    <div>
+      <div class="tb-col-title" style="color:var(--red);">🔴 Invalidación · Keywords clave</div>
+      <div class="kw-item"><div class="kw-dot" style="background:var(--red);"></div><span>hilli + (terminate OR cancel OR renegotiate OR breach)</span></div>
+      <div class="kw-item"><div class="kw-dot" style="background:var(--red);"></div><span>perenco + (terminate OR cancel OR contract end)</span></div>
+      <div class="kw-item"><div class="kw-dot" style="background:var(--red);"></div><span>sesa / mkii / argentina + (cancel OR terminate)</span></div>
+      <div class="kw-item"><div class="kw-dot" style="background:var(--red);"></div><span>golar + (shares offered OR equity offering OR dilut)</span></div>
+      <div class="kw-item"><div class="kw-dot" style="background:var(--red);"></div><span>gimi + (terminate OR cancel)</span></div>
+      <div class="kw-item"><div class="kw-dot" style="background:var(--red);"></div><span>golar + force majeure</span></div>
+    </div>
+    <div>
+      <div class="tb-col-title" style="color:var(--amber);">🟡 Catalizador · Keywords clave</div>
+      <div class="kw-item"><div class="kw-dot" style="background:var(--amber);"></div><span>lng price + (high OR rise) · jkm / ttf + high</span></div>
+      <div class="kw-item"><div class="kw-dot" style="background:var(--amber);"></div><span>hormuz / iran + lng</span></div>
+      <div class="kw-item"><div class="kw-dot" style="background:var(--amber);"></div><span>gimi + (first cargo OR operational OR commercial)</span></div>
+      <div class="kw-item"><div class="kw-dot" style="background:var(--amber);"></div><span>sesa / sefe + (lng OR contract OR offtake)</span></div>
+      <div class="kw-item"><div class="kw-dot" style="background:var(--amber);"></div><span>golar + (new contract OR LOI OR award)</span></div>
+      <div class="kw-item"><div class="kw-dot" style="background:var(--amber);"></div><span>golar + (fourth flng OR 4th flng)</span></div>
+    </div>
+    <div>
+      <div class="tb-col-title" style="color:var(--green);">🟢 Confirmación · Keywords clave</div>
+      <div class="kw-item"><div class="kw-dot" style="background:var(--green);"></div><span>golar + (earnings OR results OR beat)</span></div>
+      <div class="kw-item"><div class="kw-dot" style="background:var(--green);"></div><span>golar / glng + dividend</span></div>
+      <div class="kw-item"><div class="kw-dot" style="background:var(--green);"></div><span>hilli + (cargo OR production OR uptime)</span></div>
+      <div class="kw-item"><div class="kw-dot" style="background:var(--green);"></div><span>golar + (ebitda OR fcf OR margin)</span></div>
+      <div class="kw-item"><div class="kw-dot" style="background:var(--green);"></div><span>golar + (upgrade OR price target OR buy rating)</span></div>
+      <div class="kw-item"><div class="kw-dot" style="background:var(--green);"></div><span>glng + (down today OR falling OR trading down)</span></div>
+    </div>
+  </div>
+
+  <div style="margin-top:14px;padding-top:14px;border-top:1px solid var(--b2);">
+    <div class="tb-col-title" style="color:var(--blue);margin-bottom:8px;">🔵 Manos fuertes · Lista blanca</div>
+    <div class="mf-grid">
+      <div class="mf-item"><div class="mf-name">Rubric Capital Management</div><div class="mf-detail">Mayor accionista ~9% · $378M · umbral: cualquier movimiento</div></div>
+      <div class="mf-item"><div class="mf-name">PointState Capital</div><div class="mf-detail">Aumento 19% Q4 2025 · $146M · umbral: cualquier movimiento</div></div>
+      <div class="mf-item"><div class="mf-name">T. Rowe Price</div><div class="mf-detail">Entrada +253% Q4 2025 · $85M · umbral: cualquier movimiento</div></div>
+      <div class="mf-item"><div class="mf-name">Cartenna Capital</div><div class="mf-detail">Top 10 accionista · $77M · umbral: cualquier movimiento</div></div>
+      <div class="mf-item"><div class="mf-name">Morgan Stanley</div><div class="mf-detail">Institucional sistémico · $78M · umbral: $50M</div></div>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════ LULU ══════════ -->
+<div class="sec" id="lulu">Configuración LULU · Lululemon Athletica</div>
+<div class="ticker-block">
+  <div class="tb-header">
+    <div class="tb-ticker" style="color:var(--purple);">LULU</div>
+    <div class="tb-meta">
+      <div class="tb-name">Lululemon Athletica · NASDAQ · Entrada $159.27</div>
+      <div class="tb-detail">SEC CIK: 0001397187 · 8 queries Google News · Activo desde v6.x</div>
+    </div>
+    <div class="tb-status"><span class="badge b-green">ACTIVO</span></div>
+  </div>
+
+  <div class="tesis-card">
+    <div class="tesis-label">Tesis de inversión · Diseño de francotirador (3 alertas)</div>
+    <div class="tesis-text">Riesgo asimétrico con catalizador binario y ventana temporal definida. <strong>La tesis depende de UN evento con fecha conocida:</strong> la junta de accionistas 2026 y la campaña de Chip Wilson sobre el board. Si Wilson gana asientos → rerating potencial violento al alza. Si pierde → caso base de declive gestionado $145–165. Suelo financiero: margen bruto &gt;52%, BPA forward &gt;$9, caja &gt;$800M.</div>
+  </div>
+
+  <div class="exit-card">
+    <div class="exit-label">Condiciones de cierre</div>
+    <div class="exit-text">
+      <strong>Tesis realizada:</strong> precio &gt;$280 sostenido 10 días.<br>
+      <strong>Tesis invalidada:</strong> precio &lt;$120 con suelo financiero roto (margen &lt;52% + guía cortada).<br>
+      <strong>Ventana cerrada:</strong> 24 meses sin Alerta 1 (antes del 18-mar-2028).
+    </div>
+  </div>
+
+  <div class="cat2-card">
+    <div class="cat2-label">Catalizador principal</div>
+    <div class="cat2-text">Wilson gana asientos en el board en la junta 2026 + comp. sales Américas vuelve a positivo (+2%). Nuevo CEO externo con mandato turnaround es catalizador secundario.</div>
+  </div>
+
+  <div class="noise-card">
+    <div class="noise-label">Ruido que ignorar</div>
+    <div class="noise-text">Métricas continuas de Google Trends, app rankings y wallet share — son instrumentos de diagnóstico no accionables en el horizonte de la tesis. Análisis de competidores (Alo, Vuori) salvo dato de cuota cuantificado.</div>
+  </div>
+
+  <div class="tb-cols">
+    <div>
+      <div class="tb-col-title" style="color:var(--red);">🔴 Invalidación · Keywords clave</div>
+      <div class="kw-item"><div class="kw-dot" style="background:var(--red);"></div><span>wilson + (withdraw OR drops bid OR loses vote)</span></div>
+      <div class="kw-item"><div class="kw-dot" style="background:var(--red);"></div><span>lululemon + proxy + defeat</span></div>
+      <div class="kw-item"><div class="kw-dot" style="background:var(--red);"></div><span>lululemon + (gross margin OR margin) + (decline OR below)</span></div>
+      <div class="kw-item"><div class="kw-dot" style="background:var(--red);"></div><span>lululemon + guidance + (cut OR lower OR weak)</span></div>
+      <div class="kw-item"><div class="kw-dot" style="background:var(--red);"></div><span>lululemon + comparable decline + (fifth/sixth/seventh)</span></div>
+      <div class="kw-item"><div class="kw-dot" style="background:var(--red);"></div><span>lululemon + cash + burn</span></div>
+    </div>
+    <div>
+      <div class="tb-col-title" style="color:var(--amber);">🟡 Catalizador · Keywords clave</div>
+      <div class="kw-item"><div class="kw-dot" style="background:var(--amber);"></div><span>wilson + (wins board OR elected director OR board seat)</span></div>
+      <div class="kw-item"><div class="kw-dot" style="background:var(--amber);"></div><span>lululemon + (appoints/names/hires) + ceo</span></div>
+      <div class="kw-item"><div class="kw-dot" style="background:var(--amber);"></div><span>lululemon + (joins board OR new director OR tapped board)</span></div>
+      <div class="kw-item"><div class="kw-dot" style="background:var(--amber);"></div><span>lululemon + activist + (investor OR turnaround)</span></div>
+      <div class="kw-item"><div class="kw-dot" style="background:var(--amber);"></div><span>lululemon + americas + growth</span></div>
+      <div class="kw-item"><div class="kw-dot" style="background:var(--amber);"></div><span>lululemon + comparable + positive</span></div>
+    </div>
+    <div>
+      <div class="tb-col-title" style="color:var(--green);">🟢 Confirmación · Keywords clave</div>
+      <div class="kw-item"><div class="kw-dot" style="background:var(--green);"></div><span>chip wilson + lululemon · wilson + lululemon + (stake/letter/notice/ceo)</span></div>
+      <div class="kw-item"><div class="kw-dot" style="background:var(--green);"></div><span>lululemon + founder + (war/fight/activism/challenge)</span></div>
+      <div class="kw-item"><div class="kw-dot" style="background:var(--green);"></div><span>lululemon + proxy + (fight OR battle)</span></div>
+      <div class="kw-item"><div class="kw-dot" style="background:var(--green);"></div><span>lululemon + ceo + (void OR vacancy OR search)</span></div>
+      <div class="kw-item"><div class="kw-dot" style="background:var(--green);"></div><span>lululemon + (earnings OR results OR comparable sales)</span></div>
+      <div class="kw-item"><div class="kw-dot" style="background:var(--green);"></div><span>lululemon + (annual meeting OR shareholder meeting)</span></div>
+    </div>
+  </div>
+
+  <div style="margin-top:14px;padding-top:14px;border-top:1px solid var(--b2);">
+    <div class="tb-col-title" style="color:var(--blue);margin-bottom:8px;">🔵 Manos fuertes · Lista blanca</div>
+    <div class="mf-grid">
+      <div class="mf-item"><div class="mf-name">BlackRock</div><div class="mf-detail">Mayor institucional pasivo ~9% float · umbral: $50M</div></div>
+      <div class="mf-item"><div class="mf-name">Vanguard Group</div><div class="mf-detail">Institucional pasivo ~8% float · umbral: $50M</div></div>
+      <div class="mf-item"><div class="mf-name">Fidelity Investments</div><div class="mf-detail">Institucional activo · umbral: $50M</div></div>
+    </div>
+    <div style="font-size:11px;color:var(--t3);margin-top:8px;">Nota: Chip Wilson no está en Cat.4 por diseño — se cubre desde Cat.3 con keywords específicas de proxy fight. Wilson es activismo del fundador, no movimiento de fondo institucional.</div>
+  </div>
+</div>
+
+<!-- ══════════ PYPL ══════════ -->
+<div class="sec" id="pypl">Configuración PYPL · PayPal Holdings <span class="badge b-gold" style="margin-left:8px;vertical-align:middle;">NUEVO v6.8</span></div>
+<div class="ticker-block new-ticker">
+  <div class="tb-header">
+    <div class="tb-ticker" style="color:var(--blue);">PYPL</div>
+    <div class="tb-meta">
+      <div class="tb-name">PayPal Holdings · NASDAQ · Entrada $53.31 · Peso cartera: 4.65%</div>
+      <div class="tb-detail">SEC CIK: 0001410247 · 8 queries Google News · Earnings crítico: 5 mayo 2026 (Q1)</div>
+    </div>
+    <div class="tb-status">
+      <span class="badge b-green">ACTIVO</span>
+      <span class="badge b-red" style="margin-top:2px;">P&L −13.4%</span>
+    </div>
+  </div>
+
+  <div class="tesis-card">
+    <div class="tesis-label">Tesis · Value contrarian — narrativa rota vs números sólidos</div>
+    <div class="tesis-text"><strong>ROIC 23.6% · EV/FCF 7x · Shareholder yield ~28% · Valor intrínseco ~$94 vs precio ~$46.</strong> El mercado descuenta deterioro permanente del checkout. Los números muestran un negocio que genera $6B de caja libre anual, recompra el 14% de su capitalización, y cotiza a 8x earnings. La dislocación es medible. Venmo (+20%) y BNPL ($40B TPV) compensan parcialmente la presión en branded checkout. El catalizador de re-rating es branded checkout volviendo a +4% — el mercado pasaría de 8x a 14–16x.</div>
+  </div>
+
+  <div class="exit-card">
+    <div class="exit-label">Condición de salida única — ambas simultáneas</div>
+    <div class="exit-text">
+      <strong>Pilar 1:</strong> Branded checkout TPV negativo en términos absolutos dos trimestres consecutivos.<br>
+      <strong>Pilar 2:</strong> CEO Lores sin guidance multianual ni plan concreto con métricas en el earnings del 5 de mayo.<br>
+      <strong>Una sola no es suficiente para salir.</strong> Si solo falla el pilar 1 → vigilancia. Si solo falla el pilar 2 → vigilancia. Ambos juntos = tesis rota.
+    </div>
+  </div>
+
+  <div class="cat2-card">
+    <div class="cat2-label">Catalizador de re-rating</div>
+    <div class="cat2-text">Branded checkout vuelve a +4% cualquier trimestre → re-rating desde 8x hacia 14–16x, rápido. Rumor Stripe M&A confirmado → floor implícito en precio material. PYUSD supera $5B en circulación → upside sorpresa.</div>
+  </div>
+
+  <div class="noise-card">
+    <div class="noise-label">Ruido que ignorar en PYPL</div>
+    <div class="noise-text">Demanda colectiva abril 2026 (habitual tras earnings miss — raramente resulta en daño al negocio). Rumor Stripe sin confirmar. Bajadas de precio objetivo de Goldman/Rothschild (reacción al precio, no análisis prospectivo). Volatilidad macro.</div>
+  </div>
+
+  <div class="tb-cols">
+    <div>
+      <div class="tb-col-title" style="color:var(--red);">🔴 Invalidación · Keywords clave</div>
+      <div class="kw-item"><div class="kw-dot" style="background:var(--red);"></div><span>paypal + branded + (decline OR negative)</span></div>
+      <div class="kw-item"><div class="kw-dot" style="background:var(--red);"></div><span>paypal + checkout + (losing share OR market share loss)</span></div>
+      <div class="kw-item"><div class="kw-dot" style="background:var(--red);"></div><span>paypal + transaction margin + (decline OR negative)</span></div>
+      <div class="kw-item"><div class="kw-dot" style="background:var(--red);"></div><span>paypal + take rate + drop</span></div>
+      <div class="kw-item"><div class="kw-dot" style="background:var(--red);"></div><span>paypal + (guidance withdrawn OR lores no guidance)</span></div>
+      <div class="kw-item"><div class="kw-dot" style="background:var(--red);"></div><span>paypal + (sec investigation OR doj investigation)</span></div>
+      <div class="kw-item"><div class="kw-dot" style="background:var(--red);"></div><span>paypal + apple pay + surpass</span></div>
+      <div class="kw-item"><div class="kw-dot" style="background:var(--red);"></div><span>paypal + merchant + migration</span></div>
+    </div>
+    <div>
+      <div class="tb-col-title" style="color:var(--amber);">🟡 Catalizador · Keywords clave</div>
+      <div class="kw-item"><div class="kw-dot" style="background:var(--amber);"></div><span>paypal + branded + (accelerat OR growth positive)</span></div>
+      <div class="kw-item"><div class="kw-dot" style="background:var(--amber);"></div><span>fastlane + paypal + (growth OR traction OR merchant OR expand)</span></div>
+      <div class="kw-item"><div class="kw-dot" style="background:var(--amber);"></div><span>stripe + paypal + (deal OR merger OR acqui)</span></div>
+      <div class="kw-item"><div class="kw-dot" style="background:var(--amber);"></div><span>pyusd + (volume OR adoption) · paypal + stablecoin + growth</span></div>
+      <div class="kw-item"><div class="kw-dot" style="background:var(--amber);"></div><span>paypal + (openai OR agentic) + (payment OR commerce)</span></div>
+      <div class="kw-item"><div class="kw-dot" style="background:var(--amber);"></div><span>venmo + revenue + growth · venmo + monetiz</span></div>
+      <div class="kw-item"><div class="kw-dot" style="background:var(--amber);"></div><span>paypal + bnpl + growth · paypal + buy now + accelerat</span></div>
+    </div>
+    <div>
+      <div class="tb-col-title" style="color:var(--green);">🟢 Confirmación · Keywords clave</div>
+      <div class="kw-item"><div class="kw-dot" style="background:var(--green);"></div>
+        <div>
+          <div>paypal + (earnings OR results OR beat)</div>
+          <div class="kw-hito">→ Extraer: branded checkout growth, TM dollars ex-interés, guidance</div>
+        </div>
+      </div>
+      <div class="kw-item"><div class="kw-dot" style="background:var(--green);"></div><span>paypal + transaction margin</span></div>
+      <div class="kw-item"><div class="kw-dot" style="background:var(--green);"></div>
+        <div>
+          <div>paypal / pypl + (buyback OR repurchase)</div>
+          <div class="kw-hito">→ Umbral: &lt;$1.5B/trimestre es señal de compresión</div>
+        </div>
+      </div>
+      <div class="kw-item"><div class="kw-dot" style="background:var(--green);"></div><span>paypal + (fcf OR free cash flow)</span></div>
+      <div class="kw-item"><div class="kw-dot" style="background:var(--green);"></div><span>paypal + guidance + (raise OR increase)</span></div>
+      <div class="kw-item"><div class="kw-dot" style="background:var(--green);"></div><span>lores + paypal + (strategy OR plan OR guidance)</span></div>
+      <div class="kw-item"><div class="kw-dot" style="background:var(--green);"></div><span>pypl + (down today OR falling OR rally)</span></div>
+    </div>
+  </div>
+
+  <div style="margin-top:14px;padding-top:14px;border-top:1px solid var(--b2);">
+    <div class="tb-col-title" style="color:var(--blue);margin-bottom:8px;">🔵 Manos fuertes · Lista blanca</div>
+    <div class="mf-grid">
+      <div class="mf-item"><div class="mf-name">Vanguard Group</div><div class="mf-detail">Mayor institucional pasivo ~8% float · umbral: $100M</div></div>
+      <div class="mf-item"><div class="mf-name">BlackRock</div><div class="mf-detail">Institucional pasivo ~7% float · umbral: $100M</div></div>
+      <div class="mf-item"><div class="mf-name">Elliott Management</div><div class="mf-detail">Activista conocido · umbral: cualquier movimiento</div></div>
+      <div class="mf-item"><div class="mf-name">Starboard Value</div><div class="mf-detail">Activista tech · umbral: cualquier movimiento</div></div>
+      <div class="mf-item"><div class="mf-name">ValueAct Capital</div><div class="mf-detail">Activista especialista tech · umbral: cualquier movimiento</div></div>
+      <div class="mf-item"><div class="mf-name">Jana Partners</div><div class="mf-detail">Activista — ya en FISV · si entra en PYPL es señal</div></div>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════ FISV ══════════ -->
+<div class="sec" id="fisv">Configuración FISV · Fiserv <span class="badge b-gold" style="margin-left:8px;vertical-align:middle;">NUEVO v6.8</span></div>
+<div class="ticker-block new-ticker">
+  <div class="tb-header">
+    <div class="tb-ticker" style="color:var(--amber);">FISV</div>
+    <div class="tb-meta">
+      <div class="tb-name">Fiserv · NASDAQ · Entrada $66.95 · Peso cartera: 1.87%</div>
+      <div class="tb-detail">SEC CIK: 0000798354 · 8 queries Google News · Earnings crítico: agosto 2026 (Q2) — NO mayo</div>
+    </div>
+    <div class="tb-status">
+      <span class="badge b-green">ACTIVO</span>
+      <span class="badge b-red" style="margin-top:2px;">P&L −16.4%</span>
+    </div>
+  </div>
+
+  <div class="tesis-card">
+    <div class="tesis-label">Tesis · Value defensivo — suelo en core bancario + Clover</div>
+    <div class="tesis-text"><strong>Caída 75% desde máximos. FCF $5B. Shareholder yield ~13%. Valor intrínseco ~$167 vs precio ~$56 (descuento 66%).</strong> El suelo es el core bancario: cambiar el sistema central de un banco es un proyecto de 3–5 años con $200M+ de coste y riesgo operativo extremo. Coste de cambio real, no narrativo. Clover ($3.3B revenue, +23%) es el activo de crecimiento ignorado. Jana Partners activista con apoyo al CEO Lyons — presión para restaurar transparencia de métricas. La caída castigó la falta de transparencia, no el negocio subyacente.</div>
+  </div>
+
+  <div class="exit-card">
+    <div class="exit-label">Condición de salida única — earnings agosto 2026</div>
+    <div class="exit-text">
+      <strong>Financial Solutions no crece orgánicamente en H2 2026</strong> después de que CEO Lyons lo prometió explícitamente como punto de inflexión.<br>
+      El earnings crítico es agosto (Q2 2026), no mayo. En mayo Lyons debe confirmar el timing — en agosto debe confirmarse el dato.
+    </div>
+  </div>
+
+  <div class="cat2-card">
+    <div class="cat2-label">Catalizador de re-rating</div>
+    <div class="cat2-text">Financial Solutions vuelve a crecer orgánicamente en Q3 2026 Y Clover mantiene low double digits. Jana presiona para métricas limpias y el mercado recalibra de 8x hacia 14–16x histórico. FIUSD (stablecoin para bancos) es upside sorpresa a monitorizar.</div>
+  </div>
+
+  <div class="noise-card">
+    <div class="noise-label">Ruido que ignorar en FISV</div>
+    <div class="noise-text">La caída del 75% ya ocurrió — no dice nada del futuro. Competidores cloud-native (Thought Machine, Mambu) son amenaza real en horizonte 7–10 años, no 3–5. El activismo de Jana es positivo mientras apoyen a Lyons — solo vigilar si cambian de posición.</div>
+  </div>
+
+  <div class="tb-cols">
+    <div>
+      <div class="tb-col-title" style="color:var(--red);">🔴 Invalidación · Keywords clave</div>
+      <div class="kw-item"><div class="kw-dot" style="background:var(--red);"></div><span>fiserv + bank + (contract loss OR loses contract OR switch)</span></div>
+      <div class="kw-item"><div class="kw-dot" style="background:var(--red);"></div><span>fiserv + core banking + loses</span></div>
+      <div class="kw-item"><div class="kw-dot" style="background:var(--red);"></div>
+        <div>
+          <div>fiserv + financial solutions + (decline OR negative)</div>
+          <div class="kw-hito">→ Si es H2 2026 = CONDICIÓN DE SALIDA activada</div>
+        </div>
+      </div>
+      <div class="kw-item"><div class="kw-dot" style="background:var(--red);"></div><span>fiserv + debt + covenant · fiserv + downgrade + credit</span></div>
+      <div class="kw-item"><div class="kw-dot" style="background:var(--red);"></div><span>jana + fiserv + (lyons replace OR ceo change OR management change)</span></div>
+      <div class="kw-item"><div class="kw-dot" style="background:var(--red);"></div><span>thought machine / mambu / temenos + (wins bank OR replace fiserv)</span></div>
+    </div>
+    <div>
+      <div class="tb-col-title" style="color:var(--amber);">🟡 Catalizador · Keywords clave</div>
+      <div class="kw-item"><div class="kw-dot" style="background:var(--amber);"></div><span>fiserv + financial solutions + (growth OR recover OR positive)</span></div>
+      <div class="kw-item"><div class="kw-dot" style="background:var(--amber);"></div><span>fiserv + (banking win OR bank new contract OR wins bank deal)</span></div>
+      <div class="kw-item"><div class="kw-dot" style="background:var(--amber);"></div><span>clover + fiserv + (growth accelerat OR revenue beat)</span></div>
+      <div class="kw-item"><div class="kw-dot" style="background:var(--amber);"></div><span>fiusd + fiserv · fiserv + stablecoin + (launch OR bank)</span></div>
+      <div class="kw-item"><div class="kw-dot" style="background:var(--amber);"></div><span>jana + fiserv + (metrics OR transparency OR value)</span></div>
+      <div class="kw-item"><div class="kw-dot" style="background:var(--amber);"></div><span>fiserv + (debt reduc OR deleverag)</span></div>
+    </div>
+    <div>
+      <div class="tb-col-title" style="color:var(--green);">🟢 Confirmación · Keywords clave</div>
+      <div class="kw-item"><div class="kw-dot" style="background:var(--green);"></div>
+        <div>
+          <div>fiserv / fisv + (earnings OR results OR beat)</div>
+          <div class="kw-hito">→ Extraer: Financial Solutions trend, Clover growth, guidance H2</div>
+        </div>
+      </div>
+      <div class="kw-item"><div class="kw-dot" style="background:var(--green);"></div><span>fiserv + (ebitda OR fcf OR free cash flow)</span></div>
+      <div class="kw-item"><div class="kw-dot" style="background:var(--green);"></div>
+        <div>
+          <div>clover + fiserv + (revenue OR tpv)</div>
+          <div class="kw-hito">→ Baseline: $3.3B anual · guía low double digits 2026</div>
+        </div>
+      </div>
+      <div class="kw-item"><div class="kw-dot" style="background:var(--green);"></div><span>fiserv + (dividend OR buyback OR repurchase)</span></div>
+      <div class="kw-item"><div class="kw-dot" style="background:var(--green);"></div><span>jana + fiserv + (support OR lyons)</span></div>
+      <div class="kw-item"><div class="kw-dot" style="background:var(--green);"></div><span>lyons + fiserv + (guidance OR outlook)</span></div>
+      <div class="kw-item"><div class="kw-dot" style="background:var(--green);"></div><span>fisv + (down today OR falling OR rally)</span></div>
+    </div>
+  </div>
+
+  <div style="margin-top:14px;padding-top:14px;border-top:1px solid var(--b2);">
+    <div class="tb-col-title" style="color:var(--blue);margin-bottom:8px;">🔵 Manos fuertes · Lista blanca</div>
+    <div class="mf-grid">
+      <div class="mf-item"><div class="mf-name">Jana Partners</div><div class="mf-detail">Activista — apoya CEO Lyons · umbral: cualquier movimiento</div></div>
+      <div class="mf-item"><div class="mf-name">Vanguard Group</div><div class="mf-detail">Mayor institucional pasivo ~8% · umbral: $75M</div></div>
+      <div class="mf-item"><div class="mf-name">BlackRock</div><div class="mf-detail">Institucional pasivo ~7% · umbral: $75M</div></div>
+      <div class="mf-item"><div class="mf-name">Fidelity Investments</div><div class="mf-detail">Institucional activo · umbral: $75M</div></div>
+      <div class="mf-item"><div class="mf-name">Berkshire Hathaway</div><div class="mf-detail">Si entra Buffett en FISV es señal fortísima · umbral: cualquier</div></div>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════ SQ ══════════ -->
+<div class="sec" id="sq">Configuración SQ · Block (XYZ) <span class="badge b-gold" style="margin-left:8px;vertical-align:middle;">NUEVO v6.8</span></div>
+<div class="ticker-block new-ticker">
+  <div class="tb-header">
+    <div class="tb-ticker" style="color:var(--green);">SQ</div>
+    <div class="tb-meta">
+      <div class="tb-name">Block (XYZ) · NYSE · Entrada $55.24 · Peso cartera: 2.68%</div>
+      <div class="tb-detail">SEC CIK: 0001512673 · 8 queries Google News · Earnings crítico: mayo 2026 (Q1) · EPS guía $3.66</div>
+    </div>
+    <div class="tb-status">
+      <span class="badge b-green">ACTIVO</span>
+      <span class="badge b-amber" style="margin-top:2px;">P&L ~plano</span>
+    </div>
+  </div>
+
+  <div class="tesis-card">
+    <div class="tesis-label">Tesis · Punto de inflexión — modo inversión a modo caja</div>
+    <div class="tesis-text"><strong>Naturaleza diferente a PYPL y FISV.</strong> No es value con narrativa rota — es crecimiento en transición hacia generación de caja. EPS Q4 +38%, Rule of 40 superada por primera vez, Afterpay con cohorts 2026 por debajo de targets de pérdida, $9B autorizado en buybacks (~25% market cap). Dorsey apuesta a IA: recorte 10.000→6.000 empleados (-40%). El activo más infravalorado es el <strong>closed loop Square (comercios) + Cash App (usuarios)</strong>: ningún otro player tiene simultáneamente ambos lados con datos cruzados. Guía 2026: EPS $3.66 (+54%) · EPS 2028: $5.50 (+30%/año).</div>
+  </div>
+
+  <div class="exit-card">
+    <div class="exit-label">Condición de salida única — ambas simultáneas</div>
+    <div class="exit-text">
+      <strong>Vector 1:</strong> EPS miss mayor del 15% sobre guía propia ($3.66) en H1 2026.<br>
+      <strong>Vector 2:</strong> Riesgo de pérdida crediticia de Borrow supera los targets comunicados en Investor Day noviembre 2025.<br>
+      <strong>Una sola no es suficiente.</strong> Block ya demostró recuperarse de un trimestre débil (Q3 2025 EPS miss). Ambas juntas = tesis del punto de inflexión era prematura.
+    </div>
+  </div>
+
+  <div class="cat2-card">
+    <div class="cat2-label">Catalizador de re-rating</div>
+    <div class="cat2-text">EPS supera $3.66 guidance en cualquier trimestre Y Cash App ARPU crece doble dígito. El WACC empieza a comprimirse (beta baja de 2.67) cuando el mercado percibe que Afterpay está bajo control. El múltiplo sube al comprimirse el WACC.</div>
+  </div>
+
+  <div class="noise-card">
+    <div class="noise-label">Ruido que ignorar en SQ</div>
+    <div class="noise-text">Volatilidad contable del BTC en balance — afecta al P&L reportado pero NO al FCF operativo. Siempre distinguir al leer. Investigación fiscal sobre Afterpay hasta que haya resolución concreta y monto cuantificado. Cambio de nombre a XYZ: irrelevante para la tesis.</div>
+  </div>
+
+  <div class="tb-cols">
+    <div>
+      <div class="tb-col-title" style="color:var(--red);">🔴 Invalidación · Keywords clave</div>
+      <div class="kw-item"><div class="kw-dot" style="background:var(--red);"></div>
+        <div>
+          <div>afterpay + delinquency + (rise OR above target)</div>
+          <div class="kw-hito">→ Umbral: superar targets Investor Day nov 2025</div>
+        </div>
+      </div>
+      <div class="kw-item"><div class="kw-dot" style="background:var(--red);"></div><span>afterpay + credit loss + exceed · afterpay + charge-off + rise</span></div>
+      <div class="kw-item"><div class="kw-dot" style="background:var(--red);"></div><span>block + borrow + (loss target OR credit loss exceed)</span></div>
+      <div class="kw-item"><div class="kw-dot" style="background:var(--red);"></div><span>afterpay + (regulat action OR state attorney general OR settlement million)</span></div>
+      <div class="kw-item"><div class="kw-dot" style="background:var(--red);"></div>
+        <div>
+          <div>block + (eps miss guidance OR misses guidance) · sq + guidance cut</div>
+          <div class="kw-hito">→ Umbral salida: &gt;15% vs guía propia $3.66</div>
+        </div>
+      </div>
+      <div class="kw-item"><div class="kw-dot" style="background:var(--red);"></div><span>block + rule of 40 + miss</span></div>
+      <div class="kw-item"><div class="kw-dot" style="background:var(--red);"></div><span>dorsey + block + (resign OR leaves)</span></div>
+      <div class="kw-item"><div class="kw-dot" style="background:var(--red);"></div><span>block + (bitcoin impairment OR btc writedown)</span></div>
+    </div>
+    <div>
+      <div class="tb-col-title" style="color:var(--amber);">🟡 Catalizador · Keywords clave</div>
+      <div class="kw-item"><div class="kw-dot" style="background:var(--amber);"></div><span>block + (beats guidance OR eps beat OR raises guidance)</span></div>
+      <div class="kw-item"><div class="kw-dot" style="background:var(--amber);"></div><span>block + rule of 40 + (sustain OR exceed)</span></div>
+      <div class="kw-item"><div class="kw-dot" style="background:var(--amber);"></div>
+        <div>
+          <div>cash app + arpu + growth · cash app + revenue + accelerat</div>
+          <div class="kw-hito">→ Umbral catalizador: doble dígito YoY</div>
+        </div>
+      </div>
+      <div class="kw-item"><div class="kw-dot" style="background:var(--amber);"></div><span>cash app + monetiz · block + closed loop + revenue</span></div>
+      <div class="kw-item"><div class="kw-dot" style="background:var(--amber);"></div><span>afterpay + (delinquency stable OR credit improv OR loss below target)</span></div>
+      <div class="kw-item"><div class="kw-dot" style="background:var(--amber);"></div><span>block + (buyback execut OR repurchase accelerat)</span></div>
+      <div class="kw-item"><div class="kw-dot" style="background:var(--amber);"></div><span>dorsey + ai + (block efficiency OR cost reduc)</span></div>
+    </div>
+    <div>
+      <div class="tb-col-title" style="color:var(--green);">🟢 Confirmación · Keywords clave</div>
+      <div class="kw-item"><div class="kw-dot" style="background:var(--green);"></div>
+        <div>
+          <div>block / sq + (earnings OR results OR beat)</div>
+          <div class="kw-hito">→ Extraer: EPS vs $3.66, Afterpay cohort data, Cash App ARPU</div>
+        </div>
+      </div>
+      <div class="kw-item"><div class="kw-dot" style="background:var(--green);"></div><span>block + (ebitda OR gross profit)</span></div>
+      <div class="kw-item"><div class="kw-dot" style="background:var(--green);"></div>
+        <div>
+          <div>cash app + revenue · cash app + users</div>
+          <div class="kw-hito">→ Indicador más importante del closed loop</div>
+        </div>
+      </div>
+      <div class="kw-item"><div class="kw-dot" style="background:var(--green);"></div>
+        <div>
+          <div>square + gpv</div>
+          <div class="kw-hito">→ Umbral: mid single digits · si &gt;10% es señal</div>
+        </div>
+      </div>
+      <div class="kw-item"><div class="kw-dot" style="background:var(--green);"></div><span>block + (upgrade OR price target OR buy rating)</span></div>
+      <div class="kw-item"><div class="kw-dot" style="background:var(--green);"></div><span>dorsey + block + (strategy OR ai)</span></div>
+      <div class="kw-item"><div class="kw-dot" style="background:var(--green);"></div><span>sq + (down today OR falling OR rally)</span></div>
+    </div>
+  </div>
+
+  <div style="margin-top:14px;padding-top:14px;border-top:1px solid var(--b2);">
+    <div class="tb-col-title" style="color:var(--blue);margin-bottom:8px;">🔵 Manos fuertes · Lista blanca</div>
+    <div class="mf-grid">
+      <div class="mf-item"><div class="mf-name">ARK Investment (Cathie Wood)</div><div class="mf-detail">Cualquier movimiento es señal · umbral: cualquier</div></div>
+      <div class="mf-item"><div class="mf-name">Vanguard Group</div><div class="mf-detail">Institucional pasivo · umbral: $75M</div></div>
+      <div class="mf-item"><div class="mf-name">BlackRock</div><div class="mf-detail">Institucional pasivo · umbral: $75M</div></div>
+      <div class="mf-item"><div class="mf-name">Jack Dorsey (insider)</div><div class="mf-detail">CEO e insider · cualquier compra/venta material</div></div>
+    </div>
+  </div>
+</div>
+
+<!-- ── FORMATO TELEGRAM ── -->
+<div class="sec">Formato del mensaje Telegram · Ejemplo con cinco tickers</div>
+<p style="font-size:13px;color:var(--t2);margin-bottom:14px;">Un único mensaje diario consolidado a las 07:00 CET. Alerta inmediata adicional solo para Cat.1, a cualquier hora. Con cinco tickers el mensaje puede fragmentarse en hasta 3 partes de 3.900 caracteres cada una.</p>
+
+<div class="tg-example">
+<span class="s">══════════════════════════════════════</span><br>
+<span class="t">MONITOR NOTICIAS v6.8 · 18/03/2026 · 07:00</span><br>
+<span class="s">Tickers: GLNG · LULU · PYPL · FISV · SQ</span><br>
+<span class="s">══════════════════════════════════════</span><br>
+<br>
+<span class="r">ALERTA INVALIDACION [1]</span><br>
+<span class="s">──────────────────────────────</span><br>
+<span class="t">TICKER: PYPL</span><br>
+<span class="t">PayPal branded checkout growth turns negative Q1 2026</span><br>
+<span class="s">Fuente: Reuters · hace 2h</span><br>
+<span class="s">-> https://reuters.com/...</span><br>
+<span class="s">   archivo: https://archive.ph/newest/https://reuters.com/...</span><br>
+<span class="r">HITO: 1 — Branded checkout — deterioro estructural</span><br>
+<span class="r">ACCION: Verificar si es 2do trimestre consecutivo — umbral de salida</span><br>
+<br>
+<span class="a">CATALIZADOR [2]</span><br>
+<span class="s">──────────────────────────────</span><br>
+<span class="t">TICKER: FISV</span><br>
+<span class="t">Fiserv Financial Solutions returns to organic growth Q2 guidance</span><br>
+<span class="s">Fuente: Google News · hace 1h</span><br>
+<span class="a">HITO: 1 — Financial Solutions — crecimiento orgánico</span><br>
+<span class="a">ACCION: Dato más importante — confirmar es orgánico no inorgánico</span><br>
+<br>
+<span class="t">TICKER: SQ</span><br>
+<span class="t">Block Cash App ARPU grows 14% year-over-year, beats guidance</span><br>
+<span class="s">Fuente: Google News · hace 3h</span><br>
+<span class="a">HITO: 2 — Cash App — ARPU en crecimiento</span><br>
+<span class="a">ACCION: Umbral catalizador: doble dígito YoY · confirmar dato exacto</span><br>
+<br>
+<span class="g">CONFIRMACION [1]</span><br>
+<span class="s">──────────────────────────────</span><br>
+<span class="t">TICKER: GLNG</span><br>
+<span class="t">Golar LNG Q1 2026 dividend $0.25 per share confirmed</span><br>
+<span class="s">Fuente: SEC EDGAR 8-K · hace 4h</span><br>
+<span class="g">HITO: 4 — Dividendo o buybacks iniciado</span><br>
+<span class="g">ACCION: Actualizar hito 4 → estado:true · fecha:hoy</span><br>
+<br>
+<span class="b">MANOS FUERTES [1]</span><br>
+<span class="s">──────────────────────────────</span><br>
+<span class="t">TICKER: PYPL</span><br>
+<span class="t">Elliott Management acquires $450M stake in PayPal Holdings</span><br>
+<span class="s">Fuente: Google News · hace 1h</span><br>
+<span class="b">CONTEXTO: Mano fuerte: Elliott Management — Activista conocido</span><br>
+<span class="b">ACCION: Verificar dirección del movimiento (compra/venta) y magnitud</span><br>
+<br>
+<span class="s">══════════════════════════════════════</span><br>
+<span class="gr">RUIDO FILTRADO: 34 noticias</span><br>
+<span class="gr">Muestra (3 de 34):</span><br>
+<span class="gr">  - PayPal stock analysis: buy or sell in 2026?</span><br>
+<span class="gr">  - Fiserv shares hit 52-week high amid analyst upgrades</span><br>
+<span class="gr">  - Block Bitcoin holdings surge amid crypto rally</span><br>
+<br>
+<span class="s">Próxima ejecución: mañana 07:00 CET</span><br>
+<span class="s">Sistema: OK · v6.8 · 18/03/2026</span>
+</div>
+
+<!-- ── PROTOCOLO DE RESPUESTA ── -->
+<div class="sec" id="protocolo">Protocolo de respuesta · Qué hacer con cada categoría</div>
+<div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:28px;">
+
+  <div style="background:var(--redb);border:1px solid var(--redd);border-radius:4px;padding:16px 20px;">
+    <div style="font-family:'IBM Plex Mono',monospace;font-size:9px;letter-spacing:2px;text-transform:uppercase;color:var(--red);margin-bottom:10px;">🔴 Cat.1 — Respuesta obligatoria</div>
+    <div style="font-size:12.5px;color:var(--t2);line-height:1.6;">
+      <strong style="color:var(--t1);">Plazo:</strong> 48 horas desde la alerta.<br>
+      <strong style="color:var(--t1);">Acción mínima:</strong> leer el filing o artículo original (no el titular). Verificar que el evento es lo que parece.<br>
+      <strong style="color:var(--t1);">Pregunta clave:</strong> ¿es la PRIMERA señal o la SEGUNDA que se necesita para activar la condición de salida?<br>
+      <strong style="color:var(--t1);">Recordatorio:</strong> PYPL y SQ requieren DOS señales simultáneas. FISV y GLNG requieren UNA.
+    </div>
+  </div>
+
+  <div style="background:var(--amberb);border:1px solid var(--amberd);border-radius:4px;padding:16px 20px;">
+    <div style="font-family:'IBM Plex Mono',monospace;font-size:9px;letter-spacing:2px;text-transform:uppercase;color:var(--amber);margin-bottom:10px;">🟡 Cat.2 — Respuesta opcional</div>
+    <div style="font-size:12.5px;color:var(--t2);line-height:1.6;">
+      <strong style="color:var(--t1);">Plazo:</strong> antes del cierre del mercado del día.<br>
+      <strong style="color:var(--t1);">Acción:</strong> verificar si el precio ha llegado a la zona de ampliación definida en la tesis.<br>
+      <strong style="color:var(--t1);">Para PYPL:</strong> cualquier recuperación de branded checkout es señal de ampliar.<br>
+      <strong style="color:var(--t1);">Para FISV:</strong> Financial Solutions creciendo en H2 2026 activa re-rating.<br>
+      <strong style="color:var(--t1);">Para SQ:</strong> EPS beat + Cash App ARPU doble dígito → evaluar ampliar.
+    </div>
+  </div>
+
+  <div style="background:var(--greenb);border:1px solid var(--greend);border-radius:4px;padding:16px 20px;">
+    <div style="font-family:'IBM Plex Mono',monospace;font-size:9px;letter-spacing:2px;text-transform:uppercase;color:var(--green);margin-bottom:10px;">🟢 Cat.3 — Acción de mantenimiento</div>
+    <div style="font-size:12.5px;color:var(--t2);line-height:1.6;">
+      <strong style="color:var(--t1);">Plazo:</strong> dentro de 24 horas.<br>
+      <strong style="color:var(--t1);">Acción:</strong> actualizar el hito correspondiente en <code>hitos_estado.json</code>.<br>
+      <strong style="color:var(--t1);">Para PYPL:</strong> anotar branded checkout growth y TM dollars ex-interés por trimestre.<br>
+      <strong style="color:var(--t1);">Para FISV:</strong> registrar Financial Solutions trend y Clover growth cada earnings.<br>
+      <strong style="color:var(--t1);">Para SQ:</strong> registrar EPS vs guía y Afterpay cohort status cada trimestre.
+    </div>
+  </div>
+
+  <div style="background:var(--blueb);border:1px solid var(--blued);border-radius:4px;padding:16px 20px;">
+    <div style="font-family:'IBM Plex Mono',monospace;font-size:9px;letter-spacing:2px;text-transform:uppercase;color:var(--blue);margin-bottom:10px;">🔵 Cat.4 — Verificar dirección</div>
+    <div style="font-size:12.5px;color:var(--t2);line-height:1.6;">
+      <strong style="color:var(--t1);">Plazo:</strong> mismo día.<br>
+      <strong style="color:var(--t1);">Acción:</strong> verificar si el movimiento institucional es compra o venta y la magnitud.<br>
+      <strong style="color:var(--t1);">Señal positiva:</strong> activista entrando en PYPL/FISV con posición &gt;$200M es señal de que el mercado también ve la dislocación.<br>
+      <strong style="color:var(--t1);">Señal negativa:</strong> Jana saliendo de FISV o vendiendo sería la señal más preocupante del portfolio.
+    </div>
+  </div>
+
+</div>
+
+<!-- ── CALENDARIO DE EARNINGS ── -->
+<div class="sec">Calendario de earnings · Fechas críticas 2026</div>
+<table class="fuente-table">
+  <thead>
+    <tr>
+      <th>Ticker</th>
+      <th>Earnings crítico</th>
+      <th>Fecha estimada</th>
+      <th>Qué verificar</th>
+      <th>Condición activable</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><strong style="color:var(--blue);">PYPL</strong></td>
+      <td style="font-size:12px;color:var(--t2);">Q1 2026 — el más urgente</td>
+      <td style="font-family:'IBM Plex Mono',monospace;font-size:11px;color:var(--amber);">5 mayo 2026</td>
+      <td style="font-size:12px;color:var(--t2);">Branded checkout growth. TM dollars ex-interés. Plan CEO Lores con métricas.</td>
+      <td><span class="badge b-red">Salida si ambos pilares fallan</span></td>
+    </tr>
+    <tr>
+      <td><strong style="color:var(--green);">SQ</strong></td>
+      <td style="font-size:12px;color:var(--t2);">Q1 2026 — confirmar inflexión</td>
+      <td style="font-family:'IBM Plex Mono',monospace;font-size:11px;color:var(--amber);">Mayo 2026</td>
+      <td style="font-size:12px;color:var(--t2);">EPS vs $3.66 guía. Afterpay cohort loss data. Cash App ARPU.</td>
+      <td><span class="badge b-red">Salida si EPS miss &gt;15% + Afterpay falla</span></td>
+    </tr>
+    <tr>
+      <td><strong style="color:var(--amber);">FISV</strong></td>
+      <td style="font-size:12px;color:var(--t2);">Q2 2026 — el definitivo</td>
+      <td style="font-family:'IBM Plex Mono',monospace;font-size:11px;color:var(--red);">Agosto 2026</td>
+      <td style="font-size:12px;color:var(--t2);">Financial Solutions organic growth. Lyons confirma o no el pivot H2. Clover pace.</td>
+      <td><span class="badge b-red">Salida si Financial Solutions no crece</span></td>
+    </tr>
+    <tr>
+      <td><strong style="color:var(--amber);">FISV</strong></td>
+      <td style="font-size:12px;color:var(--t2);">Q1 2026 — check-in Lyons</td>
+      <td style="font-family:'IBM Plex Mono',monospace;font-size:11px;color:var(--green);">Mayo 2026</td>
+      <td style="font-size:12px;color:var(--t2);">Lyons debe confirmar en mayo que el timing H2 sigue en pie. Si no lo confirma → alerta amarilla.</td>
+      <td><span class="badge b-amber">Alerta si Lyons no confirma H2</span></td>
+    </tr>
+    <tr>
+      <td><strong style="color:#48C8C8;">GLNG</strong></td>
+      <td style="font-size:12px;color:var(--t2);">Siguiente earnings</td>
+      <td style="font-family:'IBM Plex Mono',monospace;font-size:11px;color:var(--green);">Mayo 2026</td>
+      <td style="font-size:12px;color:var(--t2);">FCF vs guidance. Gimi operational update. MKII Argentina timeline.</td>
+      <td><span class="badge b-green">Sin condición de salida pendiente</span></td>
+    </tr>
+  </tbody>
+</table>
+
+<!-- ── TECNICO ── -->
+<div class="sec" id="tecnico">Arquitectura técnica · Script v6.8</div>
+<div style="background:var(--s1);border:1px solid var(--b1);border-radius:4px;padding:18px 22px;margin-bottom:20px;">
+  <div style="font-family:'IBM Plex Mono',monospace;font-size:11px;color:var(--t2);line-height:2.0;">
+    <span style="color:var(--gold);">monitor_noticias_v6.8.py</span><br>
+    <span style="color:var(--t3);">│</span><br>
+    <span style="color:var(--t3);">├──</span> <span style="color:var(--green);">Sección 1: CONFIGURACION</span><span style="color:var(--t3);">  ← TOKEN, CHAT_ID, DRY_RUN, HORAS_LOOKBACK</span><br>
+    <span style="color:var(--t3);">│</span><br>
+    <span style="color:var(--t3);">├──</span> <span style="color:var(--green);">Sección 2: TICKERS_CONFIG</span><span style="color:var(--t3);">  ← 5 tickers: GLNG · LULU · PYPL · FISV · SQ</span><br>
+    <span style="color:var(--t3);">│   └── por ticker: sec_cik · gnews_queries · keywords_cat1/2/3/4 · manos_fuertes</span><br>
+    <span style="color:var(--t3);">│</span><br>
+    <span style="color:var(--t3);">├──</span> <span style="color:var(--green);">Sección 3: NOTIFICACIÓN ERRORES</span><span style="color:var(--t3);">  ← ningún fallo silencioso</span><br>
+    <span style="color:var(--t3);">│</span><br>
+    <span style="color:var(--t3);">├──</span> <span style="color:var(--green);">Sección 4: FETCHERS</span><span style="color:var(--t3);">  ← SEC EDGAR · Google News RSS · BLS API</span><br>
+    <span style="color:var(--t3);">│   ├── fetch_sec_8k(cik) — con enriquecimiento de títulos genéricos (v6.5)</span><br>
+    <span style="color:var(--t3);">│   ├── fetch_google_news(query) — con resolver_url() y caché en memoria</span><br>
+    <span style="color:var(--t3);">│   └── fetch_macro_bls(config) — solo primer viernes de cada mes</span><br>
+    <span style="color:var(--t3);">│</span><br>
+    <span style="color:var(--t3);">├──</span> <span style="color:var(--green);">Sección 5: CLASIFICADOR</span><span style="color:var(--t3);">  ← prioridad: CAT1 > CAT2 > CAT4 > CAT3 > ruido</span><br>
+    <span style="color:var(--t3);">│   └── CAT4 antes que CAT3 — compra institucional ≠ rating de analista</span><br>
+    <span style="color:var(--t3);">│</span><br>
+    <span style="color:var(--t3);">├──</span> <span style="color:var(--green);">Sección 6: DEDUPLICACIÓN</span><span style="color:var(--t3);">  ← hash título+fuente · persiste últimos 500</span><br>
+    <span style="color:var(--t3);">│</span><br>
+    <span style="color:var(--t3);">├──</span> <span style="color:var(--green);">Sección 7: RENDER TELEGRAM</span><span style="color:var(--t3);">  ← archive.ph fallback para paywalls (v6.7)</span><br>
+    <span style="color:var(--t3);">│</span><br>
+    <span style="color:var(--t3);">└──</span> <span style="color:var(--green);">Sección 8: MAIN</span><span style="color:var(--t3);">  ← alerta inmediata Cat.1 + mensaje diario consolidado</span>
+  </div>
+</div>
+
+<!-- ESCALADO -->
+<div class="escala-grid">
+  <div class="escala-card" style="border-left:3px solid var(--green);">
+    <div class="ec-title" style="color:var(--green);">✓ Capacidad actual del sistema</div>
+    <div class="ec-text">5 tickers activos · 38 queries Google News por ejecución · SEC EDGAR para los 5 tickers US. Dentro del límite de GitHub Actions gratuito (2000 min/mes). Con ejecución diaria a las 07:00 CET, consume ~30 min/mes. <strong>Margen para 5–8 tickers adicionales sin coste.</strong></div>
+  </div>
+  <div class="escala-card" style="border-left:3px solid var(--amber);">
+    <div class="ec-title" style="color:var(--amber);">→ Auditoría recomendada — tickers nuevos v6.8</div>
+    <div class="ec-text">Ejecutar con <code>DRY_RUN=True · HORAS_LOOKBACK=720</code> para PYPL, FISV y SQ antes de pasar a producción. Objetivo: <strong>ruido &lt;20% del total por ticker</strong>. Revisar sección DEBUG en consola para ver qué keywords disparan cada categoría.</div>
+  </div>
+  <div class="escala-card" style="border-left:3px solid var(--blue);">
+    <div class="ec-title" style="color:var(--blue);">→ Paso 1 del flujo — obligatorio cada trimestre</div>
+    <div class="ec-text">Actualizar <code>manos_fuertes</code> de los 5 tickers con Form 13F de SEC EDGAR. URL: <code>sec.gov/cgi-bin/browse-edgar?action=getcompany&type=13F</code>. Añadir fondos nuevos con &gt;1% float o movimientos &gt;$50M. Eliminar fondos que hayan salido completamente.</div>
+  </div>
+  <div class="escala-card" style="border-left:3px solid var(--gold);">
+    <div class="ec-title" style="color:var(--gold);">→ Tickers pendientes de incorporación</div>
+    <div class="ec-text">STZ (Constellation Brands) y RI.PA (Pernod Ricard) tienen plantillas comentadas en <code>TICKERS_CONFIG</code>. Activar cuando se complete el manual operativo de Spirits (Fase 2) y se rellenen los <code>manos_fuertes</code> con datos 13F.</div>
+  </div>
+</div>
+
+<!-- FOOTER -->
+<div class="footer-bar">
+  <div class="fb-text"><strong>Tickers activos:</strong> GLNG · LULU · PYPL · FISV · SQ (5 de 5)</div>
+  <div class="fb-text"><strong>Script:</strong> monitor_noticias_v6.8.py · 18-mar-2026</div>
+  <div class="fb-text"><strong>Próxima actualización:</strong> post-auditoría v6.8 o incorporación STZ/RI.PA</div>
+</div>
+
+</main>
+</body>
+</html>

@@ -38,12 +38,12 @@
       "tk": "SAN",
       "hito": "Dividendo sostenible (payout <= 80% y FCF cubre div total)",
       "detalle": "Calculado automaticamente: payout ratio y cobertura FCF vs dividendo total posicion.",
-      "estado": true,
-      "fecha": "17/03/2026 18:05",
+      "estado": false,
+      "fecha": "18/03/2026 18:07",
       "critico": true,
       "categoria": "Capital",
       "auto": true,
-      "detalle_auto": "FCF/acc YoY: -1.55 vs -2.40 (+35.3%)"
+      "detalle_auto": "Payout 25% | N/D"
     },
     {
       "id": 5,
@@ -51,23 +51,23 @@
       "hito": "Dividendo sostenible (payout <= 80% y FCF cubre div total)",
       "detalle": "Calculado automaticamente: payout ratio y cobertura FCF vs dividendo total posicion.",
       "estado": false,
-      "fecha": "17/03/2026 18:05",
+      "fecha": "18/03/2026 18:07",
       "critico": false,
       "categoria": "Capital",
       "auto": true,
-      "detalle_auto": "FCF/acc YoY: 2.12 vs 2.18 (-2.6%)"
+      "detalle_auto": "Payout 101% | FCF 5342M vs div 988€"
     },
     {
       "id": 6,
       "tk": "LOG",
       "hito": "Dividendo sostenible (payout <= 80% y FCF cubre div total)",
       "detalle": "Calculado automaticamente: payout ratio y cobertura FCF vs dividendo total posicion.",
-      "estado": true,
-      "fecha": "17/03/2026 18:05",
+      "estado": false,
+      "fecha": "18/03/2026 18:07",
       "critico": true,
       "categoria": "Capital",
       "auto": true,
-      "detalle_auto": "FCF/acc YoY: 2.65 vs 1.99 (+32.9%)"
+      "detalle_auto": "Payout 90% | FCF 350M vs div 2247€"
     },
     {
       "id": 7,
@@ -75,7 +75,7 @@
       "hito": "FCF por accion creciente YoY",
       "detalle": "Calculado automaticamente: FCF/accion año actual vs año anterior.",
       "estado": true,
-      "fecha": "17/03/2026 18:05",
+      "fecha": "18/03/2026 18:07",
       "critico": true,
       "categoria": "Financiero",
       "auto": true,
@@ -87,7 +87,7 @@
       "hito": "FCF por accion creciente YoY",
       "detalle": "Calculado automaticamente: FCF/accion año actual vs año anterior.",
       "estado": false,
-      "fecha": "17/03/2026 18:05",
+      "fecha": "18/03/2026 18:07",
       "critico": true,
       "categoria": "Financiero",
       "auto": true,
@@ -99,7 +99,7 @@
       "hito": "FCF por accion creciente YoY",
       "detalle": "Calculado automaticamente: FCF/accion año actual vs año anterior.",
       "estado": true,
-      "fecha": "17/03/2026 18:05",
+      "fecha": "18/03/2026 18:07",
       "critico": true,
       "categoria": "Financiero",
       "auto": true,
@@ -111,7 +111,7 @@
       "hito": "Margenes estables o crecientes (bruto y operativo)",
       "detalle": "Calculado automaticamente: margen bruto y operativo vs año anterior.",
       "estado": true,
-      "fecha": "17/03/2026 18:05",
+      "fecha": "18/03/2026 18:07",
       "critico": true,
       "categoria": "Financiero",
       "auto": true,
@@ -133,11 +133,12 @@
       "tk": "SAN",
       "hito": "Tendencia FCF/accion: no 3 ejercicios consecutivos decrecientes",
       "detalle": "Si FCF/accion lleva 3 ejercicios consecutivos decreciendo: deterioro aunque el payout sea <= 80%. Fuente: yfinance financials anuales.",
-      "estado": null,
-      "fecha": null,
+      "estado": true,
+      "fecha": "18/03/2026 18:07",
       "critico": true,
       "categoria": "Financiero",
-      "auto": true
+      "auto": true,
+      "detalle_auto": "FCF/acc 4 años: 1.16 → -0.59 → -2.40 → -1.55 ✓ sin deterioro sostenido"
     },
     {
       "id": 13,
@@ -145,10 +146,11 @@
       "hito": "ES10Y < 4.0% sostenido (trigger de revision de sizing)",
       "detalle": "Si el bono ES10Y supera el 4.0% durante 40+ dias de cotizacion (~2 meses), revisar sizing de toda la cartera. No es condicion de salida. Al revisar: comparar Y-CST de cada posicion vs bono — un Y-CST alto (ej. ITX 9.9%) es argumento para no reducir aunque el Y-TOT este ajustado.",
       "estado": null,
-      "fecha": null,
+      "fecha": "18/03/2026 18:07",
       "critico": true,
       "categoria": "Macro",
-      "auto": true
+      "auto": true,
+      "detalle_auto": "ES10Y 4.22% > 4.0% pero sin histórico — en seguimiento"
     }
   ]
 }

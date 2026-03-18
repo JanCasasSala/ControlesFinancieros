@@ -11,7 +11,22 @@
 #   2. Escalable   — añadir tickers solo requiere editar TICKERS_CONFIG, no el código
 #   3. Sin dependencias externas — no requiere .env, secrets, APIs de pago ni BD
 #
-# Cambios v6.10 — 18-mar-2026 — Generado con Claude Sonnet 4.6
+# Cambios v6.12 — 19-mar-2026 — Generado con Claude Sonnet 4.6
+#   · SQ keywords_cat3: eliminado ("dorsey","block","strategy") y ("dorsey","block","ai")
+#     Capturaban layoffs/IA operativos que no afectan a EPS ni Afterpay.
+#     Cobertura de Dorsey se mantiene en CAT1 (resign) y CAT2 (efficiency concreta).
+#   · LULU keywords_cat1: añadidas keywords para análisis negativos post-earnings
+#     ("tariff"), ("margin","pressure"), ("muted","outlook/growth"), ("softer/weaker","outlook")
+#     Criterio: op-eds con deterioro de márgenes o outlook débil → CAT1 por robustez.
+#   · FISV Visa/Fiserv partnership: ya cae a ruido correctamente, sin cambios.
+#   · keywords_cat1: eliminado ("ticker", "sec", "filing") en LULU, PYPL, FISV, SQ
+#     Problema: los 8-K genéricos de SEC EDGAR generaban 10 falsos positivos CAT1
+#     por ticker y ejecución. Auditoría manual de 30 filings confirmó que el 100%
+#     de los eventos de invalidación real ya están cubiertos por keywords específicas
+#     existentes + cobertura paralela de Google News.
+#     Criterio: un 8-K sin cobertura de prensa paralela es por definición rutinario.
+#     Se mantiene ("ticker", "sec", "investigation") en CAT1 — esa sí discrimina.
+#     DRY_RUN=True · HORAS_LOOKBACK=720 para validar en Colab antes de producción.
 #   · clasificar_manos_fuertes: corrección de falso positivo crítico
 #     Problema: "vest" como subcadena bloqueaba titulares con "investor" e
 #     "investment" (contienen "vest" embebido). Consecuencia: 5 noticias de
@@ -570,11 +585,21 @@ TICKERS_CONFIG = {
             # Amenaza competitiva estructural
             ("lululemon",    "market share",  "loss"),
             ("lululemon",    "closing",       "stores"),
-            # v6.5 — SEC EDGAR 8-K genéricos enriquecidos en fetch_sec_8k()
-            # Título resultante: "Lululemon 8-K SEC filing - Current report"
-            # v6.6 — CORREGIDO: normalizar() convierte "8-K" → "8 k" (guión→espacio)
-            # Keywords que no dependen del guión: "sec" + "filing" siempre presentes
-            ("lululemon",    "sec",           "filing"),
+            # v6.12 — análisis negativos post-earnings
+            # Criterio: títulos de opinión que mencionan deterioro de márgenes,
+            # presión arancelaria o outlook débil son CAT1 aunque sean op-eds.
+            # Preferir falso positivo a perder señal — principio de robustez.
+            ("lululemon",    "tariff"),
+            ("lululemon",    "margin",        "pressure"),
+            ("lululemon",    "muted",         "outlook"),
+            ("lululemon",    "muted",         "growth"),
+            ("lululemon",    "softer",        "outlook"),
+            ("lululemon",    "weaker",        "outlook"),
+            # v6.11 — ELIMINADO: ("lululemon", "sec", "filing") generaba 10 falsos
+            # positivos CAT1 por ejecución. Auditoría de 30 8-K confirmó que todos
+            # los eventos reales de invalidación (earnings, board, guidance) ya están
+            # cubiertos por keywords específicas + Google News. Un 8-K genérico sin
+            # cobertura de prensa paralela es por definición un filing rutinario.
         ],
 
         "keywords_cat1_hitos": {
@@ -598,8 +623,14 @@ TICKERS_CONFIG = {
             ("lululemon",    "comparable", "decline", "sixth"):  (2, "Suelo financiero — comp sales",     "8vo trimestre negativo — revisar tesis"),
             ("lululemon",    "comparable", "decline", "seventh"): (2, "Suelo financiero — comp sales",    "9no trimestre negativo — tesis en riesgo"),
             ("lululemon",    "closing",    "stores"):        (2, "Suelo financiero — red DTC",             "Verificar escala — cierre masivo invalida tesis DTC"),
-            # v6.6 — SEC 8-K corregido (normalizar convierte 8-K → 8 k)
-            ("lululemon",    "sec",        "filing"):        (None, "SEC EDGAR 8-K — evento material",      "Leer filing completo en SEC EDGAR — puede contener cualquier evento relevante"),
+            # v6.12 — análisis negativos post-earnings
+            ("lululemon",    "tariff"):                        (2, "Suelo financiero — presión arancelaria",  "Cuantificar impacto en margen bruto — umbral crítico 52%"),
+            ("lululemon",    "margin",     "pressure"):        (2, "Suelo financiero — margen bajo presión",  "Verificar si dato es nuevo o referencia a Q4 — umbral 52%"),
+            ("lululemon",    "muted",      "outlook"):         (2, "Suelo financiero — outlook débil",        "Leer — evaluar si cambia BPA forward bajo $9"),
+            ("lululemon",    "muted",      "growth"):          (2, "Suelo financiero — crecimiento débil",    "Leer — verificar si es guidance nueva o análisis de consenso"),
+            ("lululemon",    "softer",     "outlook"):         (2, "Suelo financiero — outlook suavizado",    "Leer — evaluar magnitud vs umbral $9 BPA"),
+            ("lululemon",    "weaker",     "outlook"):         (2, "Suelo financiero — outlook débil",        "Leer — evaluar si cambia BPA forward bajo $9"),
+            # v6.11 — eliminado: ("lululemon", "sec", "filing") → ver keywords_cat1
         },
 
         # ── CAT 2 · CATALIZADORES ─────────────────────────────────────────
@@ -914,7 +945,7 @@ TICKERS_CONFIG = {
             ("paypal",   "ceo",         "departs"),
             # Riesgo legal material — no la demanda colectiva habitual
             ("paypal",   "sec",         "investigation"),
-            ("paypal",   "sec",         "filing"),
+            # v6.11 — ELIMINADO: ("paypal", "sec", "filing") → ver nota LULU
             ("paypal",   "doj",         "investigation"),
             # Moat estructural roto
             ("paypal",   "apple pay",   "surpass"),
@@ -936,7 +967,7 @@ TICKERS_CONFIG = {
             ("paypal",   "ceo",         "resign"):             (None, "CEO Lores — salida inesperada",          "Cuarto cambio de CEO en 3 años — revisar tesis de gestión"),
             ("paypal",   "ceo",         "departs"):            (None, "CEO Lores — salida inesperada",          "Cuarto cambio de CEO en 3 años — revisar tesis de gestión"),
             ("paypal",   "sec",         "investigation"):      (None, "SEC EDGAR — investigación regulatoria",  "Leer filing completo — puede ser material o rutinario"),
-            ("paypal",   "sec",         "filing"):             (None, "SEC EDGAR 8-K — evento material",        "Leer filing completo en EDGAR"),
+            # v6.11 — eliminado: ("paypal", "sec", "filing") → ver keywords_cat1
             ("paypal",   "doj",         "investigation"):      (None, "DOJ — investigación",                    "Revisar alcance — puede ser material para la tesis"),
             ("paypal",   "apple pay",   "surpass"):            (1, "Apple Pay supera PayPal checkout",          "Dato cuantificado de cuota — confirmar fuente primaria"),
             ("paypal",   "losing",      "merchants"):          (1, "Merchants abandonando PayPal",              "Cuantificar escala — pérdida masiva invalida moat"),
@@ -1161,7 +1192,7 @@ TICKERS_CONFIG = {
             ("mambu",            "wins",    "bank",    "fiserv"),
             ("temenos",          "replace", "fiserv"),
             # SEC EDGAR
-            ("fiserv",   "sec",         "filing"),
+            # v6.11 — ELIMINADO: ("fiserv", "sec", "filing") → ver nota LULU
             ("fiserv",   "sec",         "investigation"),
         ],
 
@@ -1182,7 +1213,7 @@ TICKERS_CONFIG = {
             ("thought machine", "wins", "bank"):                  (None, "Cloud-native — gana contrato bancario", "Identificar banco — si es top-20 US acelera amenaza estructural"),
             ("mambu",    "wins",        "bank",       "fiserv"):  (None, "Mambu reemplaza Fiserv",                "Confirmar con fuente primaria — cuantificar revenue en riesgo"),
             ("temenos",  "replace",     "fiserv"):                (None, "Temenos reemplaza Fiserv",              "Confirmar banco — horizonte competitivo 7-10 años no 3-5"),
-            ("fiserv",   "sec",         "filing"):                (None, "SEC EDGAR 8-K — evento material",       "Leer filing completo"),
+            # v6.11 — eliminado: ("fiserv", "sec", "filing") → ver keywords_cat1
             ("fiserv",   "sec",         "investigation"):         (None, "SEC — investigación regulatoria",       "Leer alcance — puede ser material o rutinario"),
         },
 
@@ -1395,7 +1426,7 @@ TICKERS_CONFIG = {
             ("block",      "bitcoin",      "impairment"),
             ("block",      "btc",          "writedown"),
             # SEC EDGAR
-            ("block",      "sec",          "filing"),
+            # v6.11 — ELIMINADO: ("block", "sec", "filing") → ver nota LULU
             ("block",      "sec",          "investigation"),
         ],
 
@@ -1419,7 +1450,7 @@ TICKERS_CONFIG = {
             ("dorsey",     "block",        "resign"):             (None, "Dorsey — salida inesperada",            "Dorsey ES la tesis estratégica de IA + Bitcoin — leer contexto"),
             ("block",      "bitcoin",      "impairment"):         (None, "BTC — impairment contable",             "Impacta P&L pero no FCF operativo — aclarar al mercado si genera ruido"),
             ("block",      "btc",          "writedown"):          (None, "BTC — writedown",                      "Mismo caso — ruido contable vs cash operativo"),
-            ("block",      "sec",          "filing"):             (None, "SEC EDGAR 8-K — evento material",      "Leer filing completo"),
+            # v6.11 — eliminado: ("block", "sec", "filing") → ver keywords_cat1
             ("block",      "sec",          "investigation"):      (None, "SEC — investigación",                  "Leer alcance — puede ser material o rutinario"),
         },
 
@@ -1495,8 +1526,11 @@ TICKERS_CONFIG = {
             ("block",      "bitcoin",      "holdings"),
             ("block",      "btc",          "balance"),
             # Dorsey — visión estratégica
-            ("dorsey",     "block",        "strategy"),
-            ("dorsey",     "block",        "ai"),
+            # v6.12 — ELIMINADO: ("dorsey","block","strategy") y ("dorsey","block","ai")
+            # Capturaban noticias operativas de layoffs/IA que no afectan a EPS ni
+            # Afterpay. Cobertura real de Dorsey queda en:
+            #   CAT1: ("dorsey","block","resign") — salida CEO
+            #   CAT2: ("dorsey","ai","block","efficiency") — eficiencia concreta
             # Movimientos precio
             ("sq",         "down",         "today"),
             ("sq",         "falling"),
@@ -1518,8 +1552,7 @@ TICKERS_CONFIG = {
             ("block",      "price target"):              (None, "Cambio precio objetivo",               "Sin acción requerida"),
             ("block",      "bitcoin",   "holdings"):     (None, "BTC — tenencias en balance",           "Dato contable — no afecta tesis operativa"),
             ("block",      "btc",       "balance"):      (None, "BTC — balance sheet",                  "Ruido contable — separar de FCF operativo al leer"),
-            ("dorsey",     "block",     "strategy"):     (None, "Dorsey — declaración estratégica",     "Leer — cualquier mención a closed loop o IA es relevante para tesis"),
-            ("dorsey",     "block",     "ai"):           (None, "Dorsey — IA en Block",                 "Recorte 40% plantilla apuesta IA — seguimiento avances concretos"),
+            # v6.12 — eliminado: ("dorsey","block","strategy") y ("dorsey","block","ai")
             ("sq",         "down",      "today"):        (None, "Caída precio hoy — verificar causa",   "Leer — BTC puede causar caídas sin fundamento operativo"),
             ("sq",         "falling"):                   (None, "Caída precio — verificar causa",       "Distinguir si es BTC/macro vs noticia operativa real"),
             ("sq",         "rally"):                     (None, "Subida precio — verificar causa",      "Leer — si hay catalizador operativo actualizar convicción"),

@@ -1,5 +1,5 @@
 # =============================================================================
-# MONITOR NOTICIAS v6.5
+# MONITOR NOTICIAS v6.7
 # =============================================================================
 # Propósito: monitorización automática de noticias relevantes para tickers
 #            del portfolio. Clasifica, filtra y envía alertas por Telegram.
@@ -11,16 +11,12 @@
 #   2. Escalable   — añadir tickers solo requiere editar TICKERS_CONFIG, no el código
 #   3. Sin dependencias externas — no requiere .env, secrets, APIs de pago ni BD
 #
-# Cambios v6.5 — 18-mar-2026 — Generado con Claude Sonnet 4.6
-#   · LULU CAT1: SEC EDGAR 8-K genéricos capturados por defecto
-#     Motivo: SEC devuelve títulos "8-K  - Current report" sin keywords.
-#     Son los filings más relevantes y caían todos a ruido.
-#     Solución: en fetch_sec_8k(), enriquecer el título con el nombre del ticker
-#     para que la keyword ("lululemon", "8-k") haga match en CAT1.
-#   · LULU CAT3: añadida ("wilson", "lululemon", "notice") y ("wilson", "lululemon", "ceo")
-#     Motivo: "Wilson puts lululemon CEO candidates on notice" caía a ruido.
-#     El titular usa "Wilson" sin "Chip" — no matchaba ("chip wilson", "lululemon").
-#   · LULU CAT3 hitos: añadidas tuplas correspondientes con hito 1.
+# Cambios v6.7 — 18-mar-2026 — Generado con Claude Sonnet 4.6
+#   · render_noticia: añadido enlace archive.ph como fallback de paywall
+#     Motivo: artículos de pago (Business Times, FT, WSJ) piden email/suscripción
+#     al hacer click desde Telegram. archive.ph guarda copias públicas de ~70%.
+#     Formato en mensaje: URL original + "archivo: archive.ph/newest/URL"
+#     Solo se añade para URLs HTTP/HTTPS — no para SEC EDGAR (ya son públicas).
 #
 # =============================================================================
 # FLUJO DE TRABAJO ESTÁNDAR — seguir este orden en cada sesión de mantenimiento
@@ -540,9 +536,9 @@ TICKERS_CONFIG = {
             ("lululemon",    "closing",       "stores"),
             # v6.5 — SEC EDGAR 8-K genéricos enriquecidos en fetch_sec_8k()
             # Título resultante: "Lululemon 8-K SEC filing - Current report"
-            # Cualquier 8-K de LULU es un evento material — CAT1 por defecto
-            ("lululemon",    "8-k",           "sec"),
-            ("lululemon",    "8-k",           "filing"),
+            # v6.6 — CORREGIDO: normalizar() convierte "8-K" → "8 k" (guión→espacio)
+            # Keywords que no dependen del guión: "sec" + "filing" siempre presentes
+            ("lululemon",    "sec",           "filing"),
         ],
 
         "keywords_cat1_hitos": {
@@ -566,9 +562,8 @@ TICKERS_CONFIG = {
             ("lululemon",    "comparable", "decline", "sixth"):  (2, "Suelo financiero — comp sales",     "8vo trimestre negativo — revisar tesis"),
             ("lululemon",    "comparable", "decline", "seventh"): (2, "Suelo financiero — comp sales",    "9no trimestre negativo — tesis en riesgo"),
             ("lululemon",    "closing",    "stores"):        (2, "Suelo financiero — red DTC",             "Verificar escala — cierre masivo invalida tesis DTC"),
-            # v6.5 — SEC 8-K enriquecidos
-            ("lululemon",    "8-k",        "sec"):           (None, "SEC EDGAR 8-K — evento material",      "Leer filing completo en SEC EDGAR — puede contener cualquier evento relevante"),
-            ("lululemon",    "8-k",        "filing"):        (None, "SEC EDGAR 8-K — evento material",      "Leer filing completo en SEC EDGAR — puede contener cualquier evento relevante"),
+            # v6.6 — SEC 8-K corregido (normalizar convierte 8-K → 8 k)
+            ("lululemon",    "sec",        "filing"):        (None, "SEC EDGAR 8-K — evento material",      "Leer filing completo en SEC EDGAR — puede contener cualquier evento relevante"),
         },
 
         # ── CAT 2 · CATALIZADORES ─────────────────────────────────────────
@@ -1345,12 +1340,21 @@ def hace(fecha_pub):
 
 
 def render_noticia(n, accion_default):
-    """Renderiza una noticia con hito o contexto según categoría."""
+    """Renderiza una noticia con hito o contexto según categoría.
+
+    v6.7: añade enlace archive.ph como fallback para artículos de pago.
+    archive.ph guarda copias públicas de ~70% de artículos premium.
+    Solo se añade si la fuente no es SEC EDGAR (que ya es pública).
+    """
     L = []
     L.append("TICKER: " + n["ticker"])
     L.append(n["titulo"][:120])
     L.append("Fuente: " + n["fuente"] + " · " + hace(n["fecha_pub"]))
-    L.append("-> " + n["enlace"])  # URL completa — sin truncar
+    enlace = n["enlace"]
+    L.append("-> " + enlace)
+    # Archive.ph fallback — solo para fuentes externas, no SEC
+    if enlace.startswith("http") and "sec.gov" not in enlace and "news.google.com" not in enlace:
+        L.append("   archivo: https://archive.ph/newest/" + enlace)
 
     id_hito   = n.get("id_hito")
     desc_hito = n.get("desc_hito", "")
@@ -1369,7 +1373,7 @@ def render_noticia(n, accion_default):
 
 def render_mensaje(noticias_por_cat, tickers, ruido_items, fecha_now, modo_auditoria):
     L = []
-    L.append("MONITOR NOTICIAS v6.5 · " + fecha_now)
+    L.append("MONITOR NOTICIAS v6.7 · " + fecha_now)
     L.append("Tickers: " + " · ".join(tickers))
     if modo_auditoria:
         L.append("MODO: AUDITORIA · HORAS=" + str(HORAS_LOOKBACK))
@@ -1436,7 +1440,7 @@ def render_mensaje(noticias_por_cat, tickers, ruido_items, fecha_now, modo_audit
     else:
         L.append("")
         L.append("Proxima ejecucion: manana 07:00 CET")
-        L.append("Sistema: OK · v6.5 · " + fecha_now)
+        L.append("Sistema: OK · v6.7 · " + fecha_now)
 
     return "\n".join(L)
 
@@ -1450,7 +1454,7 @@ def monitor_noticias():
     modo_auditoria = DRY_RUN
 
     print("=" * 50)
-    print("MONITOR NOTICIAS v6.5 · " + fecha_now)
+    print("MONITOR NOTICIAS v6.7 · " + fecha_now)
     print("DRY_RUN=" + str(DRY_RUN) +
           " · HORAS_LOOKBACK=" + str(HORAS_LOOKBACK) +
           " · MODO=" + ("AUDITORIA" if modo_auditoria else "PRODUCCION"))
@@ -1613,7 +1617,7 @@ def monitor_noticias():
             try:
                 requests.post(url_tg + "sendMessage",
                               data={"chat_id": CHAT_ID,
-                                    "text": "MONITOR v6.5 ERROR — mensaje no enviado. "
+                                    "text": "MONITOR v6.7 ERROR — mensaje no enviado. "
                                             "Revisar logs GitHub Actions."},
                               timeout=15)
             except Exception:
@@ -1641,7 +1645,7 @@ except Exception as e:
     print("=" * 50)
     if ENVIAR_TELEGRAM and not DRY_RUN:
         msg_error = (
-            "MONITOR v6.5 — EXCEPCION TOTAL\n" +
+            "MONITOR v6.7 — EXCEPCION TOTAL\n" +
             "=" * 30 + "\n" +
             str(e)[:300] + "\n" +
             "=" * 30 + "\n" +

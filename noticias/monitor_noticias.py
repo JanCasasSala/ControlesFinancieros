@@ -1,5 +1,5 @@
 # =============================================================================
-# MONITOR NOTICIAS v6.7
+# MONITOR NOTICIAS v6.8
 # =============================================================================
 # Propósito: monitorización automática de noticias relevantes para tickers
 #            del portfolio. Clasifica, filtra y envía alertas por Telegram.
@@ -10,6 +10,42 @@
 #   1. Robustez    — fallos silenciosos notificados, siempre llega algo a Telegram
 #   2. Escalable   — añadir tickers solo requiere editar TICKERS_CONFIG, no el código
 #   3. Sin dependencias externas — no requiere .env, secrets, APIs de pago ni BD
+#
+# Cambios v6.10 — 18-mar-2026 — Generado con Claude Sonnet 4.6
+#   · clasificar_manos_fuertes: corrección de falso positivo crítico
+#     Problema: "vest" como subcadena bloqueaba titulares con "investor" e
+#     "investment" (contienen "vest" embebido). Consecuencia: 5 noticias de
+#     Jana Partners en FISV caían a ruido en lugar de CAT4.
+#     Solución: sustituir el check de subcadena por check de palabra completa
+#     usando split() para los términos ambiguos cortos ("vest", "post", "says").
+#     Términos largo como "vesting", "layoffs", "workforce" no tienen este
+#     problema y se mantienen como subcadena.
+#     También eliminado "pushes" de exclusiones: "Fiserv stock pushes for changes"
+#     es exactamente una noticia de mano fuerte relevante, no ruido operativo.
+#
+# Cambios v6.9 — 18-mar-2026 — Generado con Claude Sonnet 4.6
+#   · clasificar_manos_fuertes: filtro explícito de ventas rutinarias de insiders
+#     Problema identificado en auditoría: Dorsey generaba 10+ noticias en CAT4
+#     por noticias sobre layoffs y declaraciones de IA, no por movimientos reales
+#     de acciones. Causa raíz: el match era por nombre ("dorsey") en titulares
+#     que no son Form 4 de acciones sino noticias operativas sobre su gestión.
+#     Solución 1: añadir filtro de exclusión de keywords rutinarias (RSU, tax
+#     withholding, 10b5-1, layoff, AI, jobs) antes de clasificar como CAT4.
+#     Solución 2: subir umbral de Dorsey en SQ a $5M para ignorar ventas pequeñas
+#     de RSU tax withholding y solo capturar ventas discrecionales significativas.
+#     Criterio de señal real para insider: venta >10% de posición propia en
+#     mercado abierto (open market), no bajo plan 10b5-1 y no por RSU withholding.
+#
+# Cambios v6.8 — 18-mar-2026 — Generado con Claude Sonnet 4.6
+#   · TICKERS_CONFIG: añadidos PYPL, FISV y SQ (portfolio fintech US)
+#     Keywords derivadas de análisis de tesis de inversión con horizonte 3-5 años.
+#     Condición de salida única por ticker según framework de análisis:
+#       PYPL: branded checkout TPV negativo 2T + CEO sin plan concreto
+#       FISV: Financial Solutions sin crecimiento orgánico en H2 2026
+#       SQ:   EPS miss >15% + riesgo crediticio Borrow supera targets
+#     Manos fuertes: SEC EDGAR Form 13F — última actualización 18-mar-2026
+#     Auditoría recomendada: DRY_RUN=True · HORAS_LOOKBACK=720 para calibrar
+#     ruido antes de pasar a producción con los tres tickers nuevos.
 #
 # Cambios v6.7 — 18-mar-2026 — Generado con Claude Sonnet 4.6
 #   · render_noticia: añadido enlace archive.ph como fallback de paywall
@@ -800,6 +836,729 @@ TICKERS_CONFIG = {
     #     "manos_fuertes_umbral_usd": 30_000_000,  # umbral menor por capitalización EUR
     #     "macro_config": None,
     # },
+
+
+    # =========================================================================
+    # PYPL — PayPal Holdings
+    # =========================================================================
+    # Tesis: "Narrativa rota vs números sólidos" — deep value contrarian.
+    # ROIC 23,6% · EV/FCF 7x · Shareholder yield ~28% · valor intrínseco ~$94
+    # Precio entrada: $53,31 · Peso cartera: 4,65% · Horizonte: 3-5 años
+    #
+    # DISEÑO DE KEYWORDS — tres pilares de la tesis:
+    #   Pilar 1 (CRÍTICO): Branded checkout — el producto core y su erosión.
+    #                      Si cae en términos absolutos 2 trimestres = salida.
+    #   Pilar 2 (ALTO):    CEO Enrique Lores — plan estratégico y ejecución.
+    #                      Si no reinstura guidance en mayo = señal de alerta.
+    #   Pilar 3 (MEDIO):   Venmo + BNPL + PYUSD — diversificación compensatoria.
+    #                      Si crece >10% cada uno = confirma tesis alternativa.
+    #
+    # CONDICIÓN DE SALIDA ÚNICA (ambas simultáneas):
+    #   Branded checkout TPV negativo dos trimestres consecutivos
+    #   AND Lores sin guidance multianual ni plan concreto en earnings 5-may.
+    #   Una sola no es suficiente para salir.
+    #
+    # CATALIZADOR DE RE-RATING:
+    #   Branded checkout vuelve a +4% cualquier trimestre → re-rating 8x→16x
+    #   Rumor M&A Stripe se confirma → floor implícito en precio
+    #
+    # RUIDO A IGNORAR:
+    #   Demanda colectiva abril 2026 (habitual tras earnings miss)
+    #   Rumor Stripe M&A sin confirmar
+    #   Bajadas precio objetivo Goldman/Rothschild (reacción al precio, no análisis)
+    #
+    # Earnings crítico: 5 mayo 2026 (Q1 2026)
+    # manos_fuertes: Form 13F actualizado 18-mar-2026
+    # sec_cik: 0001410247
+    # =========================================================================
+    "PYPL": {
+        "nombre":         "PayPal Holdings",
+        "activo":         True,
+        "precio_entrada": 53.31,
+        "moneda":         "USD",
+        "sec_cik":        "0001410247",
+
+        # Queries Google News — máximo 8, diseñadas por pilar de tesis
+        # · Pilares 1+2: branded checkout, Fastlane, CEO Lores
+        # · Pilar 3: Venmo, BNPL, PYUSD, agentic commerce
+        # · Gestión de riesgo: demanda, Apple Pay competencia
+        "gnews_queries": [
+            "PayPal branded checkout transaction margin",
+            "PayPal Fastlane checkout",
+            "PayPal CEO Lores strategy",
+            "PayPal Venmo monetization",
+            "PayPal BNPL buy now pay later",
+            "PYPL stock earnings",
+            "PayPal Apple Pay competition",
+            "PayPal Stripe acquisition",
+        ],
+
+        # ── CAT 1 · INVALIDACIÓN DE TESIS ────────────────────────────────
+        # Condición de salida: branded checkout negativo + CEO sin plan.
+        # Se incluyen ambas señales — la salida requiere las dos simultáneas.
+        # Señales de moat roto estructural: no ruido temporal.
+        "keywords_cat1": [
+            # Pilar 1 — Branded checkout en deterioro estructural
+            ("paypal",   "branded",     "decline"),
+            ("paypal",   "branded",     "negative"),
+            ("paypal",   "checkout",    "losing",   "share"),
+            ("paypal",   "checkout",    "market share", "loss"),
+            ("paypal",   "transaction", "margin",   "decline"),
+            ("paypal",   "transaction", "margin",   "negative"),
+            ("paypal",   "take rate",   "drop"),
+            # Pilar 2 — CEO sin plan / gestión del declive
+            ("paypal",   "lores",       "no guidance"),
+            ("paypal",   "withdraws",   "guidance"),
+            ("paypal",   "guidance",    "withdrawn"),
+            ("paypal",   "ceo",         "resign"),
+            ("paypal",   "ceo",         "departs"),
+            # Riesgo legal material — no la demanda colectiva habitual
+            ("paypal",   "sec",         "investigation"),
+            ("paypal",   "sec",         "filing"),
+            ("paypal",   "doj",         "investigation"),
+            # Moat estructural roto
+            ("paypal",   "apple pay",   "surpass"),
+            ("paypal",   "losing",      "merchants"),
+            ("paypal",   "merchant",    "migration"),
+        ],
+
+        "keywords_cat1_hitos": {
+            ("paypal",   "branded",     "decline"):           (1, "Branded checkout — deterioro estructural",   "Verificar si es 2do trimestre consecutivo — umbral de salida"),
+            ("paypal",   "branded",     "negative"):          (1, "Branded checkout — crecimiento negativo",    "Si 2T consecutivos negativos + Lores sin plan → SALIR"),
+            ("paypal",   "checkout",    "losing",  "share"):  (1, "Branded checkout — pérdida cuota",          "Cuantificar magnitud — umbral crítico es tendencia sostenida"),
+            ("paypal",   "checkout",    "market share", "loss"): (1, "Branded checkout — pérdida cuota mercado", "Buscar dato cuantificado — revisar fuente primaria"),
+            ("paypal",   "transaction", "margin",  "decline"): (2, "Transaction Margin — caída valor absoluto", "Verificar si es ex-interés y si es 2T consecutivos"),
+            ("paypal",   "transaction", "margin",  "negative"): (2, "Transaction Margin — negativo",            "Si 2T consecutivos → activar protocolo salida"),
+            ("paypal",   "take rate",   "drop"):               (2, "Take Rate — caída brusca",                  "Verificar bps — umbral alerta >15bps en un trimestre"),
+            ("paypal",   "lores",       "no guidance"):        (3, "CEO Lores — sin guidance multianual",       "Si coincide con branded checkout negativo → SALIR"),
+            ("paypal",   "withdraws",   "guidance"):           (3, "CEO Lores — guidance retirada definitiva",  "Evaluar contexto — ya ocurrió en Q4 2025"),
+            ("paypal",   "guidance",    "withdrawn"):          (3, "CEO Lores — guidance retirada",             "Confirmar si es nueva retirada o referencia a Q4 2025"),
+            ("paypal",   "ceo",         "resign"):             (None, "CEO Lores — salida inesperada",          "Cuarto cambio de CEO en 3 años — revisar tesis de gestión"),
+            ("paypal",   "ceo",         "departs"):            (None, "CEO Lores — salida inesperada",          "Cuarto cambio de CEO en 3 años — revisar tesis de gestión"),
+            ("paypal",   "sec",         "investigation"):      (None, "SEC EDGAR — investigación regulatoria",  "Leer filing completo — puede ser material o rutinario"),
+            ("paypal",   "sec",         "filing"):             (None, "SEC EDGAR 8-K — evento material",        "Leer filing completo en EDGAR"),
+            ("paypal",   "doj",         "investigation"):      (None, "DOJ — investigación",                    "Revisar alcance — puede ser material para la tesis"),
+            ("paypal",   "apple pay",   "surpass"):            (1, "Apple Pay supera PayPal checkout",          "Dato cuantificado de cuota — confirmar fuente primaria"),
+            ("paypal",   "losing",      "merchants"):          (1, "Merchants abandonando PayPal",              "Cuantificar escala — pérdida masiva invalida moat"),
+            ("paypal",   "merchant",    "migration"):          (1, "Migración comerciantes a competidor",       "Identificar destino — Stripe/Adyen implica pérdida estructural"),
+        },
+
+        # ── CAT 2 · CATALIZADORES ─────────────────────────────────────────
+        # Eventos que activan o aceleran la tesis.
+        # Re-rating desde 8x requiere: branded checkout >+4% O M&A confirmado
+        # O Venmo/BNPL/PYUSD superando umbrales que compensan el checkout.
+        "keywords_cat2": [
+            # Branded checkout recuperación — catalizador principal
+            ("paypal",   "branded",     "accelerat"),
+            ("paypal",   "branded",     "growth",   "accelerat"),
+            ("paypal",   "checkout",    "growth",   "positive"),
+            ("fastlane", "paypal",      "growth"),
+            ("fastlane", "paypal",      "traction"),
+            ("paypal",   "fastlane",    "merchant"),
+            ("paypal",   "fastlane",    "expand"),
+            # M&A — Stripe o cualquier adquirente
+            ("paypal",   "acquisition"),
+            ("paypal",   "acquire"),
+            ("stripe",   "paypal",      "deal"),
+            ("stripe",   "paypal",      "merger"),
+            ("stripe",   "paypal",      "acqui"),
+            # PYUSD — stablecoin como upside sorpresa
+            ("pyusd",    "volume"),
+            ("pyusd",    "adoption"),
+            ("paypal",   "stablecoin",  "growth"),
+            # Agentic commerce — AI payments
+            ("paypal",   "openai",      "payment"),
+            ("paypal",   "ai",          "checkout"),
+            ("paypal",   "agentic",     "commerce"),
+            # Venmo supera umbrales
+            ("venmo",    "revenue",     "growth"),
+            ("venmo",    "monetiz"),
+            # BNPL aceleración
+            ("paypal",   "bnpl",        "growth"),
+            ("paypal",   "buy now",     "accelerat"),
+        ],
+
+        "keywords_cat2_hitos": {
+            ("paypal",   "branded",     "accelerat"):          (1, "Branded checkout — aceleración",           "Confirmar tasa de crecimiento — umbral re-rating es +4%"),
+            ("paypal",   "branded",     "growth",  "accelerat"): (1, "Branded checkout — crecimiento acelerado", "Actualizar convicción — si >+4% evaluar ampliar posición"),
+            ("paypal",   "checkout",    "growth",  "positive"): (1, "Branded checkout — crecimiento positivo",  "Primer trimestre positivo sostenido — punto de inflexión"),
+            ("fastlane", "paypal",      "growth"):              (1, "Fastlane — tracción comercial",            "Confirmar TPV Fastlane — si >$5B trimestral es material"),
+            ("fastlane", "paypal",      "traction"):            (1, "Fastlane — adopción por comerciantes",     "Leer — número de merchants integrados es el dato clave"),
+            ("paypal",   "fastlane",    "merchant"):            (1, "Fastlane — expansión red de comerciantes", "Cuantificar cobertura — si >10k merchants es catalizador"),
+            ("paypal",   "fastlane",    "expand"):              (1, "Fastlane — expansión geográfica o vertical", "Confirmar mercados — US primero, luego Europa"),
+            ("paypal",   "acquisition"):                        (None, "M&A — PYPL como objetivo o adquirente", "Identificar si es compra de PYPL o por PYPL — ambos son relevantes"),
+            ("stripe",   "paypal",      "deal"):                (None, "Stripe/PYPL — deal confirmado",         "Si se confirma → floor implícito en precio · evaluar posición"),
+            ("stripe",   "paypal",      "merger"):              (None, "Stripe/PYPL — fusión",                  "Si se confirma → re-rating inmediato · leer términos"),
+            ("stripe",   "paypal",      "acqui"):               (None, "Stripe/PYPL — adquisición",             "Confirmar con fuente primaria — Bloomberg reportó rumor"),
+            ("pyusd",    "volume"):                             (None, "PYUSD — volumen stablecoin",             "Umbral relevancia: >$5B en circulación · hoy embrionario"),
+            ("pyusd",    "adoption"):                           (None, "PYUSD — adopción",                      "Seguimiento — upside sorpresa si escala en 2026-27"),
+            ("paypal",   "stablecoin",  "growth"):              (None, "PYUSD — crecimiento",                   "Leer — si supera $5B en circulación actualizar tesis"),
+            ("paypal",   "openai",      "payment"):             (None, "Agentic commerce — OpenAI",              "Leer — si hay revenue real en 2026 cambia la tesis"),
+            ("paypal",   "agentic",     "commerce"):            (None, "Agentic commerce — pagos por agentes IA", "Leer — primer revenue real confirma optionality"),
+            ("venmo",    "revenue",     "growth"):              (None, "Venmo — crecimiento revenue",            "Umbral: >+15% YoY · ya va a +20% · confirmar tendencia"),
+            ("venmo",    "monetiz"):                            (None, "Venmo — monetización nueva feature",     "Leer — cualquier nueva palanca de ingresos de Venmo"),
+            ("paypal",   "bnpl",        "growth"):              (None, "BNPL — aceleración TPV",                 "Umbral relevancia: >+20% YoY · ya en $40B"),
+        },
+
+        # ── CAT 3 · CONFIRMACIÓN ──────────────────────────────────────────
+        # Earnings, upgrades, buybacks — seguimiento del estado de la tesis.
+        # La métrica más importante por trimestre:
+        #   · Transaction Margin Dollars ex-interés (valor absoluto, no %)
+        #   · Branded checkout growth (aunque sea +1%, la dirección importa)
+        #   · Ritmo de recompras (confirmación de $6B/año)
+        "keywords_cat3": [
+            ("paypal",   "earnings"),
+            ("paypal",   "results"),
+            ("paypal",   "beat",        "earnings"),
+            ("paypal",   "beat",        "estimate"),
+            ("pypl",     "earnings"),
+            ("paypal",   "ebitda"),
+            ("paypal",   "transaction", "margin"),
+            ("paypal",   "upgrade"),
+            ("paypal",   "price target"),
+            ("paypal",   "buy",         "rating"),
+            ("paypal",   "buyback"),
+            ("paypal",   "repurchase"),
+            ("pypl",     "buyback"),
+            ("paypal",   "dividend"),
+            ("paypal",   "fcf"),
+            ("paypal",   "free cash flow"),
+            ("paypal",   "guidance",    "raise"),
+            ("paypal",   "guidance",    "increase"),
+            # CEO Lores — declaraciones y plan estratégico
+            ("lores",    "paypal",      "strategy"),
+            ("lores",    "paypal",      "plan"),
+            ("lores",    "paypal",      "guidance"),
+            # Movimientos de precio con causa identificada
+            ("pypl",     "down",        "today"),
+            ("pypl",     "falling"),
+            ("pypl",     "rally"),
+        ],
+
+        "keywords_cat3_hitos": {
+            ("paypal",   "earnings"):               (1, "Earnings Q — revisión trimestral",         "Extraer: branded checkout growth, TM dollars ex-interés, guidance"),
+            ("paypal",   "results"):                (1, "Earnings Q — revisión trimestral",         "Extraer: branded checkout growth, TM dollars ex-interés, guidance"),
+            ("paypal",   "beat",   "earnings"):     (1, "Earnings Q — beat confirmado",             "Verificar si mejora guidance multianual"),
+            ("paypal",   "beat",   "estimate"):     (1, "Earnings Q — beat estimaciones",           "Verificar magnitud y si incluye branded checkout positivo"),
+            ("pypl",     "earnings"):               (1, "Earnings Q — revisión trimestral",         "Extraer métricas clave del pilar 1"),
+            ("paypal",   "ebitda"):                 (1, "EBITDA — seguimiento margen",              "Umbral vigilancia: mantener >25%"),
+            ("paypal",   "transaction", "margin"):  (2, "Transaction Margin — seguimiento",         "Dato más crítico: valor absoluto ex-interés · dirección importa más que nivel"),
+            ("paypal",   "upgrade"):                (None, "Upgrade analista",                      "Sin acción requerida"),
+            ("paypal",   "price target"):           (None, "Cambio precio objetivo",                "Sin acción requerida"),
+            ("paypal",   "buy",    "rating"):       (None, "Rating Buy de analista",                "Sin acción requerida"),
+            ("paypal",   "buyback"):                (3, "Buyback — confirmación ritmo $6B/año",     "Verificar trimestre — si <$1,5B en el trimestre es señal de compresión"),
+            ("paypal",   "repurchase"):             (3, "Recompra — seguimiento programa",          "Confirmar pace anualizado — umbral relevante $6B"),
+            ("pypl",     "buyback"):                (3, "Buyback PYPL — seguimiento",               "Mismo umbral: $1,5B/trimestre mínimo"),
+            ("paypal",   "fcf"):                    (3, "FCF — seguimiento generación caja",        "Umbral: >$1,5B por trimestre · anualizado >$6B"),
+            ("paypal",   "free cash flow"):         (3, "FCF — seguimiento",                       "Umbral anual: >$6B — base de la tesis"),
+            ("paypal",   "guidance",  "raise"):     (1, "Guidance — elevada",                      "Señal positiva fuerte — evaluar ampliar posición"),
+            ("paypal",   "guidance",  "increase"):  (1, "Guidance — aumentada",                    "Leer — confirmar si incluye branded checkout o solo EPS"),
+            ("lores",    "paypal",    "strategy"):  (None, "CEO Lores — declaración estratégica",   "Leer completo — buscando plan concreto con métricas"),
+            ("lores",    "paypal",    "plan"):       (None, "CEO Lores — plan de negocio",           "Buscando: ¿hay números concretos o solo narrativa?"),
+            ("lores",    "paypal",    "guidance"):   (None, "CEO Lores — guidance",                  "Si reinstura guidance multianual → catalizador de re-rating"),
+            ("pypl",     "down",      "today"):      (None, "Caída precio hoy — verificar causa",    "Leer — si no hay noticia detrás puede ser macro irrelevante"),
+            ("pypl",     "falling"):                 (None, "Caída precio — verificar causa",        "Leer — verificar si hay evento fundamental detrás"),
+            ("pypl",     "rally"):                   (None, "Subida precio — verificar causa",       "Leer — si hay catalizador fundamental actualizar convicción"),
+        },
+
+        # ── CAT 4 · MANOS FUERTES ─────────────────────────────────────────
+        # Última actualización: 18-mar-2026
+        # Fuente: SEC EDGAR Form 13F + MarketBeat institutional ownership
+        # URL consulta: https://www.sec.gov/cgi-bin/browse-edgar
+        #               ?action=getcompany&type=13F&CIK=0001410247
+        #
+        # PASO 1 DEL FLUJO — actualizar con Form 13F cada trimestre.
+        # Criterio inclusión lista blanca: >1% float o movimiento >$100M reciente.
+        # PYPL market cap ~$46B — umbral general $100M (~0,2% float).
+        "manos_fuertes": {
+            "vanguard":      ("Vanguard Group",         100_000_000, "Mayor institucional pasivo ~8% float"),
+            "blackrock":     ("BlackRock",              100_000_000, "Institucional pasivo ~7% float"),
+            "elliot":        ("Elliott Management",       0,          "Activista conocido — cualquier movimiento"),
+            "starboard":     ("Starboard Value",          0,          "Activista — cualquier movimiento relevante"),
+            "valueact":      ("ValueAct Capital",         0,          "Activista especialista tech — cualquier movimiento"),
+            "jana":          ("Jana Partners",            0,          "Activista — en FISV · vigilar si entra en PYPL"),
+        },
+
+        "manos_fuertes_umbral_usd": 100_000_000,
+
+        "macro_config": None,
+    },
+
+
+    # =========================================================================
+    # FISV — Fiserv
+    # =========================================================================
+    # Tesis: "Value defensivo con suelo en core bancario" — caída 75% desde máximos.
+    # ROIC 8,7% · FCF $5B · Shareholder yield ~13% · Deuda $23,7B · FV ~$167
+    # Precio entrada: $66,95 · Peso cartera: 1,87% · Horizonte: 3-5 años
+    #
+    # DISEÑO DE KEYWORDS — dos pilares de la tesis:
+    #   Pilar 1 (SUELO): Core bancario (Financial Solutions) — coste cambio extremo.
+    #                    Si pierde contratos sistémicos el suelo desaparece.
+    #   Pilar 2 (CRECIMIENTO): Clover — $3,3B revenue +23% · low double digits 2026.
+    #                    Si se desacelera a <10% la tesis de crecimiento se rompe.
+    #
+    # CONDICIÓN DE SALIDA ÚNICA:
+    #   Financial Solutions no crece orgánicamente en H2 2026 después de que
+    #   la dirección lo prometió explícitamente.
+    #   Earnings crítico: agosto 2026 (Q2) — NO mayo.
+    #
+    # ACTIVISMO JANA: constructivo mientras apoye a CEO Lyons.
+    #   Si Jana cambia de posición respecto a Lyons → revisar tesis de gestión.
+    #
+    # manos_fuertes: Form 13F actualizado 18-mar-2026
+    # sec_cik: 0000798354
+    # =========================================================================
+    "FISV": {
+        "nombre":         "Fiserv",
+        "activo":         True,
+        "precio_entrada": 66.95,
+        "moneda":         "USD",
+        "sec_cik":        "0000798354",
+
+        # Queries Google News — diseñadas por pilar de tesis
+        # · Pilar 1: core bancario, contratos bank, coste de cambio
+        # · Pilar 2: Clover growth, TPV pymes
+        # · Activismo: Jana Partners + CEO Lyons
+        # · Competencia cloud-native: Thought Machine, Mambu
+        "gnews_queries": [
+            "Fiserv Financial Solutions banking contract",
+            "Fiserv Clover revenue growth",
+            "Fiserv Jana Partners Lyons",
+            "FISV stock earnings results",
+            "Fiserv core banking",
+            "Thought Machine Mambu bank contract",
+            "Fiserv FIUSD stablecoin",
+            "Fiserv merchant acquiring",
+        ],
+
+        # ── CAT 1 · INVALIDACIÓN DE TESIS ────────────────────────────────
+        # Condición de salida: Financial Solutions sin crecimiento en H2 2026.
+        # Señales adicionales: pérdida de contrato bancario sistémico,
+        # deuda fuera de control, Jana contra Lyons.
+        "keywords_cat1": [
+            # Core bancario — pérdida de contratos (suelo desaparece)
+            ("fiserv",   "bank",        "contract",   "loss"),
+            ("fiserv",   "bank",        "loses",      "contract"),
+            ("fiserv",   "loses",       "bank"),
+            ("fiserv",   "bank",        "switch"),
+            ("fiserv",   "bank",        "migrat",     "away"),
+            ("fiserv",   "core",        "banking",    "loses"),
+            # Financial Solutions en declive confirmado
+            ("fiserv",   "financial solutions", "decline"),
+            ("fiserv",   "financial solutions", "negative"),
+            ("financial solutions", "fiserv",   "miss"),
+            # Deuda — riesgo si WACC sube o FCF se comprime
+            ("fiserv",   "debt",        "covenant"),
+            ("fiserv",   "downgrade",   "credit"),
+            ("fiserv",   "debt",        "refinanc",   "risk"),
+            # Jana contra Lyons — cambio de posición activista
+            ("jana",     "fiserv",      "lyons",      "replace"),
+            ("jana",     "fiserv",      "ceo",        "change"),
+            ("jana",     "fiserv",      "management", "change"),
+            # Competencia cloud-native ganando contratos sistémicos
+            ("thought machine",  "wins",    "bank"),
+            ("mambu",            "wins",    "bank",    "fiserv"),
+            ("temenos",          "replace", "fiserv"),
+            # SEC EDGAR
+            ("fiserv",   "sec",         "filing"),
+            ("fiserv",   "sec",         "investigation"),
+        ],
+
+        "keywords_cat1_hitos": {
+            ("fiserv",   "bank",        "contract",   "loss"):   (1, "Core bancario — pérdida contrato",         "Identificar banco y tamaño — >$100M revenue = suelo en riesgo"),
+            ("fiserv",   "bank",        "loses",      "contract"): (1, "Core bancario — pérdida contrato",       "Confirmar con SEC filing — si es banco sistémico revisar tesis"),
+            ("fiserv",   "loses",       "bank"):                  (1, "Core bancario — banco abandona Fiserv",   "Identificar banco — cualquier top-20 US invalida suelo de la tesis"),
+            ("fiserv",   "bank",        "switch"):                (1, "Core bancario — migración a competidor",  "Leer fuente primaria — cuantificar revenue en riesgo"),
+            ("fiserv",   "bank",        "migrat",     "away"):    (1, "Core bancario — migración",               "Confirmar magnitud — umbral crítico top-20 US bank"),
+            ("fiserv",   "core",        "banking",    "loses"):   (1, "Core bancario — pérdida segmento",        "Revisar tesis — suelo depende de retención de contratos"),
+            ("fiserv",   "financial solutions", "decline"):       (2, "Financial Solutions — declive confirmado", "Verificar si es H2 2026 — timing prometido por Lyons"),
+            ("fiserv",   "financial solutions", "negative"):      (2, "Financial Solutions — negativo",           "Si es H2 2026 → CONDICIÓN DE SALIDA activada"),
+            ("financial solutions", "fiserv",   "miss"):          (2, "Financial Solutions — miss expectativas", "Verificar vs guidance Lyons — si miss en H2 → salir"),
+            ("fiserv",   "debt",        "covenant"):              (None, "Deuda — covenant breach",               "URGENTE — leer filing completo · puede ser no-evento técnico"),
+            ("fiserv",   "downgrade",   "credit"):                (None, "Rating crediticio — downgrade",         "Verificar agencia y magnitud — afecta WACC y spread"),
+            ("jana",     "fiserv",      "lyons",      "replace"): (None, "Jana — cambio posición sobre Lyons",    "Si Jana pide reemplazar Lyons → revisar tesis de gestión"),
+            ("jana",     "fiserv",      "ceo",        "change"):  (None, "Jana — CEO change demand",              "Leer — Jana apoyaba a Lyons · cambio sería señal negativa"),
+            ("thought machine", "wins", "bank"):                  (None, "Cloud-native — gana contrato bancario", "Identificar banco — si es top-20 US acelera amenaza estructural"),
+            ("mambu",    "wins",        "bank",       "fiserv"):  (None, "Mambu reemplaza Fiserv",                "Confirmar con fuente primaria — cuantificar revenue en riesgo"),
+            ("temenos",  "replace",     "fiserv"):                (None, "Temenos reemplaza Fiserv",              "Confirmar banco — horizonte competitivo 7-10 años no 3-5"),
+            ("fiserv",   "sec",         "filing"):                (None, "SEC EDGAR 8-K — evento material",       "Leer filing completo"),
+            ("fiserv",   "sec",         "investigation"):         (None, "SEC — investigación regulatoria",       "Leer alcance — puede ser material o rutinario"),
+        },
+
+        # ── CAT 2 · CATALIZADORES ─────────────────────────────────────────
+        # Re-rating desde 8x requiere: Financial Solutions vuelve a crecer
+        # Y Clover mantiene double digit growth Y métricas limpias.
+        "keywords_cat2": [
+            # Financial Solutions recuperación — catalizador principal
+            ("fiserv",   "financial solutions", "growth"),
+            ("fiserv",   "financial solutions", "recover"),
+            ("fiserv",   "financial solutions", "positive"),
+            ("fiserv",   "banking",     "win",   "contract"),
+            ("fiserv",   "bank",        "new",   "contract"),
+            ("fiserv",   "wins",        "bank",  "deal"),
+            # Clover aceleración
+            ("clover",   "fiserv",      "growth",    "accelerat"),
+            ("clover",   "revenue",     "beat"),
+            ("clover",   "merchant",    "expand"),
+            ("clover",   "smb",         "growth"),
+            # FIUSD stablecoin — upside sorpresa potencial
+            ("fiusd",    "fiserv"),
+            ("fiserv",   "stablecoin",  "launch"),
+            ("fiserv",   "stablecoin",  "bank"),
+            # Jana como catalizador positivo
+            ("jana",     "fiserv",      "metrics"),
+            ("jana",     "fiserv",      "transparency"),
+            ("jana",     "fiserv",      "value"),
+            # Deuda — reducción acelera re-rating
+            ("fiserv",   "debt",        "reduc"),
+            ("fiserv",   "deleverag"),
+        ],
+
+        "keywords_cat2_hitos": {
+            ("fiserv",   "financial solutions", "growth"):         (1, "Financial Solutions — crecimiento orgánico", "Dato más importante — confirmar es orgánico no inorgánico"),
+            ("fiserv",   "financial solutions", "recover"):        (1, "Financial Solutions — recuperación",         "Confirmar trimestre — H2 2026 es cuando Lyons prometió"),
+            ("fiserv",   "financial solutions", "positive"):       (1, "Financial Solutions — positivo",             "Primer trimestre positivo — actualizar convicción"),
+            ("fiserv",   "banking",     "win",   "contract"):      (1, "Core bancario — nuevo contrato",             "Identificar banco — cualquier top-20 US es señal fuerte"),
+            ("fiserv",   "bank",        "new",   "contract"):      (1, "Core bancario — contrato nuevo",             "Cuantificar revenue potencial — confirmar con IR"),
+            ("fiserv",   "wins",        "bank",  "deal"):          (1, "Core bancario — deal ganado",                "Confirmar con fuente primaria — leer IR release"),
+            ("clover",   "fiserv",      "growth",  "accelerat"):   (2, "Clover — aceleración del crecimiento",       "Umbral: >+23% YoY que es el baseline 2025"),
+            ("clover",   "revenue",     "beat"):                   (2, "Clover — revenue beat",                      "Confirmar magnitud — baseline $3,3B · guía double digits 2026"),
+            ("clover",   "merchant",    "expand"):                 (2, "Clover — expansión red de merchants",        "Leer — cobertura SMB es el moat de Clover"),
+            ("fiusd",    "fiserv"):                                 (None, "FIUSD stablecoin — seguimiento",          "Leer — si hay adopción bancaria real cambia la tesis upside"),
+            ("fiserv",   "stablecoin",  "launch"):                  (None, "Fiserv stablecoin — lanzamiento",         "Leer — FIUSD para bancos puede ser catalizador diferenciador"),
+            ("jana",     "fiserv",      "metrics"):                 (None, "Jana — transparencia métricas",           "Jana presionando por métricas limpias — constructivo para la tesis"),
+            ("jana",     "fiserv",      "value"):                   (None, "Jana — tesis de valor",                   "Leer declaraciones — puede incluir precio objetivo o plan"),
+            ("fiserv",   "debt",        "reduc"):                   (None, "Deuda — reducción",                       "Cada punto de reducción amplía el spread ROIC-WACC"),
+            ("fiserv",   "deleverag"):                              (None, "Deleveraging — reducción deuda",           "Seguimiento — de 3x hacia 2x EBITDA amplía upside"),
+        },
+
+        # ── CAT 3 · CONFIRMACIÓN ──────────────────────────────────────────
+        # Earnings, Clover TPV, dividendos — seguimiento del estado de la tesis.
+        # Métrica más importante: Clover revenue growth y Financial Solutions trend.
+        "keywords_cat3": [
+            ("fiserv",   "earnings"),
+            ("fiserv",   "results"),
+            ("fiserv",   "beat",        "earnings"),
+            ("fisv",     "earnings"),
+            ("fiserv",   "ebitda"),
+            ("fiserv",   "fcf"),
+            ("fiserv",   "free cash flow"),
+            ("clover",   "fiserv",      "revenue"),
+            ("clover",   "fiserv",      "tpv"),
+            ("clover",   "payments",    "volume"),
+            ("fiserv",   "upgrade"),
+            ("fiserv",   "price target"),
+            ("fiserv",   "buy",         "rating"),
+            ("fiserv",   "dividend"),
+            ("fiserv",   "buyback"),
+            ("fiserv",   "repurchase"),
+            # Jana — declaraciones operativas (no cambio posición)
+            ("jana",     "fiserv",      "support"),
+            ("jana",     "fiserv",      "lyons"),
+            # CEO Lyons — declaraciones estratégicas
+            ("lyons",    "fiserv",      "guidance"),
+            ("lyons",    "fiserv",      "outlook"),
+            # Movimientos precio
+            ("fisv",     "down",        "today"),
+            ("fisv",     "falling"),
+            ("fiserv",   "rally"),
+        ],
+
+        "keywords_cat3_hitos": {
+            ("fiserv",   "earnings"):                (1, "Earnings Q — revisión trimestral",          "Extraer: Financial Solutions trend, Clover growth, guidance H2"),
+            ("fiserv",   "results"):                 (1, "Earnings Q — revisión trimestral",          "Dato más importante: ¿cuándo Lyons confirma H2 crecimiento?"),
+            ("fiserv",   "beat",   "earnings"):      (1, "Earnings Q — beat confirmado",              "Confirmar si Financial Solutions incluido en beat"),
+            ("fisv",     "earnings"):                (1, "Earnings Q — revisión",                     "Extraer métricas clave de los dos pilares"),
+            ("fiserv",   "ebitda"):                  (1, "EBITDA — seguimiento margen",               "Umbral vigilancia: >30% margen operativo en Q4 2026"),
+            ("fiserv",   "fcf"):                     (1, "FCF — seguimiento generación caja",         "Umbral: >$1,25B trimestral · anualizado >$5B"),
+            ("fiserv",   "free cash flow"):          (1, "FCF — seguimiento",                        "Umbral anual: >$5B — base de la tesis"),
+            ("clover",   "fiserv",   "revenue"):     (2, "Clover — revenue trimestral",               "Confirmar pace vs baseline $3,3B anual · guía low double digits"),
+            ("clover",   "fiserv",   "tpv"):         (2, "Clover — volumen de pagos",                 "Indicador adelantado de revenue futuro"),
+            ("clover",   "payments", "volume"):      (2, "Clover — volumen pagos",                    "Seguimiento — cobertura SMB es el moat"),
+            ("fiserv",   "upgrade"):                 (None, "Upgrade analista",                       "Sin acción requerida"),
+            ("fiserv",   "price target"):            (None, "Cambio precio objetivo",                 "Sin acción requerida — consenso ~$84"),
+            ("fiserv",   "buy",     "rating"):       (None, "Rating Buy de analista",                 "Sin acción requerida"),
+            ("fiserv",   "dividend"):                (None, "Dividendo — Fiserv paga dividendo",      "Confirmar mantenimiento — señal de FCF saludable"),
+            ("fiserv",   "buyback"):                 (None, "Buyback — seguimiento ritmo",            "Confirmar pace — $2,2B en Q1 2025 es el baseline"),
+            ("jana",     "fiserv",   "support"):     (None, "Jana — apoya gestión",                   "Constructivo mientras apoyen a Lyons"),
+            ("jana",     "fiserv",   "lyons"):       (None, "Jana — mención CEO Lyons",               "Leer tono — apoyo o crítica determina catalizador vs riesgo"),
+            ("lyons",    "fiserv",   "guidance"):    (None, "CEO Lyons — guidance",                   "Buscando: confirmación del crecimiento H2 en Financial Solutions"),
+            ("lyons",    "fiserv",   "outlook"):     (None, "CEO Lyons — outlook",                    "Leer — cualquier mención a Financial Solutions H2 es clave"),
+            ("fisv",     "down",     "today"):       (None, "Caída precio hoy — verificar causa",     "Leer — si no hay noticia puede ser macro irrelevante"),
+            ("fiserv",   "rally"):                   (None, "Subida precio — verificar causa",        "Leer — si hay catalizador fundamental actualizar convicción"),
+        },
+
+        # ── CAT 4 · MANOS FUERTES ─────────────────────────────────────────
+        # Última actualización: 18-mar-2026
+        # Fuente: SEC EDGAR Form 13F
+        # URL consulta: https://www.sec.gov/cgi-bin/browse-edgar
+        #               ?action=getcompany&type=13F&CIK=0000798354
+        #
+        # PASO 1 DEL FLUJO — actualizar con Form 13F cada trimestre.
+        # FISV market cap ~$35B — umbral general $75M (~0,2% float).
+        "manos_fuertes": {
+            "jana":          ("Jana Partners",          0,           "Activista — apoya CEO Lyons · cualquier movimiento"),
+            "vanguard":      ("Vanguard Group",         75_000_000,  "Mayor institucional pasivo ~8% float"),
+            "blackrock":     ("BlackRock",              75_000_000,  "Institucional pasivo ~7% float"),
+            "fidelity":      ("Fidelity Investments",   75_000_000,  "Institucional activo — seguimiento"),
+            "berkshire":     ("Berkshire Hathaway",     0,           "Si entra Buffett en FISV es señal fortísima"),
+        },
+
+        "manos_fuertes_umbral_usd": 75_000_000,
+
+        "macro_config": None,
+    },
+
+
+    # =========================================================================
+    # SQ — Block (XYZ)
+    # =========================================================================
+    # Tesis: "Punto de inflexión — modo inversión a modo generación de caja"
+    # EPS Q4 +38% · Rule of 40 superada · Afterpay estabilizado · $9B buyback
+    # Precio entrada: $55,24 · Peso cartera: 2,68% · Horizonte: 3-5 años
+    #
+    # NATURALEZA DIFERENTE a PYPL y FISV:
+    #   No es value con narrativa rota — es crecimiento en transición hacia caja.
+    #   El ROIC está por debajo del WACC HOY. La tesis es que eso cambia en 2026-27.
+    #   El marco de análisis es: EPS growth + Rule of 40 + Afterpay risk control.
+    #
+    # DISEÑO DE KEYWORDS — tres vectores:
+    #   Vector 1 (RIESGO): Afterpay + crédito. Si explota, la tesis se rompe.
+    #   Vector 2 (TESIS):  EPS guidance + Rule of 40. Confirmación del punto inflexión.
+    #   Vector 3 (UPSIDE): Cash App closed loop + ARPU. El activo infravalorado.
+    #
+    # CONDICIÓN DE SALIDA ÚNICA (ambas simultáneas):
+    #   EPS miss >15% sobre guía propia en H1 2026
+    #   AND riesgo de pérdida crediticia Borrow supera targets comunicados.
+    #   Una sola no es suficiente — Block ya demostró recuperarse de un trimestre débil.
+    #
+    # RUIDO A IGNORAR:
+    #   Volatilidad contable del BTC en balance (no afecta al negocio operativo)
+    #   Investigación fiscal sobre Afterpay hasta que haya resolución concreta
+    #   Cambio de nombre a XYZ (irrelevante para la tesis)
+    #
+    # Earnings crítico: mayo 2026 (Q1) — confirmar EPS $3,66 guidance
+    # manos_fuertes: Form 13F actualizado 18-mar-2026
+    # sec_cik: 0001512673
+    # =========================================================================
+    "SQ": {
+        "nombre":         "Block (XYZ)",
+        "activo":         True,
+        "precio_entrada": 55.24,
+        "moneda":         "USD",
+        "sec_cik":        "0001512673",
+
+        # Queries Google News — diseñadas por vector de tesis
+        # · Vector 1: Afterpay delinquency, BNPL credit risk
+        # · Vector 2: EPS guidance, Rule of 40, earnings
+        # · Vector 3: Cash App ARPU, Square GPV, closed loop
+        # · Dorsey — CEO y visión estratégica (IA, Bitcoin, recortes)
+        "gnews_queries": [
+            "Block Afterpay delinquency credit loss",
+            "Block SQ earnings EPS guidance",
+            "Cash App revenue ARPU growth",
+            "Square GPV merchant growth",
+            "Jack Dorsey Block strategy AI",
+            "SQ XYZ stock results",
+            "Block buyback repurchase",
+            "Afterpay BNPL regulation",
+        ],
+
+        # ── CAT 1 · INVALIDACIÓN DE TESIS ────────────────────────────────
+        # Condición de salida: EPS miss >15% + Afterpay supera targets.
+        # Riesgo crediticio Afterpay es el más sistémico para la tesis.
+        "keywords_cat1": [
+            # Afterpay — riesgo crediticio (vector 1)
+            ("afterpay",   "delinquency",  "rise"),
+            ("afterpay",   "delinquency",  "above",  "target"),
+            ("afterpay",   "credit loss",  "exceed"),
+            ("afterpay",   "charge-off",   "rise"),
+            ("block",      "borrow",       "loss",    "target"),
+            ("block",      "credit",       "loss",    "exceed"),
+            ("afterpay",   "default",      "rate",    "high"),
+            # Afterpay — regulatorio (riesgo concreto con fiscales estatales)
+            ("afterpay",   "regulat",      "action"),
+            ("afterpay",   "state",        "attorney", "general"),
+            ("afterpay",   "settlement",   "million"),
+            ("block",      "afterpay",     "regulat",  "fine"),
+            # EPS miss severo — vector 2
+            ("block",      "eps",          "miss",    "guidance"),
+            ("block",      "misses",       "guidance"),
+            ("sq",         "guidance",     "cut"),
+            ("block",      "guidance",     "lower"),
+            ("block",      "rule of 40",   "miss"),
+            # CEO Dorsey — riesgo gestión
+            ("dorsey",     "block",        "resign"),
+            ("dorsey",     "leaves",       "block"),
+            # BTC — si genera pérdida contable material (no el precio en sí)
+            ("block",      "bitcoin",      "impairment"),
+            ("block",      "btc",          "writedown"),
+            # SEC EDGAR
+            ("block",      "sec",          "filing"),
+            ("block",      "sec",          "investigation"),
+        ],
+
+        "keywords_cat1_hitos": {
+            ("afterpay",   "delinquency",  "rise"):            (1, "Afterpay — morosidad en aumento",           "Cuantificar — umbral crítico: superar targets comunicados en Investor Day"),
+            ("afterpay",   "delinquency",  "above",  "target"): (1, "Afterpay — morosidad supera target",       "CONDICIÓN DE SALIDA PARCIAL — verificar si EPS también falla"),
+            ("afterpay",   "credit loss",  "exceed"):           (1, "Afterpay — pérdida crediticia excede target", "Verificar cohort data — Investor Day: todos los cohorts 2026 en target"),
+            ("afterpay",   "charge-off",   "rise"):             (1, "Afterpay — charge-offs en aumento",         "Cuantificar vs baseline — umbral: superar targets comunicados"),
+            ("block",      "borrow",       "loss",    "target"): (1, "Borrow — pérdida supera target",           "Verificar dato exacto — mismo umbral que Afterpay"),
+            ("block",      "credit",       "loss",    "exceed"): (1, "Block — pérdida crediticia excede",        "Confirmar si es Afterpay, Borrow o Cash App — distinguir fuentes"),
+            ("afterpay",   "default",      "rate",    "high"):   (1, "Afterpay — tasa de default elevada",       "Comparar con dato base Q4 2025 — dirección más importante que nivel"),
+            ("afterpay",   "regulat",      "action"):            (None, "Afterpay — acción regulatoria",         "Leer alcance — varios fiscales estatales investigando · hasta ahora ruido"),
+            ("afterpay",   "state",        "attorney", "general"): (None, "Afterpay — AG estatal",              "Identificar estado y demanda — cuantificar exposición potencial"),
+            ("afterpay",   "settlement",   "million"):           (None, "Afterpay — acuerdo judicial",           "Leer monto — si >$500M puede impactar FCF material"),
+            ("block",      "afterpay",     "regulat",  "fine"):  (None, "Block Afterpay — multa regulatoria",    "Cuantificar — si >$500M impacta FCF 2026 guidance"),
+            ("block",      "eps",          "miss",    "guidance"): (2, "EPS — miss vs guidance propia",          "Cuantificar magnitud — umbral salida es >15% vs propia guía"),
+            ("block",      "misses",       "guidance"):           (2, "EPS — miss guidance",                     "Si >15% Y Afterpay supera targets → CONDICIÓN DE SALIDA"),
+            ("sq",         "guidance",     "cut"):                (2, "Guidance — recortada",                    "Cuantificar vs $3,66 EPS 2026 — si >15% abajo evaluar salida"),
+            ("block",      "guidance",     "lower"):              (2, "Guidance — rebajada",                     "Mismo umbral — $3,66 EPS 2026 es el baseline"),
+            ("block",      "rule of 40",   "miss"):               (2, "Rule of 40 — no se cumple",               "Rule of 40 superada en Q4 fue señal clave — si falla revisar tesis"),
+            ("dorsey",     "block",        "resign"):             (None, "Dorsey — salida inesperada",            "Dorsey ES la tesis estratégica de IA + Bitcoin — leer contexto"),
+            ("block",      "bitcoin",      "impairment"):         (None, "BTC — impairment contable",             "Impacta P&L pero no FCF operativo — aclarar al mercado si genera ruido"),
+            ("block",      "btc",          "writedown"):          (None, "BTC — writedown",                      "Mismo caso — ruido contable vs cash operativo"),
+            ("block",      "sec",          "filing"):             (None, "SEC EDGAR 8-K — evento material",      "Leer filing completo"),
+            ("block",      "sec",          "investigation"):      (None, "SEC — investigación",                  "Leer alcance — puede ser material o rutinario"),
+        },
+
+        # ── CAT 2 · CATALIZADORES ─────────────────────────────────────────
+        # El catalizador principal: EPS supera $3,66 guidance en cualquier trimestre
+        # Y Cash App ARPU crece doble dígito.
+        # Si ocurren juntos, el WACC empieza a comprimirse (beta baja).
+        "keywords_cat2": [
+            # EPS beat + Rule of 40 — vector 2
+            ("block",      "beats",        "guidance"),
+            ("block",      "eps",          "beat"),
+            ("block",      "raises",       "guidance"),
+            ("block",      "guidance",     "raise"),
+            ("block",      "rule of 40",   "sustain"),
+            ("block",      "rule of 40",   "exceed"),
+            # Cash App ARPU + closed loop — vector 3
+            ("cash app",   "arpu",         "growth"),
+            ("cash app",   "revenue",      "accelerat"),
+            ("cash app",   "monetiz"),
+            ("block",      "closed loop",  "revenue"),
+            ("cash app",   "square",       "integrat"),
+            # Buyback ejecución — señal de confianza
+            ("block",      "buyback",      "execut"),
+            ("block",      "repurchase",   "accelerat"),
+            ("sq",         "buyback",      "billion"),
+            # Afterpay — estabilización confirmada
+            ("afterpay",   "delinquency",  "stable"),
+            ("afterpay",   "credit",       "improv"),
+            ("afterpay",   "loss",         "below",  "target"),
+            # Dorsey IA + reducción costes
+            ("block",      "ai",           "cost",   "reduc"),
+            ("dorsey",     "ai",           "block",  "efficiency"),
+            ("block",      "headcount",    "reduc"),
+        ],
+
+        "keywords_cat2_hitos": {
+            ("block",      "beats",        "guidance"):            (1, "EPS — beat vs guidance propia",          "Confirmar magnitud vs $3,66 · si >$4,00 en cualquier trimestre → ampliar"),
+            ("block",      "eps",          "beat"):                (1, "EPS — beat estimaciones",                "Verificar vs guidance propia además de vs consenso"),
+            ("block",      "raises",       "guidance"):            (1, "Guidance — elevada",                     "Actualizar baseline — si 2026 sube a >$4,00 cambia el multiple"),
+            ("block",      "guidance",     "raise"):               (1, "Guidance — raise",                       "Cuantificar — nuevo EPS guidance 2026 es el dato clave"),
+            ("block",      "rule of 40",   "sustain"):             (1, "Rule of 40 — sostenida",                 "Segundo trimestre consecutivo confirma el punto de inflexión"),
+            ("block",      "rule of 40",   "exceed"):              (1, "Rule of 40 — superada significativamente", "Leer — magnitud importa · primer trimestre fue ajustado"),
+            ("cash app",   "arpu",         "growth"):              (2, "Cash App — ARPU en crecimiento",         "Umbral catalizador: doble dígito YoY · confirmar dato exacto"),
+            ("cash app",   "revenue",      "accelerat"):           (2, "Cash App — aceleración revenue",         "Señal de monetización del closed loop — leer breakdown"),
+            ("cash app",   "monetiz"):                              (2, "Cash App — nueva feature monetizada",    "Leer — cualquier nueva palanca de ingresos del closed loop"),
+            ("block",      "closed loop",  "revenue"):             (2, "Closed loop — generando revenue",        "El activo más infravalorado — si cuantifican revenue es señal fuerte"),
+            ("afterpay",   "delinquency",  "stable"):              (None, "Afterpay — morosidad estable",        "Confirmación de que el riesgo crediticio está controlado"),
+            ("afterpay",   "credit",       "improv"):              (None, "Afterpay — mejora crediticia",        "Señal positiva — cohorts 2026 ya estaban en target en feb 2026"),
+            ("afterpay",   "loss",         "below",  "target"):    (None, "Afterpay — por debajo de target",     "Confirmación explícita de control crediticio — actualizar convicción"),
+            ("block",      "buyback",      "execut"):              (None, "Buyback — ejecución real",            "Confirmar cuánto de los $9B autorizados se está ejecutando"),
+            ("block",      "repurchase",   "accelerat"):           (None, "Recompra acelerada",                  "Señal de confianza management — actualizar shareholder yield"),
+            ("dorsey",     "ai",           "block",  "efficiency"): (None, "Dorsey — IA para eficiencia",        "Recorte 10K→6K empleados apuesta IA — leer avances concretos"),
+        },
+
+        # ── CAT 3 · CONFIRMACIÓN ──────────────────────────────────────────
+        # Earnings, GPV, Cash App — seguimiento del estado de la tesis.
+        # Métrica más importante por trimestre: EPS vs guidance + Afterpay cohorts.
+        "keywords_cat3": [
+            ("block",      "earnings"),
+            ("block",      "results"),
+            ("sq",         "earnings"),
+            ("block",      "beat",         "earnings"),
+            ("block",      "beat",         "estimate"),
+            ("block",      "ebitda"),
+            ("block",      "gross profit"),
+            ("cash app",   "revenue"),
+            ("cash app",   "users"),
+            ("square",     "gpv"),
+            ("square",     "gross payment"),
+            ("block",      "upgrade"),
+            ("block",      "price target"),
+            ("sq",         "buy",          "rating"),
+            ("block",      "bitcoin",      "holdings"),
+            ("block",      "btc",          "balance"),
+            # Dorsey — visión estratégica
+            ("dorsey",     "block",        "strategy"),
+            ("dorsey",     "block",        "ai"),
+            # Movimientos precio
+            ("sq",         "down",         "today"),
+            ("sq",         "falling"),
+            ("sq",         "rally"),
+        ],
+
+        "keywords_cat3_hitos": {
+            ("block",      "earnings"):                  (1, "Earnings Q — revisión trimestral",        "Extraer: EPS vs $3,66 guidance, Afterpay cohort data, Cash App ARPU"),
+            ("block",      "results"):                   (1, "Earnings Q — revisión trimestral",        "Métricas clave: EPS, Rule of 40, Afterpay credit loss vs target"),
+            ("sq",         "earnings"):                  (1, "Earnings Q — revisión",                  "Mismas métricas — EPS y Afterpay son los dos pilares de decisión"),
+            ("block",      "beat",   "earnings"):        (1, "Earnings Q — beat",                      "Confirmar vs guidance propia $3,66 · no solo vs consenso"),
+            ("block",      "beat",   "estimate"):        (1, "Earnings Q — beat estimaciones",         "Verificar si incluye beat en EPS guidance propia"),
+            ("block",      "ebitda"):                    (1, "EBITDA — seguimiento margen",             "Umbral vigilancia: margen operativo >26% (guía 2026)"),
+            ("block",      "gross profit"):              (1, "Gross profit — seguimiento",              "Umbral: >$2,9B trimestral · guía 2026 $11,98B anual"),
+            ("cash app",   "revenue"):                   (2, "Cash App — revenue trimestral",           "Indicador más importante del closed loop · cuantificar YoY"),
+            ("cash app",   "users"):                     (2, "Cash App — usuarios activos",             "Si ARPU crece con usuarios estables es monetización real"),
+            ("square",     "gpv"):                       (None, "Square — volumen pagos",               "Umbral: mid single digits growth — si acelera a >10% es señal"),
+            ("block",      "upgrade"):                   (None, "Upgrade analista",                     "Sin acción requerida"),
+            ("block",      "price target"):              (None, "Cambio precio objetivo",               "Sin acción requerida"),
+            ("block",      "bitcoin",   "holdings"):     (None, "BTC — tenencias en balance",           "Dato contable — no afecta tesis operativa"),
+            ("block",      "btc",       "balance"):      (None, "BTC — balance sheet",                  "Ruido contable — separar de FCF operativo al leer"),
+            ("dorsey",     "block",     "strategy"):     (None, "Dorsey — declaración estratégica",     "Leer — cualquier mención a closed loop o IA es relevante para tesis"),
+            ("dorsey",     "block",     "ai"):           (None, "Dorsey — IA en Block",                 "Recorte 40% plantilla apuesta IA — seguimiento avances concretos"),
+            ("sq",         "down",      "today"):        (None, "Caída precio hoy — verificar causa",   "Leer — BTC puede causar caídas sin fundamento operativo"),
+            ("sq",         "falling"):                   (None, "Caída precio — verificar causa",       "Distinguir si es BTC/macro vs noticia operativa real"),
+            ("sq",         "rally"):                     (None, "Subida precio — verificar causa",      "Leer — si hay catalizador operativo actualizar convicción"),
+        },
+
+        # ── CAT 4 · MANOS FUERTES ─────────────────────────────────────────
+        # Última actualización: 18-mar-2026
+        # Fuente: SEC EDGAR Form 13F
+        # URL consulta: https://www.sec.gov/cgi-bin/browse-edgar
+        #               ?action=getcompany&type=13F&CIK=0001512673
+        #
+        # PASO 1 DEL FLUJO — actualizar con Form 13F cada trimestre.
+        # SQ market cap ~$35B — umbral general $75M (~0,2% float).
+        # Beta 2,67 — movimientos institucionales de convicción son más relevantes
+        # que en tickers con beta menor.
+        #
+        # DISEÑO DELIBERADO v6.9 — Dorsey con umbral $5M y exclusiones rutinarias:
+        # Block tiene una cultura de compensación en acciones muy intensa.
+        # Los ejecutivos venden CONSTANTEMENTE por tres razones NO señalizadoras:
+        #   1. RSU tax withholding: venta automática al vest para pagar impuestos.
+        #      Forma: "automatically sold to satisfy tax withholding". No es señal.
+        #   2. Plan 10b5-1: venta programada meses antes. No es señal.
+        #   3. Ejercicio de opciones: conversión de derivado a acción. No es señal.
+        # La única señal real es: venta discrecional en mercado abierto >10%
+        # de la posición total del insider, SIN plan 10b5-1 previo.
+        # Dorsey tiene ~40M acciones (~$2.2B). Una venta de señal sería >$220M.
+        # Las noticias sobre layoffs/IA que mencionan "Dorsey" NO son Form 4.
+        # El filtro de exclusión en clasificar_manos_fuertes resuelve el ruido.
+        "manos_fuertes": {
+            "ark":           ("ARK Investment",          0,           "Cathie Wood — cualquier movimiento es señal"),
+            "vanguard":      ("Vanguard Group",          75_000_000,  "Institucional pasivo — seguimiento"),
+            "blackrock":     ("BlackRock",               75_000_000,  "Institucional pasivo — seguimiento"),
+            "dorsey":        ("Jack Dorsey",             5_000_000,   "CEO insider — solo ventas discrecionales >$5M · excluir RSU/10b5-1"),
+        },
+
+        "manos_fuertes_umbral_usd": 75_000_000,
+
+        "macro_config": None,
+    },
 }
 
 
@@ -1199,10 +1958,54 @@ def clasificar_manos_fuertes(titulo, config):
     Clasifica una noticia como CAT4 si menciona un fondo de la lista blanca
     o si la posición supera el umbral configurado para fondos desconocidos.
     Devuelve (es_cat4, descripcion, accion) o (False, "", "") si no aplica.
+
+    v6.9: añadido filtro de exclusión de ventas rutinarias de insiders.
+    Las ventas por RSU tax withholding, planes 10b5-1 automáticos y noticias
+    operativas (layoffs, IA, jobs) que mencionan el nombre del CEO no son
+    señales de movimiento real de acciones — son ruido de compensación.
+    Criterio de señal real: venta discrecional en mercado abierto, sin plan
+    10b5-1, de un volumen significativo vs la posición total del insider.
     """
     manos        = config.get("manos_fuertes", {})
     umbral       = config.get("manos_fuertes_umbral_usd", 50_000_000)
     tn           = normalizar(titulo)
+
+    # ── FILTRO DE EXCLUSIÓN v6.9/v6.10 ──────────────────────────────────
+    # Noticias que mencionan un insider por nombre pero NO son movimientos
+    # reales de acciones — son noticias operativas o ventas rutinarias.
+    #
+    # DISEÑO v6.10: dos listas separadas por método de match:
+    #   - EXCLUSIONES_SUBCADENA: términos largos sin riesgo de falso positivo
+    #     por substring. Ej: "vesting" no está en "investor".
+    #   - EXCLUSIONES_PALABRA: términos cortos que requieren match de palabra
+    #     completa para evitar falsos positivos. Ej: "vest" está en "investor",
+    #     "post" está en "postpone", "says" está en "displays".
+    EXCLUSIONES_SUBCADENA = (
+        # Ventas técnicas de compensación — no discrecionales
+        "rsu", "restricted stock", "tax withhold", "withholding",
+        "10b5", "10b5-1", "trading plan", "vesting",
+        "option exercise", "option ex", "derivative",
+        # Noticias operativas sobre CEO/gestión — no Form 4
+        "layoff", "layoffs", "cuts job", "job cut", "workforce",
+        "thousands of job", "hundreds of job", "cut staff", "slashes staff",
+        "ai strategy", "ai tool", "embrace ai", "ai model",
+        "apocalypse", "debate", "warns", "warning",
+        "praises", "argues", "suggests",
+        "interview", "tweet", "statement",
+        # Frases compuestas específicas de noticias operativas
+        "pushes smaller", "pushes leaner", "pushes flatter", "pushes ai",
+        "embraces ai", "leans on ai",
+    )
+    # Términos cortos: solo excluir si aparecen como palabra completa
+    # "vest" en "investor" → NO excluir · "vest" como palabra sola → SÍ excluir
+    # "says" en "displays" → NO excluir · "says" como palabra sola → SÍ excluir
+    EXCLUSIONES_PALABRA = ("vest", "post", "says", "fears")
+
+    palabras_tn = set(tn.split())
+
+    if (any(excl in tn for excl in EXCLUSIONES_SUBCADENA) or
+            any(excl in palabras_tn for excl in EXCLUSIONES_PALABRA)):
+        return (False, "", "")
 
     # Primero: buscar coincidencia en lista blanca
     for clave, (nombre, umbral_fondo, razon) in manos.items():

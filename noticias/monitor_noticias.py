@@ -1,5 +1,5 @@
 # =============================================================================
-# MONITOR NOTICIAS v6.1
+# MONITOR NOTICIAS v6.5
 # =============================================================================
 # Propósito: monitorización automática de noticias relevantes para tickers
 #            del portfolio. Clasifica, filtra y envía alertas por Telegram.
@@ -10,6 +10,17 @@
 #   1. Robustez    — fallos silenciosos notificados, siempre llega algo a Telegram
 #   2. Escalable   — añadir tickers solo requiere editar TICKERS_CONFIG, no el código
 #   3. Sin dependencias externas — no requiere .env, secrets, APIs de pago ni BD
+#
+# Cambios v6.5 — 18-mar-2026 — Generado con Claude Sonnet 4.6
+#   · LULU CAT1: SEC EDGAR 8-K genéricos capturados por defecto
+#     Motivo: SEC devuelve títulos "8-K  - Current report" sin keywords.
+#     Son los filings más relevantes y caían todos a ruido.
+#     Solución: en fetch_sec_8k(), enriquecer el título con el nombre del ticker
+#     para que la keyword ("lululemon", "8-k") haga match en CAT1.
+#   · LULU CAT3: añadida ("wilson", "lululemon", "notice") y ("wilson", "lululemon", "ceo")
+#     Motivo: "Wilson puts lululemon CEO candidates on notice" caía a ruido.
+#     El titular usa "Wilson" sin "Chip" — no matchaba ("chip wilson", "lululemon").
+#   · LULU CAT3 hitos: añadidas tuplas correspondientes con hito 1.
 #
 # =============================================================================
 # FLUJO DE TRABAJO ESTÁNDAR — seguir este orden en cada sesión de mantenimiento
@@ -257,6 +268,10 @@ TICKERS_CONFIG = {
             ("sesa",          "offtake"),
             ("sesa",          "signs"),
             ("southern energy", "flng"),
+            # v6.3 — SEFE es el comprador del contrato Argentina LNG
+            # "Germany's SEFE nails down 8-year LNG offtake" caía a ruido
+            ("sefe",          "lng"),
+            ("sefe",          "argentina"),
             ("flng",          "fid"),
             ("flng",          "charter"),
             ("gimi",          "first cargo"),
@@ -285,6 +300,9 @@ TICKERS_CONFIG = {
             ("sesa",  "contract"):            (3, "MKII Argentina — Construccion on-schedule", "Confirmar progreso — actualizar hito 3"),
             ("sesa",  "offtake"):             (3, "MKII Argentina — Construccion on-schedule", "Confirmar progreso — actualizar hito 3"),
             ("sesa",  "signs"):               (3, "MKII Argentina — Construccion on-schedule", "Confirmar progreso — actualizar hito 3"),
+            # v6.3
+            ("sefe",  "lng"):                 (3, "MKII Argentina — Construccion on-schedule", "SEFE es comprador Argentina LNG — confirmar relación con MKII/Golar"),
+            ("sefe",  "argentina"):           (3, "MKII Argentina — Construccion on-schedule", "SEFE es comprador Argentina LNG — confirmar relación con MKII/Golar"),
             ("argentina", "lng", "contract"): (3, "MKII Argentina — Construccion on-schedule", "Confirmar progreso — actualizar hito 3"),
             ("argentina", "flng"):            (3, "MKII Argentina — Construccion on-schedule", "Confirmar progreso — actualizar hito 3"),
             ("iran",  "energy"):              (None, "Catalizador macro LNG — Hormuz/Iran",    "Evaluar ampliacion tramo 2 en $41-43"),
@@ -428,6 +446,321 @@ TICKERS_CONFIG = {
         # Umbral para fondos NO en lista blanca.
         # Captura entradas nuevas significativas sin ruido de posiciones menores.
         # Fondos como Aventail ($3.15M) o Clearline ($5M) quedan filtrados.
+        "manos_fuertes_umbral_usd": 50_000_000,
+
+        "macro_config": None,
+    },
+
+
+    # =========================================================================
+    # LULU — Lululemon Athletica
+    # =========================================================================
+    # Tesis: "Riesgo asimétrico con catalizador incierto y ventana temporal
+    #         definida" — elaborada 18-mar-2026 · precio entrada $159.27
+    #
+    # DISEÑO DELIBERADO — solo 3 alertas (principio francotirador):
+    #   La tesis depende de UN evento binario con fecha aproximada conocida:
+    #   la junta de accionistas 2026 y la campaña de Chip Wilson sobre el board.
+    #   Las métricas continuas (Google Trends, app rankings, wallet share) son
+    #   instrumentos de diagnóstico — no son accionables en el horizonte de la
+    #   tesis y generarían ruido que compite con las señales que importan.
+    #
+    # ALERTA 1 — CAT1: catalizador binario Wilson/board
+    #   Si Wilson gana asientos → rerating potencial violento al alza
+    #   Si Wilson pierde/retira → caso base declive gestionado $145-165
+    #
+    # ALERTA 2 — CAT1: invalidación del suelo financiero
+    #   Margen bruto <52%, comp. sales <-5% dos trimestres, caja <$800M
+    #   Si se activa → asimetría de la tesis se deteriora
+    #
+    # ALERTA 3 — CAT2/CAT3: confirmación de recuperación
+    #   Comp. sales Américas >+2% por primera vez, nuevo CEO externo turnaround,
+    #   precio sostenido >$280 durante 10 días
+    #
+    # CONDICIÓN DE CIERRE AUTOMÁTICO:
+    #   Precio >$280 sostenido 10d → tesis realizada
+    #   Precio <$120 con Alerta 2 activa → tesis invalidada
+    #   24 meses sin Alerta 1 (antes del 18-mar-2028) → ventana cerrada
+    #
+    # manos_fuertes: Chip Wilson como insider prioritario (cualquier movimiento)
+    # sec_cik: LULU cotiza NASDAQ — CIK 0001397187
+    # macro_config: None — la tesis no depende de macro sectorial
+    # =========================================================================
+    "LULU": {
+        "nombre":         "Lululemon Athletica",
+        "activo":         True,
+        "precio_entrada": 159.27,
+        "moneda":         "USD",
+        "sec_cik":        "0001397187",
+
+        # Queries Google News — diseñadas para cubrir las 3 alertas:
+        # · Wilson/board (catalizador binario, prioridad absoluta)
+        # · Earnings/margen/comp sales (invalidación del suelo)
+        # · Turnaround/CEO/recuperación (confirmación de tesis)
+        # · Competidores clave (Alo, Vuori) — solo para señales de cuota
+        # Máximo 8 queries — sin queries genéricas de precio o sector
+        "gnews_queries": [
+            "Chip Wilson lululemon",
+            "lululemon board directors 2026",
+            "lululemon proxy shareholder",
+            "lululemon earnings comparable sales",
+            "lululemon CEO turnaround",
+            "lululemon Americas recovery",
+            "Alo Yoga lululemon",
+            "Vuori lululemon",
+        ],
+
+        # ── CAT 1 · INVALIDACIÓN DE TESIS ────────────────────────────────
+        # Alerta 1a — Catalizador binario negativo: Wilson pierde/retira
+        # Alerta 1b — Suelo financiero roto: margen, ventas, caja
+        # Ser conservador: mejor revisar de más que perder señal real.
+        "keywords_cat1": [
+            # Wilson/board — señal negativa (catalizador no materializado)
+            ("wilson",       "withdraw"),
+            ("wilson",       "drops",       "bid"),
+            ("wilson",       "loses",       "vote"),
+            ("wilson",       "settlement",  "lululemon"),
+            ("lululemon",    "proxy",       "defeat"),
+            ("lululemon",    "board",       "rejects",  "wilson"),
+            # Suelo financiero — invalidación de tesis
+            ("lululemon",    "gross margin",  "decline"),
+            ("lululemon",    "margin",        "below"),
+            ("lululemon",    "comparable",    "decline",  "fifth"),
+            ("lululemon",    "comparable",    "decline",  "sixth"),
+            ("lululemon",    "comparable",    "decline",  "seventh"),
+            ("lululemon",    "guidance",      "cut"),
+            ("lululemon",    "guidance",      "lower"),
+            ("lululemon",    "guidance",      "weak"),
+            ("lululemon",    "weak",          "guidance"),
+            ("lululemon",    "outlook",       "disappoint"),
+            ("lululemon",    "outlook",       "weak"),
+            ("lululemon",    "cash",          "burn"),
+            # Amenaza competitiva estructural
+            ("lululemon",    "market share",  "loss"),
+            ("lululemon",    "closing",       "stores"),
+            # v6.5 — SEC EDGAR 8-K genéricos enriquecidos en fetch_sec_8k()
+            # Título resultante: "Lululemon 8-K SEC filing - Current report"
+            # Cualquier 8-K de LULU es un evento material — CAT1 por defecto
+            ("lululemon",    "8-k",           "sec"),
+            ("lululemon",    "8-k",           "filing"),
+        ],
+
+        "keywords_cat1_hitos": {
+            ("wilson",       "withdraw"):                    (1, "Wilson/board — catalizador binario",     "estado:false — Wilson retirado"),
+            ("wilson",       "drops",      "bid"):           (1, "Wilson/board — catalizador binario",     "estado:false — Wilson retirado"),
+            ("wilson",       "loses",      "vote"):          (1, "Wilson/board — catalizador binario",     "estado:false — Wilson pierde votación"),
+            ("wilson",       "settlement", "lululemon"):     (1, "Wilson/board — catalizador binario",     "Leer — evaluar si acuerdo incluye cambios reales"),
+            ("lululemon",    "proxy",      "defeat"):        (1, "Wilson/board — catalizador binario",     "estado:false — proxy battle perdido"),
+            ("lululemon",    "board",      "rejects", "wilson"): (1, "Wilson/board — catalizador binario", "estado:false — board rechaza candidatos"),
+            ("lululemon",    "gross margin", "decline"):     (2, "Suelo financiero — margen bruto",        "Verificar si cae bajo 52% — estado:false si confirma"),
+            ("lululemon",    "margin",     "below"):         (2, "Suelo financiero — margen bruto",        "Verificar nivel exacto — umbral crítico 52%"),
+            ("lululemon",    "guidance",   "cut"):           (2, "Suelo financiero — guidance",            "estado:false si BPA forward cae bajo $9"),
+            ("lululemon",    "guidance",   "lower"):         (2, "Suelo financiero — guidance",            "Verificar magnitud — umbral crítico $9 BPA"),
+            ("lululemon",    "guidance",   "weak"):          (2, "Suelo financiero — guidance",            "Verificar magnitud — umbral crítico $9 BPA"),
+            ("lululemon",    "weak",       "guidance"):      (2, "Suelo financiero — guidance",            "Verificar magnitud — umbral crítico $9 BPA"),
+            ("lululemon",    "outlook",    "disappoint"):    (2, "Suelo financiero — outlook",             "Leer — evaluar si cambia BPA forward bajo $9"),
+            ("lululemon",    "outlook",    "weak"):          (2, "Suelo financiero — outlook",             "Leer — evaluar si cambia BPA forward bajo $9"),
+            ("lululemon",    "cash",       "burn"):          (2, "Suelo financiero — caja",                "estado:false si caja cae bajo $800M"),
+            ("lululemon",    "market share", "loss"):        (2, "Suelo financiero — cuota",               "Leer — verificar si dato cuantificado"),
+            ("lululemon",    "comparable", "decline", "fifth"):  (2, "Suelo financiero — comp sales",     "7mo trimestre negativo — revisar tesis"),
+            ("lululemon",    "comparable", "decline", "sixth"):  (2, "Suelo financiero — comp sales",     "8vo trimestre negativo — revisar tesis"),
+            ("lululemon",    "comparable", "decline", "seventh"): (2, "Suelo financiero — comp sales",    "9no trimestre negativo — tesis en riesgo"),
+            ("lululemon",    "closing",    "stores"):        (2, "Suelo financiero — red DTC",             "Verificar escala — cierre masivo invalida tesis DTC"),
+            # v6.5 — SEC 8-K enriquecidos
+            ("lululemon",    "8-k",        "sec"):           (None, "SEC EDGAR 8-K — evento material",      "Leer filing completo en SEC EDGAR — puede contener cualquier evento relevante"),
+            ("lululemon",    "8-k",        "filing"):        (None, "SEC EDGAR 8-K — evento material",      "Leer filing completo en SEC EDGAR — puede contener cualquier evento relevante"),
+        },
+
+        # ── CAT 2 · CATALIZADORES ─────────────────────────────────────────
+        # Alerta 1 positiva: Wilson gana asientos en el board
+        # Eventos que aceleran la tesis o justifican ampliar posición
+        "keywords_cat2": [
+            # Wilson/board — señal positiva (catalizador materializado)
+            ("wilson",       "wins",       "board"),
+            ("wilson",       "elected",    "director"),
+            ("wilson",       "board",      "seat"),
+            ("lululemon",    "new",        "director",  "wilson"),
+            ("lululemon",    "board",      "change"),
+            # Nuevo CEO con perfil turnaround
+            # v6.4: refinado para evitar match con "CEO search drags on" y "CEO void"
+            # Esos titulares deben ir a CAT2 hito 1 (board) o CAT3 hito 1 (CEO search)
+            # Solo capturar aquí cuando hay nombramiento explícito
+            ("lululemon",    "appoints",   "ceo"),
+            ("lululemon",    "names",      "ceo"),
+            ("lululemon",    "hires",      "ceo"),
+            ("lululemon",    "new",        "ceo",        "named"),
+            ("lululemon",    "new",        "ceo",        "appoint"),
+            # Cambios de board — cualquier director nuevo es señal
+            # v6.3: añadido tras auditoría — "Chip Bergh Joins lululemon Board" caía a ruido
+            ("lululemon",    "joins",      "board"),
+            ("lululemon",    "new",        "director"),
+            ("lululemon",    "tapped",     "board"),
+            ("lululemon",    "board",      "appoints"),
+            # Activismo institucional externo
+            # v6.3: añadido tras auditoría — "activist investor eyeing turnaround" caía a ruido
+            ("lululemon",    "activist",   "investor"),
+            ("lululemon",    "activist",   "turnaround"),
+            # Recuperación de Américas
+            ("lululemon",    "americas",   "growth"),
+            ("lululemon",    "comparable", "positive"),
+            ("lululemon",    "same store", "growth"),
+            # Catalizadores de producto/marca
+            ("lululemon",    "footwear",   "launch"),
+            ("lululemon",    "gen z",      "brand"),
+            ("lululemon",    "strategic",  "review"),
+            ("lululemon",    "buyback",    "accelerat"),
+        ],
+
+        "keywords_cat2_hitos": {
+            ("wilson",       "wins",      "board"):          (1, "Wilson/board — catalizador binario",     "estado:true — Wilson gana asientos · evaluar rerating"),
+            ("wilson",       "elected",   "director"):       (1, "Wilson/board — catalizador binario",     "estado:true — Wilson elegido director"),
+            ("wilson",       "board",     "seat"):           (1, "Wilson/board — catalizador binario",     "Confirmar número de asientos — actualizar hito 1"),
+            ("lululemon",    "new",       "director", "wilson"): (1, "Wilson/board — catalizador binario", "estado:true — confirmar con fuente primaria"),
+            ("lululemon",    "board",     "change"):         (1, "Wilson/board — catalizador binario",     "Leer — evaluar si el cambio incluye mandato claro"),
+            # v6.4 — CEO nombramiento explícito
+            ("lululemon",    "appoints",  "ceo"):            (3, "Nuevo CEO externo con mandato turnaround", "Confirmar perfil — interno vs externo es clave"),
+            ("lululemon",    "names",     "ceo"):             (3, "Nuevo CEO externo con mandato turnaround", "Confirmar perfil — interno vs externo es clave"),
+            ("lululemon",    "hires",     "ceo"):             (3, "Nuevo CEO externo con mandato turnaround", "Confirmar perfil — interno vs externo es clave"),
+            ("lululemon",    "new",       "ceo",    "named"): (3, "Nuevo CEO externo con mandato turnaround", "Confirmar perfil — interno vs externo es clave"),
+            ("lululemon",    "new",       "ceo",   "appoint"): (3, "Nuevo CEO externo con mandato turnaround", "Confirmar perfil — interno vs externo es clave"),
+            # v6.3 — board changes
+            ("lululemon",    "joins",     "board"):          (1, "Wilson/board — cambio composición",       "Leer — evaluar si el nuevo director es candidato Wilson o del board actual"),
+            ("lululemon",    "new",       "director"):       (1, "Wilson/board — cambio composición",       "Leer — evaluar alineación con tesis catalizador"),
+            ("lululemon",    "tapped",    "board"):          (1, "Wilson/board — cambio composición",       "Leer — evaluar si es candidato Wilson o del board actual"),
+            ("lululemon",    "board",     "appoints"):       (1, "Wilson/board — cambio composición",       "Leer — evaluar alineación con tesis catalizador"),
+            # v6.3 — activismo institucional
+            ("lululemon",    "activist",  "investor"):       (None, "Activismo institucional externo",      "Leer — identificar inversor y demandas — puede reforzar tesis Wilson"),
+            ("lululemon",    "activist",  "turnaround"):     (None, "Activismo institucional externo",      "Leer — identificar inversor y demandas"),
+            ("lululemon",    "americas",  "growth"):         (4, "Comp. sales Américas positivas >+2%",     "Confirmar magnitud — umbral catalizador es +2%"),
+            ("lululemon",    "comparable","positive"):       (4, "Comp. sales Américas positivas >+2%",     "Primer trimestre positivo — posible punto de giro"),
+            ("lululemon",    "same store","growth"):         (4, "Comp. sales Américas positivas >+2%",     "Confirmar magnitud — umbral catalizador es +2%"),
+            ("lululemon",    "footwear",  "launch"):         (None, "Catalizador producto — footwear",      "Leer — evaluar si genera heat orgánico Gen Z"),
+            ("lululemon",    "gen z",     "brand"):          (None, "Catalizador marca — Gen Z",            "Leer — señal de recuperación cultural"),
+            ("lululemon",    "strategic", "review"):         (None, "Revisión estratégica corporativa",     "Leer — puede incluir cambios de modelo o M&A"),
+            ("lululemon",    "buyback",   "accelerat"):      (None, "Buyback acelerado",                    "Señal de confianza del management — sin acción requerida"),
+        },
+
+        # ── CAT 3 · CONFIRMACIÓN ──────────────────────────────────────────
+        # Earnings, márgenes, dividendos — seguimiento del estado de la tesis.
+        # No cambian ninguna decisión pero actualizan convicción y estado del JSON.
+        "keywords_cat3": [
+            ("lululemon",    "earnings"),
+            ("lululemon",    "results"),
+            ("lululemon",    "beat",       "earnings"),
+            ("lululemon",    "beat",       "estimate"),
+            ("lululemon",    "ebitda"),
+            ("lululemon",    "gross margin"),
+            ("lululemon",    "comparable", "sales"),
+            ("lululemon",    "americas",   "revenue"),
+            ("lululemon",    "china",      "growth"),
+            ("lululemon",    "upgrade"),
+            ("lululemon",    "price target"),
+            ("lululemon",    "buy",        "rating"),
+            ("lulu",         "dividend"),
+            ("lululemon",    "shareholder", "meeting"),
+            ("lululemon",    "annual",      "meeting"),
+            # Chip Wilson — movimientos sin llegar a CAT1/CAT2
+            ("wilson",       "lululemon",   "stake"),
+            ("wilson",       "lululemon",   "letter"),
+            ("chip wilson",  "lululemon"),
+            # v6.3 — cobertura proxy fight que caía a ruido en auditoría
+            # "Lululemon Scrambles to Revive Yoga Pants Empire Amid Fight With Founder"
+            # "Inside Lululemon's founder's war with the board"
+            # "Lululemon Founder Ups Activism, Calling Board's Response 'Weak'"
+            # "Lululemon founder says board's response 'weak and insufficient'"
+            ("lululemon",    "founder",     "war"),
+            ("lululemon",    "founder",     "fight"),
+            ("lululemon",    "founder",     "activism"),
+            # v6.4: añadidas para capturar "founder challenges board" y "founder poses questions"
+            ("lululemon",    "founder",     "challenge"),
+            ("lululemon",    "founder",     "question"),
+            ("lululemon",    "board",       "weak"),
+            ("lululemon",    "response",    "weak"),
+            ("lululemon",    "response",    "insufficient"),
+            ("lululemon",    "scrambles",   "revive"),
+            ("lululemon",    "proxy",       "fight"),
+            ("lululemon",    "proxy",       "battle"),
+            ("lululemon",    "ceo",         "void"),
+            ("lululemon",    "ceo",         "vacancy"),
+            ("lululemon",    "ceo",         "search"),
+            # v6.5: "Wilson puts lululemon CEO candidates on notice" caía a ruido
+            # El titular usa "Wilson" sin "Chip" — no matchaba ("chip wilson","lululemon")
+            ("wilson",       "lululemon",   "notice"),
+            ("wilson",       "lululemon",   "ceo"),
+            ("wilson",       "lululemon",   "candidate"),
+        ],
+
+        "keywords_cat3_hitos": {
+            # ── HITO 1 · Wilson/board — PRIMERO en el dict (mayor prioridad de match)
+            # v6.4: movidos al inicio para evitar que ("lululemon","earnings") gane
+            # en titulares como "Wilson Takes Shots Ahead of Earnings" o
+            # "founder challenges board ahead of earnings call".
+            # encontrar_hito() devuelve el PRIMER match — el orden es crítico.
+            ("chip wilson",  "lululemon"):             (1, "Wilson/board — mención general",           "Leer — cualquier movimiento de Wilson es relevante"),
+            ("wilson",       "lululemon",   "stake"):  (1, "Wilson/board — movimiento insider",        "Verificar dirección — compra refuerza presión · venta debilita"),
+            ("wilson",       "lululemon",   "letter"): (1, "Wilson/board — comunicación pública",      "Leer carta — puede incluir demandas concretas al board"),
+            ("lululemon",    "founder",     "war"):    (1, "Wilson/board — proxy fight activo",        "Leer — seguimiento campaña Wilson"),
+            ("lululemon",    "founder",     "fight"):  (1, "Wilson/board — proxy fight activo",        "Leer — seguimiento campaña Wilson"),
+            ("lululemon",    "founder",     "activism"): (1, "Wilson/board — proxy fight activo",      "Leer — seguimiento campaña Wilson"),
+            ("lululemon",    "founder",     "challenge"): (1, "Wilson/board — proxy fight activo",     "Leer — founder desafiando board"),
+            ("lululemon",    "founder",     "question"): (1, "Wilson/board — proxy fight activo",      "Leer — founder cuestionando liderazgo"),
+            ("lululemon",    "board",       "weak"):   (1, "Wilson/board — respuesta board débil",     "Leer — respuesta débil del board refuerza posición Wilson"),
+            ("lululemon",    "response",    "weak"):   (1, "Wilson/board — respuesta board débil",     "Leer — respuesta débil del board refuerza posición Wilson"),
+            ("lululemon",    "response",    "insufficient"): (1, "Wilson/board — respuesta insuficiente", "Leer — puede escalar la presión"),
+            ("lululemon",    "scrambles",   "revive"): (1, "Wilson/board — contexto proxy fight",      "Leer — narrativa de declive que refuerza argumentos Wilson"),
+            ("lululemon",    "proxy",       "fight"):  (1, "Wilson/board — proxy fight activo",        "Leer — seguimiento estado de la campaña"),
+            ("lululemon",    "proxy",       "battle"): (1, "Wilson/board — proxy fight activo",        "Leer — seguimiento estado de la campaña"),
+            ("lululemon",    "ceo",         "void"):   (1, "Wilson/board — vacío de liderazgo",        "Leer — presión adicional sobre board por CEO search"),
+            ("lululemon",    "ceo",         "vacancy"): (1, "Wilson/board — vacío de liderazgo",       "Leer — presión adicional sobre board por CEO search"),
+            ("lululemon",    "ceo",         "search"): (1, "Wilson/board — CEO search activo",         "Leer — cualquier avance en el CEO search es relevante para la tesis"),
+            # v6.5 — Wilson sin "Chip" en titular
+            ("wilson",       "lululemon",   "notice"):    (1, "Wilson/board — aviso público",           "Leer — Wilson poniendo a alguien on notice es señal de escalada"),
+            ("wilson",       "lululemon",   "ceo"):       (1, "Wilson/board — Wilson y CEO search",     "Leer — Wilson involucrándose en CEO search es catalizador potencial"),
+            ("wilson",       "lululemon",   "candidate"): (1, "Wilson/board — candidatos CEO",          "Leer — Wilson evaluando candidatos es señal de influencia creciente"),
+            ("lululemon",    "shareholder", "meeting"): (1, "Wilson/board — junta accionistas",        "Anotar fecha y agenda — hito 1 depende de este evento"),
+            ("lululemon",    "annual",      "meeting"): (1, "Wilson/board — junta accionistas",        "Anotar fecha y agenda — hito 1 depende de este evento"),
+            # ── HITO 2 · Suelo financiero
+            ("lululemon",    "gross margin"):          (2, "Suelo financiero — margen bruto",          "Confirmar nivel — umbral crítico 52%"),
+            # ── HITO 4 · Comp. sales
+            ("lululemon",    "comparable", "sales"):   (4, "Comp. sales Américas — seguimiento",       "Anotar valor exacto — umbral catalizador +2%"),
+            ("lululemon",    "americas",   "revenue"): (4, "Comp. sales Américas — seguimiento",       "Anotar evolución — indicador de recuperación"),
+            # ── HITO 5 · Earnings — AL FINAL, después de Wilson/board
+            # Titulares con "earnings" que también mencionan Wilson/board
+            # ya habrán matchado arriba. Solo llegan aquí los earnings puros.
+            ("lululemon",    "earnings"):              (5, "Earnings Q — revisión trimestral",         "Extraer: comp sales Américas, margen bruto, guidance"),
+            ("lululemon",    "results"):               (5, "Earnings Q — revisión trimestral",         "Extraer: comp sales Américas, margen bruto, guidance"),
+            ("lululemon",    "beat",   "earnings"):    (5, "Earnings Q — revisión trimestral",         "Beat confirmado — verificar si mejora guidance"),
+            ("lululemon",    "beat",   "estimate"):    (5, "Earnings Q — revisión trimestral",         "Beat confirmado — verificar si mejora guidance"),
+            ("lululemon",    "ebitda"):                (5, "Earnings Q — revisión trimestral",         "Leer — umbral vigilancia EBITDA margin 28%"),
+            # ── HITO 6 · China
+            ("lululemon",    "china",      "growth"):  (6, "China — motor de crecimiento",             "Confirmar si sigue >+15% — palanca de mix"),
+            # ── Sin hito — analistas
+            ("lululemon",    "upgrade"):               (None, "Upgrade analista",                      "Sin acción requerida"),
+            ("lululemon",    "price target"):          (None, "Cambio precio objetivo",                "Sin acción requerida"),
+            ("lululemon",    "buy",   "rating"):       (None, "Rating Buy de analista",                "Sin acción requerida"),
+            ("lulu",         "dividend"):              (None, "Dividendo — LULU no paga actualmente",  "Si anuncia dividendo → señal de madurez · leer"),
+        },
+
+        # ── CAT 4 · MANOS FUERTES ─────────────────────────────────────────
+        # Última actualización: 18-mar-2026
+        # Fuente: MarketBeat institutional ownership + SEC EDGAR Form 13F
+        #
+        # PASO 1 DEL FLUJO — actualizar cada trimestre con Form 13F de SEC EDGAR.
+        # URL: https://www.sec.gov/cgi-bin/browse-edgar
+        #      ?action=getcompany&type=13F&CIK=0001397187
+        #
+        # DISEÑO DELIBERADO v6.3: Chip Wilson eliminado de esta lista.
+        # Wilson es activismo del fundador — no es movimiento de fondo institucional.
+        # CAT4 es para compras/ventas de fondos. Wilson se cubre desde CAT3 hito 1
+        # con keywords específicas de proxy fight y campaña de board.
+        # Mantener Wilson aquí generaba 11 noticias en CAT4 que pertenecen a CAT3.
+        "manos_fuertes": {
+            "blackrock":     ("BlackRock",                       50_000_000, "Mayor institucional pasivo ~9% float"),
+            "vanguard":      ("Vanguard Group",                  50_000_000, "Institucional pasivo ~8% float"),
+            "fidelity":      ("Fidelity Investments",            50_000_000, "Institucional activo — seguimiento"),
+        },
+
+        # Umbral para fondos NO en lista blanca.
         "manos_fuertes_umbral_usd": 50_000_000,
 
         "macro_config": None,
@@ -608,11 +941,16 @@ def resolver_url(url_google, timeout=8):
         return url_google
 
 
-def fetch_sec_8k(cik, horas=None):
+def fetch_sec_8k(cik, horas=None, nombre_empresa=None):
     """
     SEC EDGAR RSS — 8-K filings regulatorios.
     Funciona en GitHub Actions. En Colab puede devolver 0 por bloqueo de IP.
     CIK de cada ticker en TICKERS_CONFIG · sec_cik.
+
+    nombre_empresa: si se proporciona, enriquece títulos genéricos tipo "8-K  - Current report"
+    con el nombre de la empresa para que el clasificador pueda hacer match de keywords.
+    Motivo v6.5: SEC devuelve títulos vacíos que caen a ruido. Un 8-K de LULU o GLNG
+    es un evento material — debe clasificarse, no ignorarse.
     """
     if horas is None:
         horas = HORAS_LOOKBACK
@@ -636,8 +974,13 @@ def fetch_sec_8k(cik, horas=None):
             except Exception:
                 fecha = datetime.now(timezone.utc)
             if fecha >= limite:
+                titulo = entry.title
+                # Enriquecer títulos genéricos para que el clasificador pueda matchear
+                # "8-K  - Current report" → "Lululemon 8-K SEC filing - Current report"
+                if nombre_empresa and titulo.strip().lower().startswith("8-k"):
+                    titulo = nombre_empresa + " 8-K SEC filing - " + titulo.strip()
                 resultados.append({
-                    "titulo":    entry.title,
+                    "titulo":    titulo,
                     "enlace":    entry.link,  # SEC — URL directa, no necesita resolver
                     "fecha_pub": fecha,
                     "fuente":    "SEC EDGAR 8-K",
@@ -1026,7 +1369,7 @@ def render_noticia(n, accion_default):
 
 def render_mensaje(noticias_por_cat, tickers, ruido_items, fecha_now, modo_auditoria):
     L = []
-    L.append("MONITOR NOTICIAS v6.1 · " + fecha_now)
+    L.append("MONITOR NOTICIAS v6.5 · " + fecha_now)
     L.append("Tickers: " + " · ".join(tickers))
     if modo_auditoria:
         L.append("MODO: AUDITORIA · HORAS=" + str(HORAS_LOOKBACK))
@@ -1093,7 +1436,7 @@ def render_mensaje(noticias_por_cat, tickers, ruido_items, fecha_now, modo_audit
     else:
         L.append("")
         L.append("Proxima ejecucion: manana 07:00 CET")
-        L.append("Sistema: OK · v6.1 · " + fecha_now)
+        L.append("Sistema: OK · v6.5 · " + fecha_now)
 
     return "\n".join(L)
 
@@ -1107,7 +1450,7 @@ def monitor_noticias():
     modo_auditoria = DRY_RUN
 
     print("=" * 50)
-    print("MONITOR NOTICIAS v6.1 · " + fecha_now)
+    print("MONITOR NOTICIAS v6.5 · " + fecha_now)
     print("DRY_RUN=" + str(DRY_RUN) +
           " · HORAS_LOOKBACK=" + str(HORAS_LOOKBACK) +
           " · MODO=" + ("AUDITORIA" if modo_auditoria else "PRODUCCION"))
@@ -1130,7 +1473,7 @@ def monitor_noticias():
 
         if config.get("sec_cik"):
             print("  Fetching SEC EDGAR...")
-            sec = fetch_sec_8k(config["sec_cik"])
+            sec = fetch_sec_8k(config["sec_cik"], nombre_empresa=config.get("nombre"))
             print("  SEC dentro de lookback: " + str(len(sec)))
             todas.extend(sec)
 
@@ -1270,7 +1613,7 @@ def monitor_noticias():
             try:
                 requests.post(url_tg + "sendMessage",
                               data={"chat_id": CHAT_ID,
-                                    "text": "MONITOR v6.1 ERROR — mensaje no enviado. "
+                                    "text": "MONITOR v6.5 ERROR — mensaje no enviado. "
                                             "Revisar logs GitHub Actions."},
                               timeout=15)
             except Exception:
@@ -1298,7 +1641,7 @@ except Exception as e:
     print("=" * 50)
     if ENVIAR_TELEGRAM and not DRY_RUN:
         msg_error = (
-            "MONITOR v6.1 — EXCEPCION TOTAL\n" +
+            "MONITOR v6.5 — EXCEPCION TOTAL\n" +
             "=" * 30 + "\n" +
             str(e)[:300] + "\n" +
             "=" * 30 + "\n" +

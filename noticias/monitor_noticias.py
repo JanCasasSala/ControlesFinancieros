@@ -143,8 +143,8 @@ ENVIAR_TELEGRAM = True
 #   DRY_RUN        = False
 #   HORAS_LOOKBACK = 26     ← ventana de 26h — una ejecución diaria
 # =============================================================================
-DRY_RUN         = True   # ← AUDITORÍA — cambiar a False solo para producción
-HORAS_LOOKBACK  = 720    # ← AUDITORÍA — cambiar a 26 solo para producción
+DRY_RUN         = False   # ← AUDITORÍA — cambiar a False solo para producción
+HORAS_LOOKBACK  = 26    # ← AUDITORÍA — cambiar a 26 solo para producción
 MUESTRA_RUIDO   = 3
 
 CARPETA     = "noticias"

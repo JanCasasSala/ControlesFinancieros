@@ -1,0 +1,62 @@
+{
+  "hindenburg": {
+    "nombre_display": "Hindenburg Research",
+    "activo": true,
+    "tier": 1,
+    "cat_defecto": "cat1",
+    "terminos": ["hindenburg research", "hindenburg"],
+    "query_base": "Hindenburg Research",
+    "query_previo": "Hindenburg next report",
+    "razon": "Fraude contable y estructura corporativa. Casos: Nikola, Block (2023 -15%), Adani.",
+    "historial_s1": 1,
+    "notas": "Tier1. S1=1 confirmado. Cubre US y ocasionalmente Europa. Caso SQ/2023 es referencia directa para la cartera."
+  },
+  "gotham": {
+    "nombre_display": "Gotham City Research",
+    "activo": true,
+    "tier": 1,
+    "cat_defecto": "cat1",
+    "terminos": ["gotham city research", "gotham city"],
+    "query_base": "Gotham City Research",
+    "query_previo": "Gotham City announces",
+    "razon": "Deuda oculta y contabilidad agresiva. Casos: Grifols -33%, Let's Gowex -60%. Especialista Europa/Ibex/CAC.",
+    "historial_s1": 1,
+    "notas": "Tier1. S1=1 confirmado. Maximo riesgo para TEP (CAC40) y GLNG (estructura deuda). Suele telegrafiar antes de publicar."
+  },
+  "citron": {
+    "nombre_display": "Citron Research",
+    "activo": true,
+    "tier": 1,
+    "cat_defecto": "cat1",
+    "terminos": ["citron research", "citron"],
+    "query_base": "Citron Research",
+    "query_previo": null,
+    "razon": "Valoracion excesiva y competencia estructural. Habitual en tech growth US.",
+    "historial_s1": 1,
+    "notas": "Tier1. S1=1 pero impacto variable — sus ataques de valoracion suelen ser S2=0. Confirmar siempre si hay dato de filing antes de actuar."
+  },
+  "muddy_waters": {
+    "nombre_display": "Muddy Waters Research",
+    "activo": true,
+    "tier": 2,
+    "cat_defecto": "cat2",
+    "terminos": ["muddy waters research", "muddy waters"],
+    "query_base": "Muddy Waters Research",
+    "query_previo": null,
+    "razon": "Fraude y contabilidad agresiva. Habitual en China y empresas con estructura corporativa compleja.",
+    "historial_s1": 1,
+    "notas": "Tier2. S1=1 pero menor exposicion en cartera actual. Relevante para FISV si ataca estructura contable contratos bancarios."
+  },
+  "bleecker": {
+    "nombre_display": "Bleecker Street Research",
+    "activo": true,
+    "tier": 2,
+    "cat_defecto": "cat2",
+    "terminos": ["bleecker street research", "bleecker street"],
+    "query_base": "Bleecker Street Research",
+    "query_previo": null,
+    "razon": "Unit economics y metricas alternativas. Area preferida: fintech y SaaS. Alta relevancia para PYPL, FISV, SQ.",
+    "historial_s1": 0,
+    "notas": "Tier2. S1=0 — emergente, pocos casos con impacto masivo confirmado. Sus argumentos de valoracion vs peers son sistematicamente S2=0. El scoring filtra el ruido."
+  }
+}

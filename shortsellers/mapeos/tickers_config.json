@@ -1,0 +1,79 @@
+{
+  "GLNG": {
+    "nombre": "Golar LNG",
+    "activo": true,
+    "tipo": "cartera",
+    "tesis_consolidada": true,
+    "precio_entrada": 46.25,
+    "moneda": "USD",
+    "terminos": ["golar lng", "golar", "glng"],
+    "fuente_verificacion": "SEC EDGAR CIK 0001166663 · https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=0001166663&type=8-K",
+    "notas_tesis": "FLNG contratos largo plazo. Short attack probable via deuda o contabilidad de contratos Hilli/Gimi."
+  },
+  "LULU": {
+    "nombre": "Lululemon Athletica",
+    "activo": true,
+    "tipo": "cartera",
+    "tesis_consolidada": true,
+    "precio_entrada": 159.27,
+    "moneda": "USD",
+    "terminos": ["lululemon", "lulu"],
+    "fuente_verificacion": "SEC EDGAR CIK 0001397187 · 10-K store count y comp sales",
+    "notas_tesis": "Proxy fight Wilson activo. Short attack probable via valoracion excesiva o inflacion comp sales."
+  },
+  "PYPL": {
+    "nombre": "PayPal Holdings",
+    "activo": true,
+    "tipo": "cartera",
+    "tesis_consolidada": true,
+    "precio_entrada": 53.31,
+    "moneda": "USD",
+    "terminos": ["paypal", "pypl"],
+    "fuente_verificacion": "SEC EDGAR CIK 0001410247 · 10-Q transacciones Venmo y TPV",
+    "notas_tesis": "Fintech con complejidad estructural. Short attack probable via fraude contable o perdida cuota."
+  },
+  "FISV": {
+    "nombre": "Fiserv",
+    "activo": true,
+    "tipo": "cartera",
+    "tesis_consolidada": true,
+    "precio_entrada": 66.95,
+    "moneda": "USD",
+    "terminos": ["fiserv", "fisv"],
+    "fuente_verificacion": "SEC EDGAR CIK 0000798354 · 8-K contratos bancarios",
+    "notas_tesis": "Core banking contratos plurianuales. Short attack probable via perdida clientes o contabilidad contratos."
+  },
+  "SQ": {
+    "nombre": "Block (XYZ)",
+    "activo": true,
+    "tipo": "cartera",
+    "tesis_consolidada": true,
+    "precio_entrada": 55.24,
+    "moneda": "USD",
+    "terminos": ["block xyz", "block inc", "cash app"],
+    "fuente_verificacion": "SEC EDGAR CIK 0001512673 · 10-K MAU Cash App y metricas Afterpay",
+    "notas_tesis": "Fintech con Afterpay y BTC. Referencia: Hindenburg mar-2023 -15%. Short attack probable via metricas o Afterpay."
+  },
+  "TEP": {
+    "nombre": "Teleperformance",
+    "activo": true,
+    "tipo": "cartera",
+    "tesis_consolidada": false,
+    "precio_entrada": null,
+    "moneda": "EUR",
+    "terminos": ["teleperformance", "tep"],
+    "fuente_verificacion": "AMF Francia · https://www.amf-france.org · rapport annuel y rapport RSE",
+    "notas_tesis": "Recuperacion de valor. Catalizador pendiente de identificar. Tesis incompleta — mayor urgencia en cualquier short attack."
+  },
+  "UNH": {
+    "nombre": "UnitedHealth Group",
+    "activo": true,
+    "tipo": "cartera",
+    "tesis_consolidada": false,
+    "precio_entrada": null,
+    "moneda": "USD",
+    "terminos": ["unitedhealth", "unh", "united health"],
+    "fuente_verificacion": "CMS Medicare data · https://www.cms.gov/data-research · 10-K reservas Medicare",
+    "notas_tesis": "Recuperacion de valor. Catalizador pendiente. Investigacion DOJ activa — short attack es acumulativo sobre riesgo regulatorio existente."
+  }
+}

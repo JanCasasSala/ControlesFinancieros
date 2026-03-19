@@ -1,0 +1,649 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Gestión del Riesgo · Notas de Inversión</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;0,900;1,400;1,700&family=IBM+Plex+Mono:wght@400;500&family=Libre+Franklin:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+:root {
+  --ink:        #1a1a1a;
+  --ink-light:  #4a4a4a;
+  --ink-faint:  #888;
+  --rule:       #d0ccc4;
+  --rule-heavy: #1a1a1a;
+  --bg:         #f8f6f1;
+  --bg-card:    #ffffff;
+  --accent:     #8b1a1a;
+  --accent-mid: #c0392b;
+  --gold:       #8b6914;
+  --gold-bg:    #fdf8ee;
+}
+
+* { box-sizing: border-box; margin: 0; padding: 0; }
+
+html { background: var(--bg); }
+
+body {
+  font-family: 'Libre Franklin', sans-serif;
+  font-weight: 300;
+  font-size: 15px;
+  line-height: 1.7;
+  color: var(--ink);
+  background: var(--bg);
+  max-width: 900px;
+  margin: 0 auto;
+  padding: 0 32px 80px;
+}
+
+/* ── MASTHEAD ── */
+.masthead {
+  border-top: 4px solid var(--rule-heavy);
+  border-bottom: 1px solid var(--rule-heavy);
+  padding: 20px 0 16px;
+  margin-bottom: 0;
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
+}
+.masthead-title {
+  font-family: 'Playfair Display', serif;
+  font-size: 11px;
+  font-weight: 400;
+  letter-spacing: 4px;
+  text-transform: uppercase;
+  color: var(--ink-faint);
+}
+.masthead-meta {
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 9px;
+  letter-spacing: 1px;
+  color: var(--ink-faint);
+  text-align: right;
+}
+
+/* ── SECTION RULES ── */
+.section-rule {
+  border: none;
+  border-top: 3px double var(--rule-heavy);
+  margin: 32px 0 24px;
+}
+.section-label {
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 9px;
+  letter-spacing: 3px;
+  text-transform: uppercase;
+  color: var(--accent);
+  margin-bottom: 12px;
+  padding-bottom: 6px;
+  border-bottom: 1px solid var(--rule);
+}
+
+/* ── HEADLINE ── */
+.headline-block {
+  border-bottom: 3px double var(--rule-heavy);
+  padding: 32px 0 28px;
+  margin-bottom: 28px;
+}
+.kicker {
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 9px;
+  letter-spacing: 3px;
+  text-transform: uppercase;
+  color: var(--accent);
+  margin-bottom: 10px;
+}
+.headline {
+  font-family: 'Playfair Display', serif;
+  font-size: 42px;
+  font-weight: 900;
+  line-height: 1.05;
+  color: var(--ink);
+  margin-bottom: 14px;
+}
+.subheadline {
+  font-family: 'Playfair Display', serif;
+  font-size: 18px;
+  font-weight: 400;
+  font-style: italic;
+  color: var(--ink-light);
+  line-height: 1.45;
+  max-width: 680px;
+  margin-bottom: 16px;
+}
+.byline {
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 9px;
+  letter-spacing: 1.5px;
+  color: var(--ink-faint);
+  text-transform: uppercase;
+}
+
+/* ── BODY COPY ── */
+.body-col {
+  column-count: 2;
+  column-gap: 36px;
+  column-rule: 1px solid var(--rule);
+}
+.body-col p {
+  margin-bottom: 1em;
+  text-align: justify;
+  hyphens: auto;
+  orphans: 3;
+  widows: 3;
+}
+.body-col p:first-child::first-letter {
+  font-family: 'Playfair Display', serif;
+  font-size: 52px;
+  font-weight: 900;
+  line-height: 0.85;
+  float: left;
+  margin: 4px 6px -4px 0;
+  color: var(--accent);
+}
+
+/* ── PULL QUOTE ── */
+.pull-quote {
+  column-span: all;
+  border-top: 3px solid var(--rule-heavy);
+  border-bottom: 1px solid var(--rule-heavy);
+  padding: 20px 0 18px;
+  margin: 20px 0;
+}
+.pull-quote p {
+  font-family: 'Playfair Display', serif;
+  font-size: 22px;
+  font-weight: 700;
+  font-style: italic;
+  line-height: 1.35;
+  text-align: center;
+  color: var(--ink);
+  max-width: 640px;
+  margin: 0 auto;
+}
+.pull-quote p::before { content: '\201C'; color: var(--accent); }
+.pull-quote p::after  { content: '\201D'; color: var(--accent); }
+
+/* ── PRINCIPLE BOXES ── */
+.principles-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
+  margin: 24px 0;
+}
+.principle-card {
+  background: var(--bg-card);
+  border: 1px solid var(--rule);
+  border-top: 3px solid var(--ink);
+  padding: 18px 20px;
+}
+.principle-card.accent {
+  border-top-color: var(--accent);
+}
+.principle-card.gold {
+  border-top-color: var(--gold);
+  background: var(--gold-bg);
+}
+.p-number {
+  font-family: 'Playfair Display', serif;
+  font-size: 32px;
+  font-weight: 900;
+  color: var(--rule);
+  line-height: 1;
+  margin-bottom: 6px;
+}
+.p-title {
+  font-family: 'Libre Franklin', sans-serif;
+  font-size: 12px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  color: var(--ink);
+  margin-bottom: 8px;
+}
+.p-body {
+  font-size: 13px;
+  color: var(--ink-light);
+  line-height: 1.6;
+}
+
+/* ── FRAMEWORK TABLE ── */
+.fw-table {
+  width: 100%;
+  border-collapse: collapse;
+  margin: 20px 0;
+  font-size: 13px;
+}
+.fw-table thead tr {
+  border-top: 2px solid var(--rule-heavy);
+  border-bottom: 1px solid var(--rule-heavy);
+}
+.fw-table th {
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 9px;
+  letter-spacing: 1.5px;
+  text-transform: uppercase;
+  padding: 10px 12px;
+  text-align: left;
+  color: var(--ink-faint);
+  background: var(--bg);
+}
+.fw-table td {
+  padding: 11px 12px;
+  border-bottom: 1px solid var(--rule);
+  color: var(--ink-light);
+  vertical-align: top;
+  line-height: 1.5;
+}
+.fw-table tr:last-child td {
+  border-bottom: 2px solid var(--rule-heavy);
+}
+.fw-table td:first-child {
+  font-weight: 500;
+  color: var(--ink);
+}
+.cat-badge {
+  display: inline-block;
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 9px;
+  padding: 2px 7px;
+  border-radius: 2px;
+  white-space: nowrap;
+}
+.cat1 { background: #fdecea; color: #8b1a1a; border: 1px solid #e8a8a0; }
+.cat2 { background: #fef8e7; color: #8b6914; border: 1px solid #e8d090; }
+.cat3 { background: #edf7ed; color: #1a5c1a; border: 1px solid #90c890; }
+.cat4 { background: #e8f0fc; color: #1a3a8b; border: 1px solid #90a8e8; }
+
+/* ── SINGLE COL PROSE ── */
+.prose { margin: 20px 0; }
+.prose p { margin-bottom: 1em; line-height: 1.75; }
+.prose p + p { text-indent: 1.5em; }
+
+/* ── SIDEBAR NOTE ── */
+.sidebar-note {
+  background: var(--gold-bg);
+  border-left: 3px solid var(--gold);
+  padding: 14px 18px;
+  margin: 20px 0;
+  font-size: 13px;
+  color: var(--ink-light);
+  line-height: 1.6;
+}
+.sidebar-note strong {
+  display: block;
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 9px;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  color: var(--gold);
+  margin-bottom: 6px;
+}
+
+/* ── SCORING SECTION ── */
+.scoring-row {
+  display: grid;
+  grid-template-columns: 140px 1fr 80px;
+  gap: 0;
+  border-bottom: 1px solid var(--rule);
+  padding: 10px 0;
+  align-items: start;
+  font-size: 13px;
+}
+.scoring-row:first-child {
+  border-top: 2px solid var(--rule-heavy);
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 9px;
+  letter-spacing: 1.5px;
+  text-transform: uppercase;
+  color: var(--ink-faint);
+  padding: 8px 0;
+}
+.scoring-row:last-child { border-bottom: 2px solid var(--rule-heavy); }
+.scoring-dim { font-weight: 500; color: var(--ink); }
+.scoring-desc { color: var(--ink-light); padding: 0 16px; line-height: 1.5; }
+.scoring-weight {
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 11px;
+  color: var(--ink-faint);
+  text-align: right;
+}
+
+/* ── FOOTER ── */
+.doc-footer {
+  border-top: 3px double var(--rule-heavy);
+  padding-top: 16px;
+  margin-top: 48px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+.doc-footer-text {
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 9px;
+  letter-spacing: 1px;
+  color: var(--ink-faint);
+}
+.version-tag {
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 9px;
+  padding: 3px 8px;
+  border: 1px solid var(--rule);
+  color: var(--ink-faint);
+  border-radius: 2px;
+}
+
+@media (max-width: 680px) {
+  body { padding: 0 16px 60px; }
+  .body-col { column-count: 1; }
+  .principles-grid { grid-template-columns: 1fr; }
+  .headline { font-size: 30px; }
+  .scoring-row { grid-template-columns: 1fr; gap: 4px; }
+}
+</style>
+</head>
+<body>
+
+<!-- MASTHEAD -->
+<div class="masthead">
+  <div class="masthead-title">Notas de Inversión · Portfolio Monitor</div>
+  <div class="masthead-meta">
+    Versión 1.0 · Marzo 2026<br>
+    Documento vivo — pendiente ampliación
+  </div>
+</div>
+
+<!-- HEADLINE -->
+<div class="headline-block">
+  <div class="kicker">Gestión del Riesgo · Marco Conceptual</div>
+  <h1 class="headline">El sistema<br>no predice.<br>Monitoriza.</h1>
+  <p class="subheadline">
+    Sobre la humildad operativa en inversión, el valor de las alertas sobre las predicciones,
+    y por qué el mayor riesgo no es equivocarse — es no saber que te estás equivocando.
+  </p>
+  <div class="byline">Portfolio Monitor v6.13 · Sistema de alertas activo desde mar-2026</div>
+</div>
+
+<!-- BODY COPY — OPENING -->
+<div class="body-col">
+  <p>
+    Invertir no es predecir. Es gestionar la incertidumbre con la menor cantidad
+    de errores posibles, y cuando los errores ocurren — porque ocurrirán — detectarlos
+    antes de que el precio ya los haya descontado del todo. La distinción parece obvia.
+    En la práctica, es la más difícil de mantener.
+  </p>
+  <p>
+    El sistema de alertas descrito en estas notas nació de una observación concreta:
+    no es el error lo que destruye una cartera, sino no saber que se está cometiendo.
+    El precio puede hablar durante semanas antes de que el inversor entienda lo que
+    está diciendo. El objetivo del sistema es reducir ese intervalo.
+  </p>
+  <p>
+    Una tesis de inversión es una hipótesis de trabajo, no una certeza. Tiene condiciones
+    de validez — hitos que deben cumplirse, métricas que deben mantenerse, catalizadores
+    que deben materializarse — y condiciones de salida: los eventos que, si ocurren,
+    indican que la hipótesis era incorrecta o que el mundo ha cambiado. El sistema
+    monitoriza ambas, sin tomar partido por ninguna.
+  </p>
+
+  <div class="pull-quote">
+    <p>El problema no es no ver una cosa. El problema es no saber que no la estás viendo.</p>
+  </div>
+
+  <p>
+    Esta frase resume con precisión el riesgo operativo más difícil de gestionar
+    en inversión. Los sesgos de confirmación, los puntos ciegos sectoriales, la
+    presión de la posición abierta — todo conspira para que el inversor interprete
+    la información disponible de una manera que confirma lo que ya cree. El sistema
+    de alertas es, en este sentido, un mecanismo de fricción deliberada: obliga a
+    registrar y clasificar eventos que contradicen la tesis con la misma diligencia
+    que los que la confirman.
+  </p>
+  <p>
+    No se trata de ser más listo que el mercado. Se trata de no ser más lento.
+    Un fondo activista con $500M en una posición tiene acceso a management, datos
+    alternativos, analistas sectoriales y tiempo dedicado. El inversor individual
+    tiene otras ventajas — horizonte temporal más largo, ausencia de presión de
+    liquidez, libertad de posición — pero no puede competir en velocidad de
+    información. Lo que sí puede hacer es definir con antelación qué información
+    le importa y cuándo debe actuar sobre ella.
+  </p>
+</div>
+
+<hr class="section-rule">
+<div class="section-label">I · Los cuatro tipos de evento</div>
+
+<p style="margin-bottom:16px; color: var(--ink-light); font-size:14px;">
+  Toda noticia relevante para una posición cae en una de cuatro categorías.
+  La clasificación no depende del sentimiento del titular — depende de su relación
+  con la tesis de inversión y con las condiciones de salida definidas de antemano.
+</p>
+
+<table class="fw-table">
+  <thead>
+    <tr>
+      <th>Categoría</th>
+      <th>Definición operativa</th>
+      <th>Urgencia</th>
+      <th>Acción requerida</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><span class="cat-badge cat1">CAT 1 · Invalidación</span></td>
+      <td>Amenaza directa a los supuestos centrales de la tesis. Condición de salida activada o en riesgo de activarse.</td>
+      <td>Alta — &lt;48h</td>
+      <td>Revisar posición. Verificar si es primera o segunda señal cuando la condición requiere ambas.</td>
+    </tr>
+    <tr>
+      <td><span class="cat-badge cat2">CAT 2 · Catalizador</span></td>
+      <td>Evento que puede acelerar o materializar la tesis. Justifica evaluar ampliar posición.</td>
+      <td>Media-alta</td>
+      <td>Leer y evaluar hoy. Verificar si el precio ha llegado a zona de ampliación.</td>
+    </tr>
+    <tr>
+      <td><span class="cat-badge cat3">CAT 3 · Confirmación</span></td>
+      <td>Earnings, upgrades, hitos de seguimiento. La tesis avanza según lo previsto.</td>
+      <td>Media</td>
+      <td>Actualizar estado de hitos. Sin acción de posición salvo datos fuera de rango.</td>
+    </tr>
+    <tr>
+      <td><span class="cat-badge cat4">CAT 4 · Manos fuertes</span></td>
+      <td>Movimiento institucional relevante. Inversores con más información o agenda pueden estar señalizando algo.</td>
+      <td>Media-alta</td>
+      <td>Verificar dirección del movimiento y magnitud. No actuar sobre el nombre — actuar sobre lo que implica.</td>
+    </tr>
+  </tbody>
+</table>
+
+<div class="sidebar-note">
+  <strong>Nota de diseño</strong>
+  La prioridad de clasificación es estricta: CAT1 > CAT2 > CAT4 > CAT3 > ruido.
+  CAT4 evalúa antes que CAT3 porque una compra institucional significativa es más accionable
+  que un upgrade de analista. Una noticia solo puede pertenecer a una categoría — la de mayor prioridad.
+</div>
+
+<hr class="section-rule">
+<div class="section-label">II · La capa de manos fuertes</div>
+
+<div class="prose">
+  <p>
+    Los fondos institucionales — especialmente los activistas — tienen acceso a información
+    que el inversor individual no tiene: reuniones privadas con management, modelos financieros
+    construidos con datos alternativos, análisis sectorial dedicado. Su posicionamiento es,
+    en sí mismo, una señal. No un oráculo — una señal. La distinción importa.
+  </p>
+  <p>
+    El sistema monitoriza dos tipos de actores institucionales con lógicas completamente distintas.
+    Los fondos institucionales pasivos — Vanguard, BlackRock — mueven mercados por tamaño,
+    no por convicción. Sus movimientos son lentos, continuos y raramente generan titulares
+    accionables. Los fondos activistas — Jana, Elliott, Starboard — entran con una agenda,
+    hacen ruido público deliberado y su sola presencia cambia la dinámica del precio.
+    El sistema les da tratamiento diferente porque su señal es diferente.
+  </p>
+  <p>
+    Hay un tercer actor que el sistema incorpora como categoría propia: los <em>short sellers públicos</em>.
+    A diferencia de los institucionales largos, su señal no es la posición — es el informe.
+    Cuando Gotham City Research publicó su tesis sobre Grifols en enero de 2024,
+    el impacto fue de -33% en el día de apertura. La señal no era la caída — era el informe,
+    publicado la noche anterior con aviso previo en redes. Quien la leyó tenía diez horas de ventana.
+  </p>
+</div>
+
+<hr class="section-rule">
+<div class="section-label">III · Sistema de scoring — short sellers</div>
+
+<p style="margin-bottom:16px; color: var(--ink-light); font-size:14px;">
+  No todos los informes de short sellers tienen el mismo peso. El caso Grifols/Gotham
+  permite calibrar cuatro dimensiones que determinan la urgencia de respuesta.
+  El score resultante mapea directamente a la ventana de decisión.
+</p>
+
+<div class="scoring-row">
+  <div>Dimensión</div>
+  <div class="scoring-desc">Criterio de evaluación</div>
+  <div class="scoring-weight">Escala</div>
+</div>
+<div class="scoring-row">
+  <div class="scoring-dim">D1 · Historial del emisor</div>
+  <div class="scoring-desc">
+    ¿Cuántas veces ha tenido razón con acusaciones de magnitud similar?
+    Gotham tenía el precedente de Gowex — credibilidad establecida.
+    Un Substack anónimo con la misma tesis habría generado un -3%, no un -33%.
+  </div>
+  <div class="scoring-weight">1 — 3</div>
+</div>
+<div class="scoring-row">
+  <div class="scoring-dim">D2 · Especificidad</div>
+  <div class="scoring-desc">
+    ¿Las acusaciones son verificables con datos públicos?
+    Transacciones nombradas, cifras de apalancamiento, entidades relacionadas identificadas.
+    Cuanto más cuantificable y verificable, mayor el impacto.
+  </div>
+  <div class="scoring-weight">1 — 3</div>
+</div>
+<div class="scoring-row">
+  <div class="scoring-dim">D3 · Consenso previo</div>
+  <div class="scoring-desc">
+    ¿El mercado ya sospechaba algo? Short interest previo, prensa financiera crítica,
+    analistas escépticos. Si Grifols era el valor más cortado del Stoxx 600 Health Care,
+    el informe catalizó algo que el mercado ya sospechaba. Eso amplifica.
+  </div>
+  <div class="scoring-weight">1 — 3</div>
+</div>
+<div class="scoring-row">
+  <div class="scoring-dim">D4 · Vector de amplificación</div>
+  <div class="scoring-desc">
+    ¿Hay fuerzas externas que amplifiquen el impacto? OPA en curso que el informe puede
+    cancelar, regulador que puede investigar, covenants de deuda en juego.
+    En Grifols: la OPA de Brookfield estaba en curso — D4 fue 2, no 3.
+    La suspensión de la OPA ocurrió meses después.
+  </div>
+  <div class="scoring-weight">1 — 3</div>
+</div>
+
+<div class="sidebar-note" style="margin-top:16px;">
+  <strong>Caso de referencia · Grifols / Gotham City Research · Enero 2024</strong>
+  D1=3 (Gowex precedente) · D2=3 (deuda 10-13x, Scranton nombrada) · D3=3 (más cortada del Stoxx Health)
+  · D4=2 (OPA Brookfield en curso, CNMV probable). Score total: <strong>11/12 → Decisión en &lt;24h.</strong>
+  El scoring se hace con la información disponible en el momento del informe, no con el resultado final.
+  Una puntuación de 10-12 activa CAT1 automático. Entre 7-9: revisar posición hoy. Entre 4-6: monitorizar.
+</div>
+
+<hr class="section-rule">
+<div class="section-label">IV · Principios operativos</div>
+
+<div class="principles-grid">
+  <div class="principle-card accent">
+    <div class="p-number">01</div>
+    <div class="p-title">Alertas, no predicciones</div>
+    <div class="p-body">
+      El sistema no dice qué va a pasar. Dice cuándo algo que podría cambiar
+      una decisión ha ocurrido. La decisión siempre es humana.
+      El sistema es el mecanismo de no perderse nada relevante.
+    </div>
+  </div>
+  <div class="principle-card">
+    <div class="p-number">02</div>
+    <div class="p-title">Una condición de salida por tesis</div>
+    <div class="p-body">
+      Diez condiciones de salida son cero condiciones de salida. Antes de abrir
+      una posición, definir una sola condición binaria que invalida la tesis.
+      El sistema monitoriza esa condición — el resto es seguimiento.
+    </div>
+  </div>
+  <div class="principle-card">
+    <div class="p-number">03</div>
+    <div class="p-title">El precio habla. Escuchar.</div>
+    <div class="p-body">
+      Cuando el precio se mueve de forma sostenida contra la tesis sin noticia
+      visible, es una noticia. El mercado sabe algo que el sistema no ha
+      capturado. La reacción correcta no es ignorarlo — es investigarlo.
+    </div>
+  </div>
+  <div class="principle-card gold">
+    <div class="p-number">04</div>
+    <div class="p-title">Equivocarse poco</div>
+    <div class="p-body">
+      El objetivo no es tener razón siempre. Es que cuando se esté equivocado,
+      el coste sea pequeño y la detección sea rápida. La asimetría entre
+      aciertos y errores se gestiona con el tamaño de posición y la velocidad
+      de respuesta — no con la convicción.
+    </div>
+  </div>
+</div>
+
+<hr class="section-rule">
+<div class="section-label">V · La ausencia como señal</div>
+
+<div class="prose">
+  <p>
+    Una de las trampas más difíciles en análisis institucional es interpretar
+    la ausencia de activistas en una posición. La tentación es leer esa ausencia
+    como confirmación de que el mercado ve algo que el inversor no ve — una señal
+    de riesgo oculto. La realidad es más ambigua.
+  </p>
+  <p>
+    Un fondo activista necesita tomar una posición de $300-500M para que una
+    campaña tenga sentido económico. El universo de empresas donde eso es posible
+    es limitado. El horizonte de un activista es de 12-24 meses con presión
+    de resultados sobre sus propios LPs. Sus incentivos no son los mismos que los
+    del inversor con un horizonte de 3-5 años y ausencia de presión de liquidez.
+  </p>
+  <p>
+    La ausencia de activistas puede significar que la tesis es incorrecta.
+    También puede significar que la posición es demasiado grande para un activista,
+    que el horizonte es demasiado largo, o simplemente que nadie ha llegado todavía
+    a la misma conclusión. Una tesis contrarian que todavía no ha sido descubierta
+    por el mercado no es necesariamente una tesis equivocada.
+    El sistema de alertas existe precisamente para detectar cuándo el mercado
+    empieza a ver lo que la tesis anticipaba — o cuándo la tesis estaba equivocada.
+  </p>
+</div>
+
+<!-- PENDING SECTION -->
+<hr class="section-rule">
+<div class="section-label" style="color: var(--ink-faint);">Próximas secciones · Pendiente</div>
+
+<div style="background: var(--bg); border: 1px dashed var(--rule); padding: 20px 24px; margin: 16px 0;">
+  <p style="font-family: 'IBM Plex Mono', monospace; font-size: 10px; color: var(--ink-faint); letter-spacing: 1px; margin-bottom: 12px; text-transform: uppercase;">En desarrollo</p>
+  <ul style="list-style: none; font-size: 13px; color: var(--ink-faint); line-height: 2;">
+    <li>· VI · El modo seguimiento sensible — cuando el short seller ya ha publicado</li>
+    <li>· VII · Cadencia de mantenimiento — las listas blancas caducan</li>
+    <li>· VIII · El manual de respuesta ante CAT1 — protocolo paso a paso</li>
+    <li>· IX · Casos documentados — GLNG, LULU, PYPL, FISV, SQ</li>
+    <li>· X · Limitaciones del sistema — lo que no puede detectar</li>
+  </ul>
+</div>
+
+<!-- FOOTER -->
+<div class="doc-footer">
+  <div class="doc-footer-text">
+    Gestión del Riesgo · Notas de Inversión<br>
+    Documento vivo — actualización continua
+  </div>
+  <div class="version-tag">v1.0 · 19-mar-2026</div>
+</div>
+
+</body>
+</html>

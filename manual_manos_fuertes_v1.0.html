@@ -1,0 +1,955 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Manos Fuertes · Manual Operativo · Portfolio Monitor</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;0,900;1,400;1,700&family=IBM+Plex+Mono:wght@400;500&family=Source+Serif+4:ital,opsz,wght@0,8..60,300;0,8..60,400;0,8..60,600;1,8..60,300;1,8..60,400&display=swap" rel="stylesheet">
+<style>
+:root {
+  --salmon:     #F2E8D9;
+  --salmon-mid: #E8D5BC;
+  --salmon-dk:  #C4A882;
+  --ink:        #1C1008;
+  --ink-mid:    #3D2B14;
+  --ink-light:  #6B5240;
+  --ink-faint:  #9C8470;
+  --rule:       #C4A882;
+  --rule-light: #DDD0BC;
+  --red:        #8B1A1A;
+  --amber:      #8B5C0A;
+  --green:      #1A4D2E;
+  --blue:       #0A3D6B;
+  --purple:     #3D1A6B;
+}
+
+* { box-sizing: border-box; margin: 0; padding: 0; }
+html { background: var(--salmon); }
+
+body {
+  font-family: 'Source Serif 4', Georgia, serif;
+  font-weight: 300;
+  font-size: 15px;
+  line-height: 1.72;
+  color: var(--ink);
+  background: var(--salmon);
+  max-width: 960px;
+  margin: 0 auto;
+  padding: 0 40px 80px;
+}
+
+/* ── MASTHEAD ── */
+.masthead {
+  border-top: 5px solid var(--ink);
+  border-bottom: 1px solid var(--ink);
+  padding: 16px 0 12px;
+  margin-bottom: 0;
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
+}
+.masthead-pub {
+  font-family: 'Playfair Display', serif;
+  font-size: 28px;
+  font-weight: 900;
+  letter-spacing: -0.5px;
+  color: var(--ink);
+  line-height: 1;
+}
+.masthead-pub span { color: var(--red); }
+.masthead-meta {
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 8.5px;
+  letter-spacing: 1px;
+  color: var(--ink-light);
+  text-align: right;
+  line-height: 1.8;
+}
+
+/* ── DATELINE ── */
+.dateline {
+  border-bottom: 1px solid var(--rule);
+  padding: 8px 0;
+  margin-bottom: 28px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+.dateline-left {
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 9px;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  color: var(--ink-faint);
+}
+.dateline-right {
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 9px;
+  color: var(--ink-faint);
+}
+
+/* ── HEADLINE SECTION ── */
+.lead-section {
+  border-bottom: 2px solid var(--ink);
+  padding-bottom: 24px;
+  margin-bottom: 28px;
+}
+.section-tag {
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 9px;
+  letter-spacing: 3px;
+  text-transform: uppercase;
+  color: var(--red);
+  margin-bottom: 10px;
+  display: block;
+}
+.headline {
+  font-family: 'Playfair Display', serif;
+  font-size: 44px;
+  font-weight: 900;
+  line-height: 1.04;
+  color: var(--ink);
+  margin-bottom: 14px;
+  letter-spacing: -0.5px;
+}
+.standfirst {
+  font-size: 16.5px;
+  font-weight: 400;
+  color: var(--ink-mid);
+  line-height: 1.55;
+  max-width: 700px;
+  border-left: 3px solid var(--red);
+  padding-left: 16px;
+  margin-bottom: 16px;
+}
+.byline-block {
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 9px;
+  letter-spacing: 1.5px;
+  color: var(--ink-faint);
+  text-transform: uppercase;
+}
+
+/* ── TWO-COL BODY ── */
+.body-grid {
+  display: grid;
+  grid-template-columns: 2fr 1fr;
+  gap: 32px;
+  margin-bottom: 32px;
+}
+.body-main p {
+  margin-bottom: 1em;
+  text-align: justify;
+  hyphens: auto;
+}
+.body-main p:first-child::first-letter {
+  font-family: 'Playfair Display', serif;
+  font-size: 56px;
+  font-weight: 900;
+  line-height: 0.82;
+  float: left;
+  margin: 5px 7px -4px 0;
+  color: var(--red);
+}
+
+/* ── SIDEBAR ── */
+.sidebar { border-left: 1px solid var(--rule); padding-left: 20px; }
+.sidebar-block {
+  margin-bottom: 22px;
+  padding-bottom: 18px;
+  border-bottom: 1px solid var(--rule-light);
+}
+.sidebar-block:last-child { border-bottom: none; }
+.sidebar-label {
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 8.5px;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  color: var(--ink-faint);
+  margin-bottom: 8px;
+}
+.sidebar-value {
+  font-family: 'Playfair Display', serif;
+  font-size: 22px;
+  font-weight: 700;
+  color: var(--ink);
+  line-height: 1.1;
+  margin-bottom: 4px;
+}
+.sidebar-note { font-size: 12px; color: var(--ink-light); line-height: 1.5; }
+
+/* ── PULL QUOTE ── */
+.pull-quote {
+  border-top: 2px solid var(--ink);
+  border-bottom: 1px solid var(--ink);
+  padding: 18px 0 16px;
+  margin: 24px 0;
+}
+.pull-quote p {
+  font-family: 'Playfair Display', serif;
+  font-size: 20px;
+  font-weight: 700;
+  font-style: italic;
+  line-height: 1.38;
+  color: var(--ink);
+  text-align: center;
+}
+.pull-quote p::before { content: '\201C'; color: var(--red); }
+.pull-quote p::after  { content: '\201D'; color: var(--red); }
+
+/* ── SECTION DIVIDER ── */
+.section-div {
+  border-top: 2px solid var(--ink);
+  padding-top: 6px;
+  margin: 32px 0 20px;
+  display: flex;
+  align-items: center;
+  gap: 14px;
+}
+.section-div-label {
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 10px;
+  letter-spacing: 3px;
+  text-transform: uppercase;
+  color: var(--red);
+  white-space: nowrap;
+}
+.section-div-rule {
+  flex: 1;
+  height: 1px;
+  background: var(--rule-light);
+}
+
+/* ── ACTOR TABLE ── */
+.actor-table {
+  width: 100%;
+  border-collapse: collapse;
+  margin: 16px 0 24px;
+  font-size: 13px;
+}
+.actor-table thead tr {
+  border-top: 2px solid var(--ink);
+  border-bottom: 1px solid var(--ink);
+}
+.actor-table th {
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 8.5px;
+  letter-spacing: 1.5px;
+  text-transform: uppercase;
+  padding: 9px 12px;
+  text-align: left;
+  color: var(--ink-faint);
+  background: var(--salmon-mid);
+}
+.actor-table td {
+  padding: 10px 12px;
+  border-bottom: 1px solid var(--rule-light);
+  color: var(--ink-mid);
+  vertical-align: top;
+  line-height: 1.5;
+}
+.actor-table tr:last-child td { border-bottom: 2px solid var(--ink); }
+.actor-table td:first-child { font-weight: 600; color: var(--ink); }
+.badge-actor {
+  display: inline-block;
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 8px;
+  padding: 2px 7px;
+  border-radius: 2px;
+  white-space: nowrap;
+  margin-left: 4px;
+  vertical-align: middle;
+}
+.b-activista { background: rgba(139,26,26,0.1); color: var(--red); border: 1px solid rgba(139,26,26,0.3); }
+.b-pasivo    { background: rgba(10,61,107,0.08); color: var(--blue); border: 1px solid rgba(10,61,107,0.25); }
+.b-short     { background: rgba(61,26,107,0.08); color: var(--purple); border: 1px solid rgba(61,26,107,0.25); }
+.b-insider   { background: rgba(26,77,46,0.08); color: var(--green); border: 1px solid rgba(26,77,46,0.25); }
+
+/* ── SCORING BOX ── */
+.scoring-section {
+  background: var(--salmon-mid);
+  border: 1px solid var(--rule);
+  border-top: 3px solid var(--ink);
+  padding: 20px 22px;
+  margin: 20px 0;
+}
+.scoring-title {
+  font-family: 'Playfair Display', serif;
+  font-size: 16px;
+  font-weight: 700;
+  color: var(--ink);
+  margin-bottom: 14px;
+  padding-bottom: 10px;
+  border-bottom: 1px solid var(--rule);
+}
+.scoring-row {
+  display: grid;
+  grid-template-columns: 140px 1fr 50px;
+  gap: 0;
+  border-bottom: 1px solid var(--rule-light);
+  padding: 9px 0;
+  font-size: 13px;
+  align-items: start;
+}
+.scoring-row.header {
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 8.5px;
+  letter-spacing: 1.5px;
+  text-transform: uppercase;
+  color: var(--ink-faint);
+  padding: 6px 0 8px;
+}
+.scoring-row:last-child { border-bottom: none; }
+.sc-dim { font-weight: 600; color: var(--ink); }
+.sc-desc { color: var(--ink-light); padding: 0 14px; line-height: 1.5; }
+.sc-scale { font-family: 'IBM Plex Mono', monospace; font-size: 11px; color: var(--ink-faint); text-align: right; }
+
+/* ── CASE STUDY ── */
+.case-box {
+  background: var(--ink);
+  color: var(--salmon);
+  padding: 22px 26px;
+  margin: 20px 0;
+}
+.case-label {
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 8.5px;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  color: var(--salmon-dk);
+  margin-bottom: 10px;
+}
+.case-title {
+  font-family: 'Playfair Display', serif;
+  font-size: 18px;
+  font-weight: 700;
+  color: var(--salmon);
+  margin-bottom: 12px;
+  line-height: 1.3;
+}
+.case-body { font-size: 13px; color: var(--salmon-mid); line-height: 1.65; }
+.case-score {
+  display: flex;
+  gap: 16px;
+  margin-top: 14px;
+  padding-top: 12px;
+  border-top: 1px solid rgba(244,232,217,0.2);
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 11px;
+  color: var(--salmon-dk);
+}
+.case-score strong { color: var(--salmon); }
+
+/* ── TICKER CARDS ── */
+.ticker-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 14px;
+  margin: 16px 0 24px;
+}
+.ticker-card {
+  background: var(--salmon-mid);
+  border: 1px solid var(--rule);
+  padding: 14px 16px;
+}
+.tc-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 10px;
+  padding-bottom: 8px;
+  border-bottom: 1px solid var(--rule-light);
+}
+.tc-ticker {
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 16px;
+  font-weight: 500;
+  letter-spacing: 2px;
+  color: var(--ink);
+}
+.tc-status {
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 8px;
+  padding: 2px 7px;
+  border: 1px solid;
+}
+.tc-ok  { border-color: rgba(26,77,46,0.4); color: var(--green); }
+.tc-gap { border-color: rgba(139,26,26,0.4); color: var(--red); }
+.tc-parcial { border-color: rgba(139,92,10,0.4); color: var(--amber); }
+.tc-body { font-size: 12px; color: var(--ink-light); line-height: 1.6; }
+.tc-body strong { color: var(--ink); font-weight: 600; }
+.tc-mf { margin-top: 8px; padding-top: 8px; border-top: 1px solid var(--rule-light); }
+.tc-mf-item {
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 9.5px;
+  color: var(--ink-faint);
+  padding: 2px 0;
+  display: flex;
+  justify-content: space-between;
+}
+.tc-mf-item span { color: var(--ink-mid); }
+
+/* ── PROTOCOL STEPS ── */
+.protocol-steps { margin: 16px 0 24px; }
+.p-step {
+  display: grid;
+  grid-template-columns: 36px 1fr;
+  gap: 14px;
+  padding: 12px 0;
+  border-bottom: 1px solid var(--rule-light);
+  align-items: start;
+}
+.p-step:last-child { border-bottom: none; }
+.p-num {
+  font-family: 'Playfair Display', serif;
+  font-size: 28px;
+  font-weight: 900;
+  color: var(--rule);
+  line-height: 1;
+}
+.p-content { font-size: 13px; color: var(--ink-mid); line-height: 1.65; }
+.p-content strong { color: var(--ink); font-weight: 600; }
+
+/* ── PENDING BOX ── */
+.pending-box {
+  border: 1px dashed var(--rule);
+  padding: 18px 22px;
+  margin: 20px 0;
+  background: rgba(244,232,217,0.4);
+}
+.pending-label {
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 8.5px;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  color: var(--ink-faint);
+  margin-bottom: 10px;
+}
+.pending-item {
+  font-size: 13px;
+  color: var(--ink-light);
+  padding: 4px 0;
+  border-bottom: 1px solid var(--rule-light);
+  display: flex;
+  gap: 10px;
+}
+.pending-item:last-child { border-bottom: none; }
+.pending-item::before { content: '·'; color: var(--red); font-weight: 900; }
+
+/* ── FOOTER ── */
+.doc-footer {
+  border-top: 2px solid var(--ink);
+  padding-top: 14px;
+  margin-top: 48px;
+  display: flex;
+  justify-content: space-between;
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 9px;
+  color: var(--ink-faint);
+  letter-spacing: 1px;
+}
+
+@media (max-width: 700px) {
+  body { padding: 0 16px 60px; }
+  .body-grid { grid-template-columns: 1fr; }
+  .ticker-grid { grid-template-columns: 1fr; }
+  .headline { font-size: 30px; }
+  .sidebar { border-left: none; border-top: 1px solid var(--rule); padding-left: 0; padding-top: 20px; }
+}
+</style>
+</head>
+<body>
+
+<!-- MASTHEAD -->
+<div class="masthead">
+  <div class="masthead-pub">Portfolio <span>Monitor</span></div>
+  <div class="masthead-meta">
+    Inteligencia Institucional · Edición Manos Fuertes<br>
+    v1.0 · 19 de marzo de 2026
+  </div>
+</div>
+
+<div class="dateline">
+  <div class="dateline-left">Análisis · Gestión de cartera · Sistema de alertas v6.14</div>
+  <div class="dateline-right">GLNG · LULU · PYPL · FISV · SQ</div>
+</div>
+
+<!-- LEAD -->
+<div class="lead-section">
+  <span class="section-tag">Manual Operativo · Manos Fuertes</span>
+  <h1 class="headline">El dinero inteligente<br>como capa de señal</h1>
+  <p class="standfirst">
+    Los movimientos institucionales no predicen el precio — anticipan la información.
+    Este manual documenta cómo identificar, clasificar y monitorizar a los actores
+    que mueven el mercado antes de que el mercado lo sepa.
+  </p>
+  <div class="byline-block">Sistema de Alertas Portfolio Monitor · Sesión 19-mar-2026</div>
+</div>
+
+<!-- BODY + SIDEBAR -->
+<div class="body-grid">
+  <div class="body-main">
+    <p>
+      El concepto de «manos fuertes» en el sistema de alertas no es un eufemismo
+      para grandes inversores. Es una categoría operativa precisa: actores con acceso
+      a información superior — acceso a management, datos alternativos, análisis sectorial
+      dedicado — cuyo posicionamiento es en sí mismo una señal antes de que esa
+      información sea pública.
+    </p>
+    <p>
+      El sistema distingue tres tipos de actores con lógicas radicalmente distintas.
+      Los <strong>fondos activistas</strong> entran con una agenda explícita, hacen
+      ruido público deliberado y su sola presencia cambia la dinámica del precio.
+      Los <strong>institucionales pasivos</strong> mueven mercados por tamaño, no por
+      convicción, y raramente generan señal accionable. Los <strong>short sellers
+      públicos</strong> son una categoría aparte: su señal no es la posición sino
+      el informe — y el timing de publicación es parte del mecanismo.
+    </p>
+    <p>
+      La lección más importante de la sesión de diseño del sistema: <em>una lista blanca
+      obsoleta no es neutral</em>. Es activamente peligrosa. Elliott Management llevaba
+      más de dos años fuera de PayPal cuando el sistema seguía monitorizando su nombre.
+      Cada alerta CAT4 que no existe es ruido invisible — peor que el ruido que el
+      sistema filtra, porque genera falsa confianza.
+    </p>
+
+    <div class="pull-quote">
+      <p>La ausencia de activistas no es una señal negativa. Es el precio de una tesis contrarian que el mercado todavía no ha descubierto.</p>
+    </div>
+
+    <p>
+      El caso PayPal ilustra la ambigüedad con precisión. Ningún fondo activista tiene
+      posición confirmada en 13F recientes. La interpretación correcta no es que el
+      mercado sabe algo que la tesis no sabe — es que los incentivos de un activista
+      (posición de $400M+, campaña de 12-18 meses, presión de LPs) son estructuralmente
+      distintos a los de un inversor con horizonte de 3-5 años y sin presión de liquidez.
+      El umbral de $100M en PYPL actúa como detector automático: si Elliott o cualquier
+      fondo nuevo entra con una posición significativa en 13F, el sistema lo captura
+      aunque no esté en lista blanca.
+    </p>
+    <p>
+      Fiserv es el caso de éxito del sistema. Jana Partners detectada en tres noticias
+      CAT4 en la misma sesión de auditoría, con el mensaje correcto: activista que apoya
+      al CEO Lyons, constructivo para la tesis. La señal que importa en FISV no es si
+      Jana entra o sale — es si Jana cambia de postura respecto a Lyons. Eso es lo que
+      el sistema monitoriza.
+    </p>
+  </div>
+
+  <div class="sidebar">
+    <div class="sidebar-block">
+      <div class="sidebar-label">Tickers activos</div>
+      <div class="sidebar-value">5</div>
+      <div class="sidebar-note">GLNG · LULU · PYPL · FISV · SQ</div>
+    </div>
+    <div class="sidebar-block">
+      <div class="sidebar-label">Fondos en lista blanca</div>
+      <div class="sidebar-value">19</div>
+      <div class="sidebar-note">Reconstruidas desde 13F Q4 2025 en sesión 19-mar-2026</div>
+    </div>
+    <div class="sidebar-block">
+      <div class="sidebar-label">Próxima revisión 13F</div>
+      <div class="sidebar-value">May 2026</div>
+      <div class="sidebar-note">Post-earnings PYPL 5-may. Cadencia: trimestral obligatoria.</div>
+    </div>
+    <div class="sidebar-block">
+      <div class="sidebar-label">Alertas CAT4 en auditoría</div>
+      <div class="sidebar-value">4</div>
+      <div class="sidebar-note">Jana×3 (FISV) · ARK×1 (SQ). Ninguna en PYPL — esperado.</div>
+    </div>
+    <div class="sidebar-block">
+      <div class="sidebar-label">Gap cerrado esta sesión</div>
+      <div class="sidebar-value">SQ / ARK</div>
+      <div class="sidebar-note">ARK redujo -$30M Q4 2025. Query añadida. Posición actual: $193M.</div>
+    </div>
+  </div>
+</div>
+
+<!-- SECCIÓN CLASIFICACIÓN DE ACTORES -->
+<div class="section-div">
+  <div class="section-div-label">I · Taxonomía de actores institucionales</div>
+  <div class="section-div-rule"></div>
+</div>
+
+<p style="margin-bottom:14px; color: var(--ink-light); font-size:14px;">
+  Cada tipo de actor tiene una lógica de señal distinta. El error más común es
+  tratar todos los movimientos institucionales como equivalentes.
+</p>
+
+<table class="actor-table">
+  <thead>
+    <tr>
+      <th>Tipo de actor</th>
+      <th>Lógica de señal</th>
+      <th>¿Requiere verificar dirección?</th>
+      <th>Vector de detección</th>
+      <th>Urgencia</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>Activista puro <span class="badge-actor b-activista">ACTIVISTA</span></td>
+      <td>Entra con agenda. La posición es señal de catalizador pendiente. Genera prensa deliberada.</td>
+      <td>Siempre — compra vs venta cambia el signo completamente</td>
+      <td>Google News + SEC 13F trimestral</td>
+      <td>Alta</td>
+    </tr>
+    <tr>
+      <td>Institucional pasivo <span class="badge-actor b-pasivo">PASIVO</span></td>
+      <td>Mueve mercados por tamaño, no por convicción. Raramente genera señal accionable sin prensa.</td>
+      <td>Solo si supera umbral definido ($50-100M según ticker)</td>
+      <td>Umbral automático en clasificador</td>
+      <td>Baja-media</td>
+    </tr>
+    <tr>
+      <td>Short seller público <span class="badge-actor b-short">SHORT</span></td>
+      <td>La señal es el informe, no la posición. Dirección siempre bajista por definición.</td>
+      <td>No — el acto de publicar define la dirección</td>
+      <td>Google News query específica por nombre</td>
+      <td>Crítica — ventana de horas</td>
+    </tr>
+    <tr>
+      <td>Insider / CEO <span class="badge-actor b-insider">INSIDER</span></td>
+      <td>Señal real = venta discrecional en mercado abierto, sin plan 10b5-1, >10% posición.</td>
+      <td>Siempre — RSU/10b5-1/opciones son ruido estructural</td>
+      <td>Umbral elevado + filtro exclusiones rutinarias</td>
+      <td>Media si compra · Alta si venta discrecional</td>
+    </tr>
+  </tbody>
+</table>
+
+<!-- SECCIÓN POR TICKER -->
+<div class="section-div">
+  <div class="section-div-label">II · Estado por ticker · Lista blanca actualizada</div>
+  <div class="section-div-rule"></div>
+</div>
+
+<div class="ticker-grid">
+
+  <div class="ticker-card">
+    <div class="tc-header">
+      <div class="tc-ticker">GLNG</div>
+      <div class="tc-status tc-ok">✓ CALIBRADO</div>
+    </div>
+    <div class="tc-body">
+      Float pequeño, fondos identificables. El enfoque de manos fuertes funciona bien aquí.
+      <strong>Rubric (~9%) es el actor principal a monitorizar.</strong>
+      Cualquier reducción de Rubric es señal de revisión de convicción.
+    </div>
+    <div class="tc-mf">
+      <div class="tc-mf-item">Rubric Capital <span>~9% · $378M · umbral: 0</span></div>
+      <div class="tc-mf-item">PointState Capital <span>$146M · umbral: 0</span></div>
+      <div class="tc-mf-item">T. Rowe Price <span>$85M · umbral: 0</span></div>
+      <div class="tc-mf-item">Cartenna Capital <span>$77M · umbral: 0</span></div>
+      <div class="tc-mf-item">Morgan Stanley <span>$78M · umbral: $50M</span></div>
+    </div>
+  </div>
+
+  <div class="ticker-card">
+    <div class="tc-header">
+      <div class="tc-ticker">LULU</div>
+      <div class="tc-status tc-parcial">~ PARCIAL</div>
+    </div>
+    <div class="tc-body">
+      Pasivos no señalizan. <strong>Chip Wilson es el actor clave</strong> — cubierto desde
+      CAT3 con keywords específicas de proxy fight, no desde CAT4.
+      Activista institucional externo detectado en auditoría — identificar fondo pendiente.
+    </div>
+    <div class="tc-mf">
+      <div class="tc-mf-item">BlackRock <span>~9% · umbral: $50M</span></div>
+      <div class="tc-mf-item">Vanguard Group <span>~8% · umbral: $50M</span></div>
+      <div class="tc-mf-item">Fidelity <span>activo · umbral: $50M</span></div>
+      <div class="tc-mf-item" style="color:var(--amber);">Activista externo <span style="color:var(--amber);">IDENTIFICAR</span></div>
+    </div>
+  </div>
+
+  <div class="ticker-card">
+    <div class="tc-header">
+      <div class="tc-ticker">PYPL</div>
+      <div class="tc-status tc-ok">✓ RECONSTRUIDA</div>
+    </div>
+    <div class="tc-body">
+      Lista reconstruida desde 13F Q4 2025. <strong>Elliott fuera desde ago-2023.</strong>
+      Sin activistas con posición confirmada. Ausencia interpretada como tesis contrarian,
+      no como riesgo oculto. Umbral $100M captura entradas nuevas.
+    </div>
+    <div class="tc-mf">
+      <div class="tc-mf-item">Vanguard Group <span>90M shares · umbral: $100M</span></div>
+      <div class="tc-mf-item">BlackRock <span>72M shares · umbral: $100M</span></div>
+      <div class="tc-mf-item">State Street <span>42M shares · umbral: $75M</span></div>
+      <div class="tc-mf-item">Capital Research <span>27M shares · umbral: $75M</span></div>
+      <div class="tc-mf-item">Norges Bank <span>mayor comprador Q4 · umbral: $50M</span></div>
+    </div>
+  </div>
+
+  <div class="ticker-card">
+    <div class="tc-header">
+      <div class="tc-ticker">FISV</div>
+      <div class="tc-status tc-ok">✓ FUNCIONA</div>
+    </div>
+    <div class="tc-body">
+      Jana detectada con 3 noticias CAT4 en auditoría. <strong>Jana es el caso de éxito
+      del sistema.</strong> La señal que importa: si Jana cambia de postura respecto
+      a Lyons. Berkshire en lista como señal fortísima si entra.
+    </div>
+    <div class="tc-mf">
+      <div class="tc-mf-item">Jana Partners <span>activista · umbral: 0</span></div>
+      <div class="tc-mf-item">Vanguard Group <span>~8% · umbral: $75M</span></div>
+      <div class="tc-mf-item">BlackRock <span>~7% · umbral: $75M</span></div>
+      <div class="tc-mf-item">Fidelity <span>activo · umbral: $75M</span></div>
+      <div class="tc-mf-item">Berkshire Hathaway <span>si entra · umbral: 0</span></div>
+    </div>
+  </div>
+
+  <div class="ticker-card" style="grid-column: 1 / -1;">
+    <div class="tc-header">
+      <div class="tc-ticker">SQ</div>
+      <div class="tc-status tc-ok">✓ GAP CERRADO</div>
+    </div>
+    <div class="tc-body">
+      <strong>ARK redujo -$30M Q4 2025 (confirmado 13F feb-2026).</strong>
+      Gap de cobertura identificado y cerrado: query «ARK Invest Block XYZ» añadida.
+      ARK capturada en primera auditoría post-cambio: posición actual $193M.
+      Dorsey como insider con umbral $5M y filtro de exclusiones rutinarias (RSU/10b5-1).
+    </div>
+    <div class="tc-mf" style="display:grid; grid-template-columns: 1fr 1fr 1fr 1fr; gap:0;">
+      <div class="tc-mf-item">ARK Investment <span>$193M · umbral: 0</span></div>
+      <div class="tc-mf-item">Vanguard Group <span>pasivo · umbral: $75M</span></div>
+      <div class="tc-mf-item">BlackRock <span>pasivo · umbral: $75M</span></div>
+      <div class="tc-mf-item">Jack Dorsey <span>insider · umbral: $5M</span></div>
+    </div>
+  </div>
+
+</div>
+
+<!-- SECCIÓN SHORT SELLERS -->
+<div class="section-div">
+  <div class="section-div-label">III · Short sellers públicos · Sistema de scoring</div>
+  <div class="section-div-rule"></div>
+</div>
+
+<p style="margin-bottom:16px; color: var(--ink-light); font-size:14px;">
+  Los short sellers que publican tesis son una categoría de manos fuertes con lógica
+  inversa: su señal es el informe, no la posición. El impacto en precio ocurre
+  en horas, no en trimestres. El scoring evalúa urgencia de respuesta.
+</p>
+
+<div class="case-box">
+  <div class="case-label">Caso de referencia · Gotham City Research / Grifols · Enero 2024</div>
+  <div class="case-title">Gotham anunció el golpe 10 horas antes de publicar el informe</div>
+  <div class="case-body">
+    A las 22:00h del lunes 8 de enero, Gotham telegrafió en redes que publicaría un informe
+    sobre «una empresa española del Ibex, valor cero» — sin nombrar la compañía. La acción
+    abrió suspendida al día siguiente y cayó -33% en la reapertura. Quien leyó el anuncio
+    nocturno tenía una ventana de 10 horas. El precedente de Gowex multiplicó el impacto:
+    el mercado sabía que Gotham no publicaba por publicar.
+  </div>
+  <div class="case-score">
+    <div>D1 Historial: <strong>3/3</strong></div>
+    <div>D2 Especificidad: <strong>3/3</strong></div>
+    <div>D3 Consenso previo: <strong>3/3</strong></div>
+    <div>D4 Amplificación: <strong>2/3</strong></div>
+    <div>Score total: <strong>11/12 → Decisión en &lt;24h</strong></div>
+  </div>
+</div>
+
+<div class="scoring-section">
+  <div class="scoring-title">Sistema de scoring — 4 dimensiones · Escala 4-12</div>
+  <div class="scoring-row header">
+    <div>Dimensión</div>
+    <div class="sc-desc">Criterio</div>
+    <div class="sc-scale">Escala</div>
+  </div>
+  <div class="scoring-row">
+    <div class="sc-dim">D1 · Historial</div>
+    <div class="sc-desc">¿Cuántas veces ha tenido razón con acusaciones de magnitud similar? Track record probado (Gowex, Nikola) = 3. Sin historial verificable = 1.</div>
+    <div class="sc-scale">1 — 3</div>
+  </div>
+  <div class="scoring-row">
+    <div class="sc-dim">D2 · Especificidad</div>
+    <div class="sc-desc">¿Las acusaciones son verificables con datos públicos? Transacciones nombradas, cifras cuantificadas, entidades identificadas = 3. Narrativa genérica = 1.</div>
+    <div class="sc-scale">1 — 3</div>
+  </div>
+  <div class="scoring-row">
+    <div class="sc-dim">D3 · Consenso previo</div>
+    <div class="sc-desc">¿El mercado ya sospechaba algo? Short interest alto, prensa crítica, analistas escépticos = 3. El informe como sorpresa total = 1.</div>
+    <div class="sc-scale">1 — 3</div>
+  </div>
+  <div class="scoring-row">
+    <div class="sc-dim">D4 · Amplificación</div>
+    <div class="sc-desc">¿Hay fuerzas externas que amplifiquen? OPA en curso, regulador activo, covenants de deuda = 2-3. Solo prensa financiera = 1. <em>Evaluar con info disponible el día del informe, no con el resultado final.</em></div>
+    <div class="sc-scale">1 — 3</div>
+  </div>
+</div>
+
+<table class="actor-table" style="margin-top:0;">
+  <thead>
+    <tr>
+      <th>Score</th>
+      <th>Nivel de urgencia</th>
+      <th>Acción</th>
+      <th>CAT en sistema</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>10 — 12</td>
+      <td>Decisión en &lt;24h</td>
+      <td>Leer informe completo. Verificar D2 y D4. Evaluar posición antes de apertura.</td>
+      <td><span class="badge-actor b-activista">CAT1 DIRECTO</span></td>
+    </tr>
+    <tr>
+      <td>7 — 9</td>
+      <td>Revisar posición hoy</td>
+      <td>Leer informe completo. Contrastar con tesis propia. Verificar si D3 ya era visible.</td>
+      <td><span class="badge-actor b-activista">CAT1 o CAT2</span></td>
+    </tr>
+    <tr>
+      <td>4 — 6</td>
+      <td>Monitorizar</td>
+      <td>Leer resumen. No actuar sin verificación adicional. Seguir si hay segundo informe.</td>
+      <td><span class="badge-actor b-pasivo">CAT3</span></td>
+    </tr>
+  </tbody>
+</table>
+
+<!-- SECCIÓN SHORT SELLERS TIER -->
+<div class="section-div">
+  <div class="section-div-label">IV · Short sellers · Clasificación por peso</div>
+  <div class="section-div-rule"></div>
+</div>
+
+<table class="actor-table">
+  <thead>
+    <tr>
+      <th>Fondo</th>
+      <th>Metodología habitual</th>
+      <th>Relevancia para fintech</th>
+      <th>CAT propuesta</th>
+      <th>Detección</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>Hindenburg Research</td>
+      <td>Fraude contable, estructura corporativa compleja, relacionados</td>
+      <td>Alta — PYPL/SQ tienen complejidad estructural (Afterpay, PYUSD)</td>
+      <td><span class="badge-actor b-activista">CAT1 DIRECTO</span></td>
+      <td>«hindenburg paypal» / «hindenburg block»</td>
+    </tr>
+    <tr>
+      <td>Gotham City Research</td>
+      <td>Deuda oculta, contabilidad agresiva, precedente Gowex</td>
+      <td>Media — más habitual en Europa, pero cubre US</td>
+      <td><span class="badge-actor b-activista">CAT1 DIRECTO</span></td>
+      <td>«gotham city» + ticker</td>
+    </tr>
+    <tr>
+      <td>Citron Research</td>
+      <td>Valoración excesiva, narrativa rota, competencia estructural</td>
+      <td>Alta — tech growth es su área habitual</td>
+      <td><span class="badge-actor b-activista">CAT1 DIRECTO</span></td>
+      <td>«citron» + ticker</td>
+    </tr>
+    <tr>
+      <td>Muddy Waters</td>
+      <td>Fraude, contabilidad agresiva, negocios en China</td>
+      <td>Baja en fintech US · mayor en GLNG / exposición internacional</td>
+      <td><span class="badge-actor b-short">CAT2</span></td>
+      <td>«muddy waters» + ticker</td>
+    </tr>
+    <tr>
+      <td>Bleecker Street Research</td>
+      <td>Unit economics, métricas alternativas, sector fintech habitual</td>
+      <td>Alta — fintech es su área preferida</td>
+      <td><span class="badge-actor b-short">CAT2</span></td>
+      <td>«bleecker street» + ticker</td>
+    </tr>
+    <tr>
+      <td>Substack anónimos / Twitter</td>
+      <td>Variable — sin firma institucional ni skin in the game</td>
+      <td>Ruido estructural — no incluir en sistema</td>
+      <td><span class="badge-actor b-pasivo">IGNORAR</span></td>
+      <td>No monitorizar</td>
+    </tr>
+  </tbody>
+</table>
+
+<!-- SECCIÓN PROTOCOLO -->
+<div class="section-div">
+  <div class="section-div-label">V · Protocolo de mantenimiento · Cadencia trimestral</div>
+  <div class="section-div-rule"></div>
+</div>
+
+<div class="protocol-steps">
+  <div class="p-step">
+    <div class="p-num">01</div>
+    <div class="p-content">
+      <strong>Actualizar listas blancas desde 13F.</strong> Cadencia obligatoria: trimestral.
+      Los 13F se publican 45 días después del cierre de trimestre (Q4 → mediados febrero,
+      Q1 → mediados mayo, etc.). URL base:
+      <code style="font-family:'IBM Plex Mono',monospace; font-size:11px; background:var(--salmon-dk); color:var(--ink); padding:1px 5px;">sec.gov/cgi-bin/browse-edgar?action=getcompany&type=13F&CIK=[CIK]</code>
+      Añadir fondos nuevos con &gt;1% float o &gt;$50M. Eliminar fondos que hayan salido.
+    </div>
+  </div>
+  <div class="p-step">
+    <div class="p-num">02</div>
+    <div class="p-content">
+      <strong>Validar antes de cada earnings crítico.</strong> PYPL earnings 5-mayo:
+      revisar lista blanca en abril. FISV earnings agosto: revisar en julio.
+      Una lista desactualizada el día de un earnings crítico no protege — genera
+      falsa confianza.
+    </div>
+  </div>
+  <div class="p-step">
+    <div class="p-num">03</div>
+    <div class="p-content">
+      <strong>Cuando un short seller publica sobre un ticker activo:</strong> activar
+      scoring D1-D4 manualmente. D1 y D3 se pueden pre-calcular. D2 y D4 requieren
+      leer el informe. El sistema genera alerta CAT1/CAT2 — el inversor aplica el scoring
+      para determinar urgencia exacta de respuesta.
+    </div>
+  </div>
+  <div class="p-step">
+    <div class="p-num">04</div>
+    <div class="p-content">
+      <strong>Modo seguimiento sensible.</strong> Una vez que un short seller ha publicado
+      sobre un ticker activo, cualquier publicación posterior suya sobre ese mismo ticker
+      sube de categoría automáticamente. El segundo informe de Gotham sobre Grifols
+      fue más demoledor que el primero — la empresa no había respondido las preguntas clave.
+    </div>
+  </div>
+  <div class="p-step">
+    <div class="p-num">05</div>
+    <div class="p-content">
+      <strong>Verificar queries con 0 resultados.</strong> Si una query de Google News
+      devuelve 0 resultados en 3 ejecuciones consecutivas → eliminar y liberar slot.
+      La cobertura del concepto puede mantenerse a través de keywords existentes.
+      GLNG: «Hilli Episeyo» y «Gimi BP GTA» eliminadas en v6.14 por este criterio.
+    </div>
+  </div>
+</div>
+
+<!-- PENDIENTES -->
+<div class="section-div">
+  <div class="section-div-label">VI · Pendientes activos</div>
+  <div class="section-div-rule"></div>
+</div>
+
+<div class="pending-box">
+  <div class="pending-label">Acción requerida antes del 5-may-2026</div>
+  <div class="pending-item">PYPL — Verificar 13F Q1 2026 post-publicación (mediados mayo). Confirmar si Norges Bank continuó acumulando. Vigilar entrada de activista nuevo.</div>
+  <div class="pending-item">LULU — Identificar el fondo activista institucional externo detectado en auditoría (query «activist investor eyeing lululemon turnaround»). Añadir a lista blanca si confirmado.</div>
+  <div class="pending-item">SQ — Verificar si ARK continuó reduciendo en Q1 2026 (13F publicación mayo). Baseline: -$30M Q4 2025, posición actual $193M.</div>
+  <div class="pending-item">Short sellers — Integrar queries de detección (Hindenburg, Citron, Gotham, Bleecker) en script de noticias como Capa 2. Ver documento contexto Capa 2.</div>
+  <div class="pending-item">LULU — Activista externo identificado como «big activist investor» en auditoría. Sin nombre en titulares disponibles. Buscar en 13F LULU más reciente.</div>
+</div>
+
+<!-- FOOTER -->
+<div class="doc-footer">
+  <div>Manual Operativo · Manos Fuertes · Portfolio Monitor v6.14</div>
+  <div>v1.0 · 19-mar-2026 · Documento vivo</div>
+</div>
+
+</body>
+</html>

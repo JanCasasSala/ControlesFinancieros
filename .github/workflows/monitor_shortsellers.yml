@@ -1,0 +1,43 @@
+name: Monitor Short Sellers
+
+on:
+  schedule:
+    # 07:00 CET = 06:00 UTC (invierno) / 05:00 UTC (verano)
+    # Usar 06:00 UTC como base — ajustar en verano si es necesario
+    - cron: "0 6 * * *"
+  workflow_dispatch:
+    # Permite ejecución manual desde GitHub Actions UI
+
+jobs:
+  monitor:
+    runs-on: ubuntu-22.04
+    timeout-minutes: 15
+
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v4
+
+      - name: Setup Python 3.10
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.10"
+
+      - name: Install dependencies
+        run: |
+          pip install feedparser==6.0.11 requests==2.31.0
+
+      - name: Run monitor
+        run: |
+          python scripts/monitor_shortsellers.py
+        env:
+          GITHUB_ACTIONS: "true"
+
+      - name: Commit output
+        run: |
+          git config user.name  "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add output/
+          git diff --staged --quiet || git commit -m "chore: output shortsellers $(date -u '+%Y-%m-%d %H:%M UTC')"
+          git push
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

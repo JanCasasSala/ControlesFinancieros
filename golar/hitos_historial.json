@@ -13,8 +13,8 @@
         {
           "id": 2,
           "hito": "FCF guidance 2025 confirmado",
-          "estado_nuevo": "pendiente",
-          "estado_anterior": "-"
+          "estado_nuevo": "seguimiento",
+          "estado_anterior": "pendiente"
         },
         {
           "id": 3,

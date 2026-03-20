@@ -1,0 +1,992 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SPI v4.2 · Portfolio Monitor · Marco de trabajo para agentes IA</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Source+Serif+4:ital,wght@0,300;0,400;0,600;1,400&family=Playfair+Display:ital,wght@0,700;0,900;1,700&family=IBM+Plex+Mono:wght@400;500&family=Libre+Franklin:ital,wght@0,300;0,400;0,500;0,600;0,700;1,300;1,400&display=swap" rel="stylesheet">
+<style>
+
+/* ═══════════════════════════════════════════════════════════════════
+   SISTEMA DE DISEÑO · PORTFOLIO MONITOR
+   Tema: Salmón · Modo: Referencia
+   Versión: 2.1 · 20-mar-2026
+   ═══════════════════════════════════════════════════════════════════
+
+   DOS MODOS DE PRESENTACIÓN
+   ─────────────────────────
+   Modo Referencia (este documento)
+   · Audiencia: agente IA + humano que escanea
+   · Layout: columna única, denso, índice navegable
+   · Tipografía: weight 400, compacta
+   · Uso: SPI, documentos de trabajo interno
+
+   Modo Lectura (documentos derivados)
+   · Audiencia: humano, lectura completa
+   · Layout: dos columnas, sidebar, respirado
+   · Tipografía: weight 300, pull quotes, drop cap
+   · Uso: manuales operativos, tesis, análisis
+   · Activación: «genera en modo lectura»
+
+   DOS TEMAS DE COLOR
+   ──────────────────
+   Papel  · #f8f6f1 crema  · Libre Franklin + Playfair Display
+           Análisis conceptuales, marcos, gestión del riesgo
+
+   Salmón · #F2E8D9 salmón · Source Serif 4 + Playfair + IBM Plex Mono
+           Manuales operativos, reporting, datos, SPI
+
+   FUENTES NO PERMITIDAS: Inter, Roboto, Arial, system-ui
+   FORMATO DE ENTREGA: siempre HTML autocontenido (.html + <style> embebido)
+   ═══════════════════════════════════════════════════════════════════ */
+
+  :root {
+    /* Paleta Salmón */
+    --bg:           #F2E8D9;
+    --bg-alt:       #EAD9C4;
+    --bg-deep:      #E0C9AF;
+    --bg-card:      #EDE0CC;
+    --ink:          #1C1209;
+    --ink-mid:      #3D2B1A;
+    --ink-muted:    #7A6352;
+    --rule:         #C4AA90;
+    --rule-strong:  #8B6F57;
+    --accent:       #8B1A1A;
+    --accent-light: #F5EBE0;
+    --green:        #1a4d2e;
+    --green-bg:     #eaf2ec;
+    --amber:        #6b4e00;
+    --amber-bg:     #fdf6e3;
+    /* Tipografía */
+    --mono:         'IBM Plex Mono', monospace;
+    --sans:         'Libre Franklin', sans-serif;
+    --serif:        'Playfair Display', serif;
+    --body-serif:   'Source Serif 4', serif;
+  }
+
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    background: var(--bg);
+    color: var(--ink-mid);
+    font-family: var(--body-serif);
+    font-size: 13.5px;
+    line-height: 1.68;
+    max-width: 960px;
+    margin: 0 auto;
+    padding: 0 32px 80px;
+  }
+
+  /* ── ÍNDICE NAVEGABLE ─────────────────────────────────────── */
+  .toc {
+    background: var(--bg-alt);
+    border-top: 3px solid var(--ink);
+    border-bottom: 1px solid var(--rule-strong);
+    padding: 20px 24px;
+    margin: 0 0 0;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 2px 32px;
+  }
+  .toc-title {
+    font-family: var(--sans);
+    font-size: 9px;
+    font-weight: 700;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--ink-muted);
+    margin-bottom: 12px;
+    grid-column: 1 / -1;
+  }
+  .toc a {
+    font-family: var(--sans);
+    font-size: 11px;
+    font-weight: 500;
+    color: var(--ink-mid);
+    text-decoration: none;
+    padding: 3px 0;
+    display: flex;
+    gap: 8px;
+    align-items: baseline;
+    border-bottom: 0.5px solid var(--rule);
+  }
+  .toc a:hover { color: var(--accent); }
+  .toc a .toc-num {
+    font-family: var(--mono);
+    font-size: 9.5px;
+    color: var(--ink-muted);
+    flex-shrink: 0;
+    width: 20px;
+  }
+  .toc a .toc-badge {
+    font-family: var(--sans);
+    font-size: 8px;
+    font-weight: 700;
+    color: var(--accent);
+    letter-spacing: 0.06em;
+    margin-left: auto;
+    flex-shrink: 0;
+  }
+
+  /* ── MASTHEAD ─────────────────────────────────────────────── */
+  .masthead {
+    border-top: 5px solid var(--ink);
+    border-bottom: 1px solid var(--ink);
+    padding: 14px 0 10px;
+    margin-bottom: 0;
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-end;
+    flex-wrap: wrap;
+    gap: 8px;
+  }
+  .masthead-pub {
+    font-family: var(--serif);
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--ink);
+  }
+  .masthead-center {
+    font-family: var(--serif);
+    font-size: 22px;
+    font-weight: 700;
+    color: var(--ink);
+    text-align: center;
+    flex: 1;
+    letter-spacing: -0.01em;
+  }
+  .masthead-meta {
+    font-family: var(--sans);
+    font-size: 10px;
+    color: var(--ink-muted);
+    text-align: right;
+    font-weight: 300;
+    line-height: 1.5;
+  }
+
+  /* ── SECTION RULE (doble filete) ──────────────────────────── */
+  .section-rule-double {
+    border-bottom: 3px double var(--ink);
+    margin-bottom: 0;
+    padding-bottom: 7px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 14px;
+    margin-top: 2rem;
+  }
+  .section-rule-double span {
+    font-family: var(--sans);
+    font-size: 9px;
+    font-weight: 700;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--ink-muted);
+    white-space: nowrap;
+  }
+  .section-rule-double::before,
+  .section-rule-double::after {
+    content: '';
+    flex: 1;
+    height: 0.5px;
+    background: var(--rule);
+  }
+
+  /* ── HEADLINE BLOCK ───────────────────────────────────────── */
+  .headline-block {
+    padding: 28px 0 20px;
+    border-bottom: 1px solid var(--rule);
+    margin-bottom: 20px;
+  }
+  .kicker {
+    font-family: var(--sans);
+    font-size: 9.5px;
+    font-weight: 700;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    color: var(--accent);
+    margin-bottom: 10px;
+  }
+  .headline {
+    font-family: var(--serif);
+    font-size: 38px;
+    font-weight: 900;
+    line-height: 1.06;
+    color: var(--ink);
+    letter-spacing: -0.02em;
+    margin-bottom: 12px;
+    max-width: 80%;
+  }
+  .deck {
+    font-family: var(--body-serif);
+    font-size: 14.5px;
+    font-weight: 400;
+    font-style: italic;
+    color: var(--ink-mid);
+    line-height: 1.6;
+    max-width: 68ch;
+    margin-bottom: 16px;
+  }
+  .dateline-bar {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 1.4rem;
+    border-top: 0.5px solid var(--rule-strong);
+    border-bottom: 0.5px solid var(--rule-strong);
+    padding: 5px 0;
+    margin-top: 14px;
+  }
+  .dateline-item {
+    font-family: var(--sans);
+    font-size: 9.5px;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--ink-muted);
+  }
+  .dateline-item strong { color: var(--ink); font-weight: 600; }
+
+  /* ── PULL QUOTE ───────────────────────────────────────────── */
+  .pull-quote {
+    border-top: 2px solid var(--accent);
+    border-bottom: 0.5px solid var(--rule);
+    padding: 14px 0;
+    margin: 18px 0;
+    font-family: var(--serif);
+    font-size: 16px;
+    font-style: italic;
+    font-weight: 700;
+    color: var(--ink);
+    line-height: 1.4;
+  }
+
+  /* ── SECCIONES ────────────────────────────────────────────── */
+  .section {
+    margin-bottom: 2rem;
+    scroll-margin-top: 20px;
+  }
+  .section-label {
+    font-family: var(--sans);
+    font-size: 9px;
+    font-weight: 700;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--ink-muted);
+    margin-bottom: 3px;
+    margin-top: 1.8rem;
+  }
+  .section-hr {
+    border: none;
+    border-top: 1.5px solid var(--ink);
+    margin-bottom: 6px;
+  }
+  .section-title-row {
+    display: flex;
+    align-items: baseline;
+    flex-wrap: wrap;
+    gap: 0.6rem;
+    margin-bottom: 8px;
+  }
+  .section-title {
+    font-family: var(--sans);
+    font-size: 12.5px;
+    font-weight: 700;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+    color: var(--ink);
+  }
+
+  /* ── BADGES ───────────────────────────────────────────────── */
+  .badge {
+    font-family: var(--sans);
+    font-size: 8px;
+    font-weight: 700;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    padding: 2px 6px;
+    border-radius: 1px;
+    white-space: nowrap;
+  }
+  .badge-new   { background: var(--accent); color: #fff; }
+  .badge-mod   { background: var(--ink); color: #fff; }
+  .badge-ok    { background: var(--green-bg); color: var(--green); }
+  .badge-warn  { background: var(--amber-bg); color: var(--amber); }
+
+  /* ── BODY TEXT ────────────────────────────────────────────── */
+  .body-text {
+    font-family: var(--body-serif);
+    font-size: 13.5px;
+    color: var(--ink-mid);
+    line-height: 1.7;
+    margin-bottom: 0.6rem;
+    max-width: 82ch;
+  }
+  .body-text strong { color: var(--ink); font-weight: 600; }
+
+  code {
+    font-family: var(--mono);
+    font-size: 11px;
+    background: var(--bg-alt);
+    border: 0.5px solid var(--rule);
+    padding: 1px 5px;
+    border-radius: 2px;
+    color: var(--ink);
+  }
+
+  /* ── TABLAS ───────────────────────────────────────────────── */
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 12px;
+    margin: 6px 0 14px;
+  }
+  thead tr {
+    border-top: 1.5px solid var(--ink);
+    border-bottom: 1px solid var(--ink);
+  }
+  thead th {
+    font-family: var(--sans);
+    font-weight: 700;
+    font-size: 9px;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--ink);
+    padding: 6px 10px;
+    text-align: left;
+  }
+  tbody tr { border-bottom: 0.5px solid var(--rule); }
+  tbody tr:last-child { border-bottom: 1.5px solid var(--ink); }
+  tbody td {
+    padding: 6px 10px;
+    vertical-align: top;
+    color: var(--ink-mid);
+    line-height: 1.5;
+    font-family: var(--body-serif);
+    font-size: 12.5px;
+  }
+  tbody td.mono {
+    font-family: var(--mono);
+    font-size: 11px;
+    color: var(--ink);
+  }
+  tbody td strong { color: var(--ink); }
+
+  /* ── FLAG BOXES ───────────────────────────────────────────── */
+  .flag-obligatorio {
+    background: var(--ink);
+    color: #F2E8D9;
+    padding: 10px 14px;
+    font-family: var(--body-serif);
+    font-size: 13px;
+    line-height: 1.6;
+    margin: 8px 0 12px;
+  }
+  .flag-obligatorio strong { color: #fff; font-weight: 600; }
+
+  .flag-importante {
+    border-left: 4px solid var(--accent);
+    background: var(--accent-light);
+    padding: 10px 14px;
+    font-family: var(--body-serif);
+    font-size: 13px;
+    color: var(--ink-mid);
+    line-height: 1.6;
+    margin: 8px 0 12px;
+  }
+  .flag-importante strong { color: var(--accent); font-weight: 600; }
+
+  .flag-ok {
+    border-left: 4px solid var(--green);
+    background: var(--green-bg);
+    padding: 10px 14px;
+    font-family: var(--body-serif);
+    font-size: 13px;
+    color: var(--ink-mid);
+    line-height: 1.6;
+    margin: 8px 0 12px;
+  }
+  .flag-ok strong { color: var(--green); font-weight: 600; }
+
+  /* ── SMART GRID ───────────────────────────────────────────── */
+  .smart-grid {
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+    gap: 6px;
+    margin: 8px 0 14px;
+  }
+  .smart-card {
+    border-top: 2px solid var(--ink);
+    background: var(--bg-alt);
+    padding: 10px 10px 12px;
+  }
+  .smart-letter {
+    font-family: var(--serif);
+    font-size: 26px;
+    font-weight: 900;
+    color: var(--ink);
+    line-height: 1;
+    margin-bottom: 2px;
+  }
+  .smart-word {
+    font-family: var(--sans);
+    font-size: 8.5px;
+    font-weight: 700;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--ink-muted);
+    margin-bottom: 5px;
+  }
+  .smart-desc {
+    font-family: var(--body-serif);
+    font-size: 11px;
+    color: var(--ink-mid);
+    line-height: 1.45;
+  }
+
+  /* ── CHECKLIST ────────────────────────────────────────────── */
+  .checklist { list-style: none; margin: 4px 0; }
+  .checklist li {
+    display: flex;
+    gap: 8px;
+    align-items: baseline;
+    padding: 4px 0;
+    border-bottom: 0.5px solid var(--rule);
+    font-family: var(--body-serif);
+    font-size: 12.5px;
+    color: var(--ink-mid);
+    line-height: 1.5;
+  }
+  .checklist li .icon {
+    flex-shrink: 0;
+    font-family: var(--mono);
+    font-size: 9.5px;
+    color: var(--ink-muted);
+    width: 14px;
+    padding-top: 2px;
+  }
+  .checklist li.hi { color: var(--ink); }
+  .checklist li.hi .icon { color: var(--accent); font-weight: 700; }
+
+  /* ── CRITERIA ─────────────────────────────────────────────── */
+  .criteria { list-style: none; margin: 6px 0; }
+  .criteria li {
+    font-family: var(--body-serif);
+    font-size: 12.5px;
+    color: var(--ink-mid);
+    padding: 3px 0 3px 1rem;
+    position: relative;
+    border-bottom: 0.5px solid var(--rule);
+    line-height: 1.5;
+  }
+  .criteria li::before { content: '—'; position: absolute; left: 0; color: var(--rule-strong); }
+
+  /* ── CSS TOKENS DISPLAY ───────────────────────────────────── */
+  .token-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 6px;
+    margin: 8px 0 14px;
+  }
+  .token-card {
+    border: 0.5px solid var(--rule);
+    padding: 8px 10px;
+  }
+  .token-swatch {
+    width: 100%;
+    height: 20px;
+    border: 0.5px solid var(--rule);
+    margin-bottom: 5px;
+  }
+  .token-name {
+    font-family: var(--mono);
+    font-size: 9.5px;
+    color: var(--ink);
+    margin-bottom: 2px;
+  }
+  .token-value {
+    font-family: var(--mono);
+    font-size: 9px;
+    color: var(--ink-muted);
+  }
+
+  /* ── DOC FOOTER ───────────────────────────────────────────── */
+  .doc-footer {
+    border-top: 3px double var(--ink);
+    margin-top: 3rem;
+    padding-top: 12px;
+    display: flex;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 8px;
+  }
+  .doc-footer p {
+    font-family: var(--sans);
+    font-size: 9.5px;
+    font-weight: 300;
+    color: var(--ink-muted);
+    letter-spacing: 0.04em;
+  }
+
+  @media (max-width: 680px) {
+    .smart-grid { grid-template-columns: 1fr 1fr; }
+    .toc { grid-template-columns: 1fr; }
+    .headline { font-size: 28px; max-width: 100%; }
+    body { padding: 0 16px 60px; }
+  }
+
+</style>
+</head>
+<body>
+
+<!-- MASTHEAD -->
+<header class="masthead">
+  <div class="masthead-pub">Portfolio Monitor</div>
+  <div class="masthead-center">System Prompt Implícito</div>
+  <div class="masthead-meta">v4.2 · 20-mar-2026<br>Modo Referencia · Tema Salmón</div>
+</header>
+
+<!-- HEADLINE -->
+<div class="headline-block">
+  <div class="kicker">Marco de trabajo para agentes IA · Python · Pegar al inicio de cada sesión</div>
+  <h1 class="headline">Directrices de código,<br>análisis y protocolo</h1>
+  <p class="deck">Sistema Portfolio Monitor — directrices de código Python, análisis previo, objetivos SMART y sistema de documentación para agentes IA. Versión 4.2 incorpora: principios KISS, DRY y YAGNI con aplicación práctica matizada para el sistema.</p>
+  <div class="dateline-bar">
+    <span class="dateline-item"><strong>Versión</strong> 4.2</span>
+    <span class="dateline-item"><strong>Fecha</strong> 20-mar-2026</span>
+    <span class="dateline-item"><strong>Modelo</strong> Claude Sonnet 4.6</span>
+    <span class="dateline-item"><strong>Revisado</strong> sesión colaborativa</span>
+    <span class="dateline-item"><strong>Entorno</strong> Colab · GitHub Actions</span>
+  </div>
+</div>
+
+<div class="pull-quote">
+  «El agente analiza primero, cuestiona después, define objetivos SMART y solo entonces escribe código. Una sesión = una versión estable.»
+</div>
+
+<!-- ÍNDICE -->
+<div class="toc">
+  <div class="toc-title">Índice — 13 secciones</div>
+  <a href="#s1"><span class="toc-num">01</span>Contexto de entorno de ejecución</a>
+  <a href="#s2"><span class="toc-num">02</span>Prioridades de diseño · KISS · DRY · YAGNI <span class="toc-badge">MOD</span></a>
+  <a href="#s3"><span class="toc-num">03</span>Regla de flag de auditoría <span class="toc-badge">MOD</span></a>
+  <a href="#s4"><span class="toc-num">04</span>Estructura del script único <span class="toc-badge">MOD</span></a>
+  <a href="#s5"><span class="toc-num">05</span>Protocolo analítico previo al código <span class="toc-badge">NUEVO</span></a>
+  <a href="#s6"><span class="toc-num">06</span>Objetivos SMART <span class="toc-badge">NUEVO</span></a>
+  <a href="#s7"><span class="toc-num">07</span>Política de datos sensibles <span class="toc-badge">MOD</span></a>
+  <a href="#s8"><span class="toc-num">08</span>Política de reintentos y backoff</a>
+  <a href="#s9"><span class="toc-num">09</span>Sistema de documentación y estilo <span class="toc-badge">NUEVO</span></a>
+  <a href="#s10"><span class="toc-num">10</span>Versionado mínimo del script</a>
+  <a href="#s11"><span class="toc-num">11</span>Formato de logs y output</a>
+  <a href="#s12"><span class="toc-num">12</span>Checklist de validación — 27 ítems <span class="toc-badge">MOD</span></a>
+  <a href="#s13"><span class="toc-num">13</span>Flujo de trabajo estándar</a>
+</div>
+
+<!-- ═══ S1 ═══ -->
+<div class="section-rule-double"><span>Entorno y configuración</span></div>
+<div class="section" id="s1">
+  <div class="section-label">Sección 1</div>
+  <hr class="section-hr">
+  <div class="section-title-row"><span class="section-title">Contexto de entorno de ejecución</span></div>
+  <p class="body-text">Dos entornos coexisten. El agente los distingue por el valor de <code>DRY_RUN</code> y adapta el comportamiento sin generar dos versiones del script.</p>
+  <table>
+    <thead><tr><th>Parámetro</th><th>Producción</th><th>Auditoría</th></tr></thead>
+    <tbody>
+      <tr><td>Plataforma</td><td>GitHub Actions</td><td>Google Colab</td></tr>
+      <tr><td class="mono">DRY_RUN</td><td class="mono">False</td><td class="mono">True</td></tr>
+      <tr><td class="mono">HORAS_LOOKBACK</td><td class="mono">26</td><td class="mono">720</td></tr>
+      <tr><td>Telegram</td><td>Activo — siempre notifica</td><td>Desactivado</td></tr>
+      <tr><td>Muestra ruido</td><td>3 titulares</td><td>Lista completa</td></tr>
+      <tr><td>Ejecución</td><td>cron 07:00 CET</td><td>Colab manual</td></tr>
+    </tbody>
+  </table>
+</div>
+
+<!-- ═══ S2 ═══ -->
+<div class="section" id="s2">
+  <div class="section-label">Sección 2</div>
+  <hr class="section-hr">
+  <div class="section-title-row">
+    <span class="section-title">Prioridades de diseño</span>
+    <span class="badge badge-mod">Modificado v4.2</span>
+  </div>
+  <p class="body-text">El script único y autocontenido es el principio rector. Tres principios de ingeniería de software guían todas las decisiones de implementación: <strong>KISS, DRY y YAGNI</strong>. Su aplicación en este sistema tiene matices específicos que se detallan a continuación.</p>
+  <table>
+    <thead><tr><th>Prior.</th><th>Principio</th><th>Aplicación práctica en este sistema</th></tr></thead>
+    <tbody>
+      <tr><td class="mono">■ 1</td><td><strong>Script único · KISS</strong><br><span style="font-family:var(--mono);font-size:10px;color:var(--ink-muted);">Keep It Simple, Stupid</span></td><td>Un solo archivo <code>.py</code>. Soluciona el problema de la forma más directa posible. Sin estructuras innecesariamente complejas. Directorios solo si supera ~600 líneas o hay imposibilidad técnica documentada y aprobada. La simplicidad no es un punto de llegada — es el punto de partida.</td></tr>
+      <tr><td class="mono">■ 2</td><td><strong>Robustez</strong></td><td>Validaciones previas. Reintentos con backoff. Sin <code>except</code> desnudos. Logs con nivel. La infraestructura de robustez (reintentos, backoff, logs) es especificación de diseño del sistema — no funcionalidad especulativa.</td></tr>
+      <tr><td class="mono">■ 3</td><td><strong>Lógica sin duplicación · DRY</strong><br><span style="font-family:var(--mono);font-size:10px;color:var(--ink-muted);">Don't Repeat Yourself</span></td><td>Cada pieza de <strong>lógica</strong> tiene una representación única: funciones reutilizables, una función = una responsabilidad, type hints, docstrings. <strong>Excepción explícita:</strong> DRY no aplica a datos de configuración ni mapeos — estos se hardcodean por decisión de diseño consciente para facilitar el refinamiento en Colab.</td></tr>
+      <tr><td class="mono">■ 4</td><td><strong>Solo lo necesario · YAGNI</strong><br><span style="font-family:var(--mono);font-size:10px;color:var(--ink-muted);">You Ain't Gonna Need It</span></td><td>No implementar funcionalidades fuera de los objetivos SMART acordados en la sesión. Si no está en los requisitos actuales, no se construye. <strong>No confundir con robustez:</strong> el retry no es «por si acaso» — es un requisito de diseño especificado. YAGNI apunta a funcionalidades especulativas: exportación a CSV, modos verbose extra, alertas adicionales no solicitadas.</td></tr>
+      <tr><td class="mono">■ 5</td><td><strong>Sin dependencias externas</strong></td><td>stdlib pura primero. Diseñar para Colab — una sola celda. Toda dependencia justificada con versión fijada.</td></tr>
+    </tbody>
+  </table>
+</div>
+
+<!-- ═══ S3 ═══ -->
+<div class="section-rule-double"><span>Protocolo de auditoría y producción</span></div>
+<div class="section" id="s3">
+  <div class="section-label">Sección 3</div>
+  <hr class="section-hr">
+  <div class="section-title-row">
+    <span class="section-title">Regla de flag de auditoría</span>
+    <span class="badge badge-mod">Modificado v4.1</span>
+  </div>
+
+  <div class="flag-obligatorio">
+    <strong>Regla absoluta:</strong> todo script generado o modificado se entrega siempre con los flags de auditoría activos. El paso a producción es una decisión humana explícita — nunca automática.
+  </div>
+
+  <table>
+    <thead><tr><th>Estado</th><th>DRY_RUN</th><th>HORAS_LOOKBACK</th><th>Quién decide</th></tr></thead>
+    <tbody>
+      <tr><td><strong>Auditoría</strong> — entrega por defecto</td><td class="mono">True</td><td class="mono">720</td><td>El agente, siempre</td></tr>
+      <tr><td><strong>Producción</strong> — cambio manual</td><td class="mono">False</td><td class="mono">26</td><td>OK explícito del humano</td></tr>
+    </tbody>
+  </table>
+
+  <div class="flag-ok">
+    <strong>Versión estable confirmada.</strong> Cuando el humano valida una versión y emite el OK explícito, el agente modifica los flags a producción en esa misma sesión. Es el único momento en que el cambio está permitido. El agente documenta el cambio en <code># VERSIÓN</code> con fecha y nombre del revisor.
+  </div>
+
+  <p class="body-text">El agente no anticipa el cambio de flags bajo ninguna circunstancia. La validación en auditoría y el OK explícito son pasos separados e inamovibles.</p>
+</div>
+
+<!-- ═══ S4 ═══ -->
+<div class="section" id="s4">
+  <div class="section-label">Sección 4</div>
+  <hr class="section-hr">
+  <div class="section-title-row">
+    <span class="section-title">Estructura obligatoria del script único</span>
+    <span class="badge badge-mod">Modificado v4.1</span>
+  </div>
+  <p class="body-text">Todo el código vive en un único archivo <code>.py</code>. Esta estructura interna es obligatoria y su orden no es opcional. La organización en directorios solo se activa con aprobación explícita del humano y queda documentada en <code># VERSIÓN</code>.</p>
+
+  <div class="flag-importante">
+    <strong>Conflicto con script único — protocolo del agente.</strong> Si durante el desarrollo el agente detecta que mantener un único archivo entra en conflicto directo con otra restricción del sistema — robustez, KISS, DRY, mantenibilidad en Colab — no resuelve el conflicto solo. Lo señala explícitamente al humano con el formato: <em>«Detectado conflicto entre script único y [principio]. La solución canónica sería usar estructura de directorios. ¿Sacrificamos la unicidad?»</em> — y espera respuesta antes de proceder. La decisión es siempre del humano. La solución, colaborativa.
+  </div>
+  <table>
+    <thead><tr><th>Sección</th><th>Contenido</th></tr></thead>
+    <tbody>
+      <tr><td class="mono"># ENTORNO</td><td>Plataforma, Python, OS, repo</td></tr>
+      <tr><td class="mono"># VERSIÓN</td><td>Versión, fecha, modelo IA, registro acumulativo de cambios, TODOs SMART pendientes</td></tr>
+      <tr><td class="mono"># MODO</td><td><code>DRY_RUN</code> y <code>HORAS_LOOKBACK</code> con comentario explicativo de la regla — ver Sección 3</td></tr>
+      <tr><td class="mono"># DEPENDENCIAS</td><td>Solo excepciones justificadas con <code>pip install</code> y motivo. Vacío si solo stdlib.</td></tr>
+      <tr><td class="mono"># CONFIGURACIÓN</td><td>Todas las variables parametrizables. Nunca dentro de funciones.</td></tr>
+      <tr><td class="mono"># MAPEOS</td><td>Diccionarios y listas Python hardcodeados. Sin JSONs externos.</td></tr>
+      <tr><td class="mono"># REINTENTOS</td><td><code>PERFILES_FUENTE</code> y parámetros de backoff</td></tr>
+      <tr><td class="mono"># RUTAS</td><td>Directorios con <code>pathlib.Path</code>, adaptados por MODO. <code>LOG_DIR</code> siempre primero.</td></tr>
+      <tr><td class="mono"># VALIDACIONES</td><td>Tipos, rangos, existencia de rutas, credenciales</td></tr>
+      <tr><td class="mono"># FUNCIONES CORE</td><td>Lógica principal. Una función = una responsabilidad. Docstrings + type hints.</td></tr>
+      <tr><td class="mono"># NOTIFICACIÓN</td><td>Función Telegram reutilizable. Condicionada por MODO.</td></tr>
+      <tr><td class="mono"># EJECUCIÓN</td><td>Orquesta todo. Bloque <code>if __name__ == '__main__'</code>.</td></tr>
+    </tbody>
+  </table>
+</div>
+
+<!-- ═══ S5 ═══ -->
+<div class="section-rule-double"><span>Análisis y objetivos</span></div>
+<div class="section" id="s5">
+  <div class="section-label">Sección 5</div>
+  <hr class="section-hr">
+  <div class="section-title-row">
+    <span class="section-title">Protocolo analítico previo al código</span>
+    <span class="badge badge-new">Nuevo v4.1</span>
+  </div>
+  <div class="flag-importante">
+    <strong>Obligatorio.</strong> Antes de escribir una línea de código, el agente ejecuta este protocolo en orden. No es opcional. El análisis previo es parte del entregable.
+  </div>
+  <table>
+    <thead><tr><th>Paso</th><th>Nombre</th><th>Descripción</th></tr></thead>
+    <tbody>
+      <tr><td class="mono">1</td><td><strong>Entender el objetivo real</strong></td><td>No el literal del mensaje, sino el problema subyacente. ¿Qué output concreto se espera? ¿Qué necesita realmente el sistema?</td></tr>
+      <tr><td class="mono">2</td><td><strong>Postura contrarian</strong></td><td>Cuestionar activamente el enfoque propuesto. ¿Es la solución más simple posible? ¿Hay trampa de complejidad? ¿El problema está bien definido? Señalar riesgos explícitamente.</td></tr>
+      <tr><td class="mono">3</td><td><strong>Análisis de lógica</strong></td><td>Detectar contradicciones, casos borde y dependencias ocultas. Verificar que la lógica propuesta es correcta antes de implementar. Si hay ambigüedad, resolverla antes de codificar.</td></tr>
+      <tr><td class="mono">4</td><td><strong>Objetivos SMART</strong></td><td>Ver Sección 6. Definir y acordar con el humano antes de proceder. Aceptar «pendiente» como respuesta válida.</td></tr>
+      <tr><td class="mono">5</td><td><strong>Solo entonces: código</strong></td><td>Con análisis completo y objetivos acordados, generar el script según estructura de Sección 4.</td></tr>
+    </tbody>
+  </table>
+</div>
+
+<!-- ═══ S6 ═══ -->
+<div class="section" id="s6">
+  <div class="section-label">Sección 6</div>
+  <hr class="section-hr">
+  <div class="section-title-row">
+    <span class="section-title">Objetivos SMART</span>
+    <span class="badge badge-new">Nuevo v4.1</span>
+  </div>
+  <p class="body-text">Antes de codificar, el agente desglosa el objetivo en los cinco criterios SMART. Para cada criterio sin respuesta, el agente hace la pregunta explícita al humano. Se acepta <strong>«pendiente»</strong> como respuesta válida — el agente avanza con lo definido y documenta los pendientes como TODOs en <code># VERSIÓN</code>.</p>
+
+  <div class="smart-grid">
+    <div class="smart-card">
+      <div class="smart-letter">S</div>
+      <div class="smart-word">Específico</div>
+      <div class="smart-desc">¿Qué hace exactamente? ¿Cuáles son los inputs y outputs concretos?</div>
+    </div>
+    <div class="smart-card">
+      <div class="smart-letter">M</div>
+      <div class="smart-word">Medible</div>
+      <div class="smart-desc">¿Cómo se verifica que funciona? ¿Cuál es la condición de éxito verificable?</div>
+    </div>
+    <div class="smart-card">
+      <div class="smart-letter">A</div>
+      <div class="smart-word">Alcanzable</div>
+      <div class="smart-desc">¿Es viable en un script único? ¿Las fuentes de datos son accesibles?</div>
+    </div>
+    <div class="smart-card">
+      <div class="smart-letter">R</div>
+      <div class="smart-word">Relevante</div>
+      <div class="smart-desc">¿Resuelve el problema real del sistema? ¿Coherente con las prioridades?</div>
+    </div>
+    <div class="smart-card">
+      <div class="smart-letter">T</div>
+      <div class="smart-word">Temporal</div>
+      <div class="smart-desc">¿Qué versión se entrega en esta sesión? ¿Qué queda para sesiones futuras?</div>
+    </div>
+  </div>
+
+  <table>
+    <thead><tr><th>Criterio</th><th>Pregunta del agente</th><th>Si respuesta es «pendiente»</th></tr></thead>
+    <tbody>
+      <tr><td><strong>S</strong> — Específico</td><td>¿Qué hace exactamente y cuáles son inputs/outputs?</td><td>TODO en <code># VERSIÓN</code>. El agente propone hipótesis razonable y la documenta.</td></tr>
+      <tr><td><strong>M</strong> — Medible</td><td>¿Cuál es la condición de éxito verificable?</td><td>El agente define criterio provisional y lo documenta explícitamente.</td></tr>
+      <tr><td><strong>A</strong> — Alcanzable</td><td>¿Es viable en un script único en esta sesión?</td><td>El agente señala el riesgo y avanza con scope reducido.</td></tr>
+      <tr><td><strong>R</strong> — Relevante</td><td>¿Resuelve el problema real del sistema?</td><td>El agente explicita la asunción que hace y pide confirmación en próxima sesión.</td></tr>
+      <tr><td><strong>T</strong> — Temporal</td><td>¿Qué entra en esta versión y qué se difiere?</td><td>El agente propone el corte de versión y lo documenta en <code># VERSIÓN</code>.</td></tr>
+    </tbody>
+  </table>
+</div>
+
+<!-- ═══ S7 ═══ -->
+<div class="section-rule-double"><span>Datos sensibles y seguridad</span></div>
+<div class="section" id="s7">
+  <div class="section-label">Sección 7</div>
+  <hr class="section-hr">
+  <div class="section-title-row">
+    <span class="section-title">Política de datos sensibles</span>
+    <span class="badge badge-mod">Modificado v4.1</span>
+  </div>
+  <div class="flag-importante">
+    <strong>Por defecto: hardcoding.</strong> Token y Chat ID de Telegram van hardcodeados en el script hasta orden explícita de <strong>«versión no refinable»</strong>. El motivo es facilitar las iteraciones de refinamiento en Colab sin gestión de secretos entre sesiones.
+  </div>
+  <table>
+    <thead><tr><th>Dato</th><th>Por defecto</th><th>Cambio a secrets</th><th>Condición</th></tr></thead>
+    <tbody>
+      <tr><td>Token Telegram</td><td>Hardcodeado en script</td><td>GitHub Secrets</td><td>Orden explícita «versión no refinable»</td></tr>
+      <tr><td>Chat ID Telegram</td><td>Hardcodeado en script</td><td>GitHub Secrets</td><td>Orden explícita «versión no refinable»</td></tr>
+      <tr><td>API Key BLS</td><td><code>input()</code> en Colab</td><td>GitHub Secrets</td><td>Al pasar a producción</td></tr>
+      <tr><td>Cualquier otro secreto</td><td>Nunca en repo público</td><td>GitHub Secrets</td><td>Siempre</td></tr>
+    </tbody>
+  </table>
+</div>
+
+<!-- ═══ S8 ═══ -->
+<div class="section" id="s8">
+  <div class="section-label">Sección 8</div>
+  <hr class="section-hr">
+  <div class="section-title-row"><span class="section-title">Política de reintentos y backoff</span></div>
+  <p class="body-text">Todo script que hace I/O implementa backoff exponencial con jitter. Función base en stdlib pura. <strong>«Sin noticias es noticia»</strong>: en producción el script notifica por Telegram siempre — éxito o error. El silencio no es válido.</p>
+  <table>
+    <thead><tr><th>Fuente</th><th>max_reintentos</th><th>timeout (seg)</th><th>pausa (seg)</th></tr></thead>
+    <tbody>
+      <tr><td>SEC EDGAR</td><td class="mono">3</td><td class="mono">15</td><td class="mono">0.5</td></tr>
+      <tr><td>Google News</td><td class="mono">3</td><td class="mono">10</td><td class="mono">1.0</td></tr>
+      <tr><td>Telegram</td><td class="mono">5</td><td class="mono">5</td><td class="mono">0.0</td></tr>
+      <tr><td>BLS API</td><td class="mono">3</td><td class="mono">10</td><td class="mono">1.0</td></tr>
+    </tbody>
+  </table>
+  <p class="body-text"><strong>Recuperables:</strong> red, timeout, OSError, HTTP 429, HTTP 500-503. &nbsp;·&nbsp; <strong>No recuperables:</strong> HTTP 400/401/403, ValueError, TypeError, KeyboardInterrupt.</p>
+</div>
+
+<!-- ═══ S9 ═══ -->
+<div class="section-rule-double"><span>Sistema de documentación</span></div>
+<div class="section" id="s9">
+  <div class="section-label">Sección 9</div>
+  <hr class="section-hr">
+  <div class="section-title-row">
+    <span class="section-title">Sistema de documentación y estilo visual</span>
+    <span class="badge badge-new">Nuevo v4.1</span>
+  </div>
+
+  <div class="flag-obligatorio">
+    <strong>Formato único: HTML.</strong> Toda la documentación del sistema Portfolio Monitor se entrega en HTML autocontenido — un único archivo <code>.html</code> con CSS embebido en <code>&lt;style&gt;</code>. Sin hojas externas. Nunca PDF salvo orden explícita del humano.
+  </div>
+
+  <p class="body-text">El sistema tiene dos modos de presentación y dos temas de color. Cualquier combinación es válida. El agente declara modo y tema antes de escribir una línea de HTML.</p>
+
+  <table>
+    <thead><tr><th>Dimensión</th><th>Valor</th><th>Descripción</th><th>Activación</th></tr></thead>
+    <tbody>
+      <tr>
+        <td rowspan="2"><strong>Modo</strong></td>
+        <td><span class="badge badge-ok">Modo Lectura</span></td>
+        <td>Layout documental. Audiencia humana. Dos columnas + sidebar, weight 300, drop cap, pull quotes grandes, tags semánticos, section rule doble. Alta legibilidad. <strong>Formato habitual para cualquier output del sistema.</strong></td>
+        <td>Por defecto en todo documento que no sea el SPI. O explícito: «genera en modo lectura».</td>
+      </tr>
+      <tr>
+        <td><span class="badge badge-mod">Modo Referencia</span></td>
+        <td>Layout denso. Audiencia agente IA + humano que escanea. Columna única, índice navegable, weight 400, flags visuales binarios, sin ornamento. <strong>Reservado para el SPI y documentos de trabajo interno.</strong></td>
+        <td>Solo para el SPI. O explícito: «genera en modo referencia».</td>
+      </tr>
+      <tr>
+        <td rowspan="2"><strong>Tema</strong></td>
+        <td><span class="badge" style="background:var(--bg-deep);color:var(--ink);">Papel</span></td>
+        <td>Fondo <code>#f8f6f1</code> crema. Libre Franklin + Playfair Display. Para análisis conceptuales, marcos de trabajo, gestión del riesgo, tesis de inversión.</td>
+        <td>Declarar en <code>&lt;body class="tema-papel"&gt;</code></td>
+      </tr>
+      <tr>
+        <td><span class="badge" style="background:var(--bg-alt);color:var(--ink);">Salmón</span></td>
+        <td>Fondo <code>#F2E8D9</code> salmón. Source Serif 4 + Playfair Display + IBM Plex Mono. Para manuales operativos, reporting, datos de mercado, listas blancas. El SPI usa siempre este tema.</td>
+        <td>Declarar en <code>&lt;body class="tema-salmon"&gt;</code></td>
+      </tr>
+    </tbody>
+  </table>
+
+  <p class="body-text" style="margin-top:0.4rem;"><strong>Combinaciones habituales:</strong></p>
+  <table>
+    <thead><tr><th>Documento</th><th>Modo</th><th>Tema</th></tr></thead>
+    <tbody>
+      <tr><td>SPI</td><td>Referencia</td><td>Salmón — combinación fija</td></tr>
+      <tr><td>Manual operativo</td><td>Lectura</td><td>Salmón</td></tr>
+      <tr><td>Tesis de inversión</td><td>Lectura</td><td>Papel</td></tr>
+      <tr><td>Análisis conceptual</td><td>Lectura</td><td>Papel</td></tr>
+      <tr><td>Reporting de datos</td><td>Lectura</td><td>Salmón</td></tr>
+      <tr><td>SPI en modo legible</td><td>Lectura</td><td>Salmón — bajo demanda explícita</td></tr>
+    </tbody>
+  </table>
+
+  <p class="body-text"><strong>Fuentes no permitidas:</strong> Inter, Roboto, Arial, system-ui ni ninguna genérica. El sistema tipográfico es fijo e inamovible.</p>
+
+  <p class="body-text"><strong>Frases de activación:</strong> «genera en modo lectura» · «genera en modo referencia» · «genera el SPI en modo lectura». Sin instrucción, cualquier output que no sea el SPI usa Modo Lectura por defecto.</p>
+
+  <p class="body-text"><strong>Flujo habitual del sistema:</strong> sesión de trabajo con script → script estable → «genera el manual operativo» o «genera la tesis» → documento en Modo Lectura con el tema apropiado, en la misma sesión, con todo el contexto disponible.</p>
+
+  <p class="body-text"><strong>Componentes disponibles en Modo Lectura:</strong> masthead · dateline · kicker · drop-cap · pull-quote · three-col · body-wrap + sidebar · section-head · implication · conclusion · tags (green/red/amber) · paradox-table · doc-footer.</p>
+
+  <p class="body-text"><strong>Componentes disponibles en Modo Referencia:</strong> masthead · toc navegable · section-rule-double · flag-obligatorio · flag-importante · flag-ok · smart-grid · checklist · criteria · tablas compactas · doc-footer.</p>
+</div>
+
+<!-- ═══ S10 ═══ -->
+<div class="section-rule-double"><span>Versionado y logs</span></div>
+<div class="section" id="s10">
+  <div class="section-label">Sección 10</div>
+  <hr class="section-hr">
+  <div class="section-title-row"><span class="section-title">Versionado mínimo del script</span></div>
+  <p class="body-text">Cada script comienza con un bloque de versión. El agente lo actualiza en cada sesión. El registro de cambios es acumulativo — no se borra el historial.</p>
+  <table>
+    <thead><tr><th>Campo</th><th>Contenido</th></tr></thead>
+    <tbody>
+      <tr><td>Script</td><td>Nombre del script</td></tr>
+      <tr><td>Versión</td><td>1.0, 1.1, 1.2 — incrementar en cada sesión</td></tr>
+      <tr><td>Fecha</td><td>YYYY-MM-DD</td></tr>
+      <tr><td>Generado</td><td>Claude Sonnet 4.6 / GPT-4o / etc.</td></tr>
+      <tr><td>Revisado</td><td>Nombre del humano o «no revisado»</td></tr>
+      <tr><td>Cambios</td><td>Registro acumulativo: v1.0 — fecha — descripción / v1.1 — fecha — descripción</td></tr>
+      <tr><td>TODOs SMART</td><td>Criterios marcados «pendiente» en la sesión, con descripción del criterio diferido</td></tr>
+    </tbody>
+  </table>
+</div>
+
+<!-- ═══ S11 ═══ -->
+<div class="section" id="s11">
+  <div class="section-label">Sección 11</div>
+  <hr class="section-hr">
+  <div class="section-title-row"><span class="section-title">Formato de logs y output</span></div>
+  <table>
+    <thead><tr><th>Nivel</th><th>Cuándo</th><th>Ejemplo</th></tr></thead>
+    <tbody>
+      <tr><td class="mono">[INFO]</td><td>Progreso normal</td><td><code>[INFO] Conectando con BLS API...</code></td></tr>
+      <tr><td class="mono">[OK]</td><td>Operación completada</td><td><code>[OK] Registros procesados: 120</code></td></tr>
+      <tr><td class="mono">[WARN]</td><td>Inusual pero no fatal</td><td><code>[WARN] Reintentando (2/3) en 4.0s...</code></td></tr>
+      <tr><td class="mono">[ERROR]</td><td>Fallo recuperable</td><td><code>[ERROR] HTTP 429: rate limit en BLS</code></td></tr>
+      <tr><td class="mono">[FATAL]</td><td>Fallo no recuperable</td><td><code>[FATAL] Agotados 3 reintentos. Abortando.</code></td></tr>
+      <tr><td class="mono">[DEBUG CAT*]</td><td>Solo en DRY_RUN=True</td><td><code>[DEBUG CAT1] ('paypal', 'branded') → titular...</code></td></tr>
+    </tbody>
+  </table>
+  <p class="body-text">Formato estándar: <code>[YYYY-MM-DD HH:MM:SS UTC] [NIVEL] mensaje</code></p>
+</div>
+
+<!-- ═══ S12 ═══ -->
+<div class="section-rule-double"><span>Validación y flujo de trabajo</span></div>
+<div class="section" id="s12">
+  <div class="section-label">Sección 12</div>
+  <hr class="section-hr">
+  <div class="section-title-row">
+    <span class="section-title">Checklist de validación — 30 ítems</span>
+    <span class="badge badge-mod">Actualizado v4.2</span>
+  </div>
+  <p class="body-text">Verificar antes de entregar cualquier script generado o modificado. Los ítems marcados <strong>★</strong> son nuevos o modificados en v4.2.</p>
+  <ul class="checklist">
+    <li><span class="icon">■</span>Bloque ENTORNO declarado — plataforma, Python, OS, repo</li>
+    <li class="hi"><span class="icon">★</span>Bloque VERSIÓN con fecha, modelo IA, registro acumulativo y TODOs SMART pendientes</li>
+    <li class="hi"><span class="icon">★</span>DRY_RUN = True · HORAS_LOOKBACK = 720 en toda entrega — salvo OK explícito de versión estable</li>
+    <li><span class="icon">■</span>Comentario explicativo de la regla de flags visible en el código</li>
+    <li class="hi"><span class="icon">★</span>Protocolo analítico ejecutado antes de codificar (Sección 5)</li>
+    <li class="hi"><span class="icon">★</span>Postura contrarian documentada — riesgos señalados explícitamente</li>
+    <li class="hi"><span class="icon">★</span>Preguntas SMART formuladas al humano antes de codificar</li>
+    <li class="hi"><span class="icon">★</span>Criterios «pendiente» documentados en # VERSIÓN como TODOs</li>
+    <li class="hi"><span class="icon">★</span>KISS — solución más directa posible, sin estructuras especulativas</li>
+    <li class="hi"><span class="icon">★</span>DRY — lógica sin duplicación · excepción explícita: datos de configuración y mapeos</li>
+    <li class="hi"><span class="icon">★</span>YAGNI — solo funcionalidades en los objetivos SMART de la sesión · robustez no es especulación</li>
+    <li class="hi"><span class="icon">★</span>Script en un único archivo .py — si hay conflicto con otro principio del sistema, señalarlo al humano antes de proceder</li>
+    <li class="hi"><span class="icon">★</span>Mapeos en código (dict/list Python) — sin JSONs externos</li>
+    <li><span class="icon">■</span>Todas las variables configurables al inicio, fuera de funciones</li>
+    <li><span class="icon">■</span>PERFILES_FUENTE definido para cada fuente usada</li>
+    <li><span class="icon">■</span>Mapeos descargados con con_reintento() — fallo es fatal</li>
+    <li><span class="icon">■</span>Manejo de errores en los 4 niveles documentados</li>
+    <li><span class="icon">■</span>Sin except desnudos ni mensajes de error sin contexto</li>
+    <li><span class="icon">■</span>Todas las funciones con docstring y type hints</li>
+    <li><span class="icon">■</span>Sin dependencias externas o todas con justificación y versión fijada</li>
+    <li class="hi"><span class="icon">★</span>Token y Chat ID Telegram hardcodeados hasta orden «versión no refinable»</li>
+    <li><span class="icon">■</span>Notificación Telegram condicionada por MODO (DRY_RUN)</li>
+    <li><span class="icon">■</span>Telegram con fallback a log si falla — nunca fallo fatal</li>
+    <li><span class="icon">■</span>Rutas con pathlib.Path adaptadas por MODO</li>
+    <li><span class="icon">■</span>LOG_DIR creado siempre primero</li>
+    <li><span class="icon">■</span>Log escribe en fichero en producción</li>
+    <li><span class="icon">■</span>Nombre de ficheros de output fijo — sin timestamp</li>
+    <li><span class="icon">■</span>cron.yml incluye paso de commit automático de output/</li>
+    <li><span class="icon">■</span>Bloque if __name__ == '__main__' presente</li>
+    <li class="hi"><span class="icon">★</span>Si output es HTML: modo y tema declarados, fuentes y componentes del sistema aplicados (Sección 9)</li>
+  </ul>
+</div>
+
+<!-- ═══ S13 ═══ -->
+<div class="section" id="s13">
+  <div class="section-label">Sección 13</div>
+  <hr class="section-hr">
+  <div class="section-title-row"><span class="section-title">Flujo de trabajo estándar — Monitor Noticias</span></div>
+  <p class="body-text">Seguir este orden en cada sesión de mantenimiento del script. Los pasos 1–4 son secuenciales.</p>
+  <table>
+    <thead><tr><th>Paso</th><th>Nombre</th><th>Cuándo</th><th>Acciones</th></tr></thead>
+    <tbody>
+      <tr><td class="mono">1</td><td><strong>Protocolo analítico + SMART</strong></td><td>Siempre al inicio</td><td>Entender objetivo · Postura contrarian · Análisis lógico · Preguntas SMART · Documentar pendientes</td></tr>
+      <tr><td class="mono">2</td><td><strong>Actualizar datos</strong></td><td>Siempre al inicio</td><td>manos_fuertes (13F trimestral) · gnews_queries · sec_cik</td></tr>
+      <tr><td class="mono">3</td><td><strong>Auditoría keywords</strong></td><td>Ruido &gt;25% o falsos negativos</td><td>DRY_RUN=True · 720h · Revisar RUIDO y CAT2/3 · Ajustar · Revalidar</td></tr>
+      <tr><td class="mono">4</td><td><strong>Activar ticker</strong></td><td>Al añadir ticker nuevo</td><td>Copiar plantilla · Rellenar · Auditoría · Producción cuando ruido &lt;20%</td></tr>
+      <tr><td class="mono">5</td><td><strong>Pasar a producción</strong></td><td>OK explícito del humano</td><td>Modificar flags en script · DRY_RUN=False · 26h · GitHub · Verificar Telegram · Revisar primera ejecución</td></tr>
+    </tbody>
+  </table>
+  <p class="body-text" style="margin-top:0.5rem;"><strong>Criterios de calidad — producción lista:</strong></p>
+  <ul class="criteria">
+    <li>CAT1 false positive rate: &lt;2 por ejecución de 26h</li>
+    <li>Ruido: absorbe &gt;80% de noticias no relevantes</li>
+    <li>Manos fuertes: lista blanca actualizada en los últimos 90 días</li>
+    <li>gnews_queries: ninguna query con 0 resultados en 3 ejecuciones consecutivas</li>
+    <li>Primera ejecución producción revisada manualmente por el humano</li>
+  </ul>
+</div>
+
+<!-- FOOTER -->
+<footer class="doc-footer">
+  <p>Portfolio Monitor · SPI v4.2 · Marco de trabajo para agentes IA · Python</p>
+  <p>★★ Pegar al inicio de cada sesión con IA · Actualizar Sección 1 si el entorno cambia</p>
+  <p>20-mar-2026 · Modo Referencia · Tema Salmón · Claude Sonnet 4.6</p>
+</footer>
+
+</body>
+</html>

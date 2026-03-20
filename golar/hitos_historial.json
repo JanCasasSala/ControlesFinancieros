@@ -59,6 +59,18 @@
           "estado_anterior": "pendiente"
         }
       ]
+    },
+    {
+      "fecha": "20/03/2026 15:25",
+      "cambios_count": 1,
+      "detalle": [
+        {
+          "id": 2,
+          "hito": "FCF guidance 2025 confirmado",
+          "estado_nuevo": "pendiente",
+          "estado_anterior": "seguimiento"
+        }
+      ]
     }
   ]
 }

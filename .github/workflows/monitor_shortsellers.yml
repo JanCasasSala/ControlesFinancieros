@@ -28,7 +28,7 @@ jobs:
 
       - name: Run monitor
         run: |
-          python scripts/monitor_shortsellers.py
+          python scripts/monitor_short_sellers.py
         env:
           GITHUB_ACTIONS: "true"
 

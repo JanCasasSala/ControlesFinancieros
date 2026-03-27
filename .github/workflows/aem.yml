@@ -26,7 +26,7 @@ jobs:
           pip install yfinance requests pandas matplotlib --quiet
 
       - name: Ejecutar monitor AEM
-        run: python script_entrada_aem.py
+        run: python aem/script_entrada_aem.py
 
       - name: Commit output HTML y JSON
         run: |

@@ -107,7 +107,7 @@ EN_GITHUB = os.getenv("GITHUB_ACTIONS") == "true"
 # PRODUCCIÓN (cambio manual con OK explícito del humano):
 #   DRY_RUN = False
 # =============================================================================
-DRY_RUN = True   # ← AUDITORÍA — cambiar a False solo con OK explícito
+DRY_RUN = False   # ← AUDITORÍA — cambiar a False solo con OK explícito
 
 
 # =============================================================================
